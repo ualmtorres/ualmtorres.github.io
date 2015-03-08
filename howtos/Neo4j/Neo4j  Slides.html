@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)http://slides.com/manolotorres/deck/live#/ -->
+<html class="sl-root decks live live-server mz-applicationcache mz-history mz-localstorage mz-svg mz-opacity mz-rgba mz-backgroundsize mz-cssanimations mz-csstransforms mz-csstransforms3d mz-csstransitions mz-flexbox mz-flexboxlegacy mz-fullscreen loaded ua-chrome reveal-is-ready presentation-started"><script type="text/javascript" src="./Neo4j  Slides_files/4fd2e9786b"></script><script async="" src="./Neo4j  Slides_files/analytics.js"></script><script id="tinyhippos-injected">if (window.top.ripple) { window.top.ripple("bootstrap").inject(window, document); }</script><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<script type="text/javascript">window.NREUM||(NREUM={});NREUM.info={"beacon":"bam.nr-data.net","errorBeacon":"bam.nr-data.net","licenseKey":"4fd2e9786b","applicationID":"1563900","transactionName":"cApZREQKWl9XFxZQVlAORB9aDEBW","queueTime":0,"applicationTime":29,"agent":"js-agent.newrelic.com/nr-593.min.js"}</script>
+<script type="text/javascript">window.NREUM||(NREUM={}),__nr_require=function(n,e,t){function r(t){if(!e[t]){var o=e[t]={exports:{}};n[t][0].call(o.exports,function(e){var o=n[t][1][e];return r(o?o:e)},o,o.exports)}return e[t].exports}if("function"==typeof __nr_require)return __nr_require;for(var o=0;o<t.length;o++)r(t[o]);return r}({QJf3ax:[function(n,e){function t(n){function e(e,t,a){n&&n(e,t,a),a||(a={});for(var u=c(e),f=u.length,s=i(a,o,r),p=0;f>p;p++)u[p].apply(s,t);return s}function a(n,e){f[n]=c(n).concat(e)}function c(n){return f[n]||[]}function u(){return t(e)}var f={};return{on:a,emit:e,create:u,listeners:c,_events:f}}function r(){return{}}var o="nr@context",i=n("gos");e.exports=t()},{gos:"7eSDFh"}],ee:[function(n,e){e.exports=n("QJf3ax")},{}],3:[function(n,e){function t(n){return function(){r(n,[(new Date).getTime()].concat(i(arguments)))}}var r=n("handle"),o=n(1),i=n(2);"undefined"==typeof window.newrelic&&(newrelic=window.NREUM);var a=["setPageViewName","addPageAction","setCustomAttribute","finished","addToTrace","inlineHit","noticeError"];o(a,function(n,e){window.NREUM[e]=t("api-"+e)}),e.exports=window.NREUM},{1:12,2:13,handle:"D5DuLP"}],gos:[function(n,e){e.exports=n("7eSDFh")},{}],"7eSDFh":[function(n,e){function t(n,e,t){if(r.call(n,e))return n[e];var o=t();if(Object.defineProperty&&Object.keys)try{return Object.defineProperty(n,e,{value:o,writable:!0,enumerable:!1}),o}catch(i){}return n[e]=o,o}var r=Object.prototype.hasOwnProperty;e.exports=t},{}],D5DuLP:[function(n,e){function t(n,e,t){return r.listeners(n).length?r.emit(n,e,t):(o[n]||(o[n]=[]),void o[n].push(e))}var r=n("ee").create(),o={};e.exports=t,t.ee=r,r.q=o},{ee:"QJf3ax"}],handle:[function(n,e){e.exports=n("D5DuLP")},{}],XL7HBI:[function(n,e){function t(n){var e=typeof n;return!n||"object"!==e&&"function"!==e?-1:n===window?0:i(n,o,function(){return r++})}var r=1,o="nr@id",i=n("gos");e.exports=t},{gos:"7eSDFh"}],id:[function(n,e){e.exports=n("XL7HBI")},{}],loader:[function(n,e){e.exports=n("G9z0Bl")},{}],G9z0Bl:[function(n,e){function t(){var n=h.info=NREUM.info;if(n&&n.licenseKey&&n.applicationID&&f&&f.body){c(l,function(e,t){e in n||(n[e]=t)}),h.proto="https"===d.split(":")[0]||n.sslForHttp?"https://":"http://",a("mark",["onload",i()]);var e=f.createElement("script");e.src=h.proto+n.agent,f.body.appendChild(e)}}function r(){"complete"===f.readyState&&o()}function o(){a("mark",["domContent",i()])}function i(){return(new Date).getTime()}var a=n("handle"),c=n(1),u=(n(2),window),f=u.document,s="addEventListener",p="attachEvent",d=(""+location).split("?")[0],l={beacon:"bam.nr-data.net",errorBeacon:"bam.nr-data.net",agent:"js-agent.newrelic.com/nr-593.min.js"},h=e.exports={offset:i(),origin:d,features:{}};f[s]?(f[s]("DOMContentLoaded",o,!1),u[s]("load",t,!1)):(f[p]("onreadystatechange",r),u[p]("onload",t)),a("mark",["firstbyte",i()])},{1:12,2:3,handle:"D5DuLP"}],12:[function(n,e){function t(n,e){var t=[],o="",i=0;for(o in n)r.call(n,o)&&(t[i]=e(o,n[o]),i+=1);return t}var r=Object.prototype.hasOwnProperty;e.exports=t},{}],13:[function(n,e){function t(n,e,t){e||(e=0),"undefined"==typeof t&&(t=n?n.length:0);for(var r=-1,o=t-e||0,i=Array(0>o?0:o);++r<o;)i[r]=n[e+r];return i}e.exports=t},{}]},{},["G9z0Bl"]);</script>
+		<title>Neo4j: Slides</title>
+		<meta name="description" content="Slides">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+		<link href="http://assets.slid.es/assets/slides/slides-0c1388bc8e6e9cabec475ce55e102391.css" media="all" rel="stylesheet">
+		<link href="http://assets.slid.es/assets/application-e38ec928706840f69a93909c9fc54d5f.css" media="all" rel="stylesheet">
+		<link href="http://assets.slid.es/assets/deck-v2-8f439d500d9e69f8212f3b80f36ede71.css" media="all" rel="stylesheet">
+
+
+<style id="user-css-output" type="text/css"></style>
+		<meta content="authenticity_token" name="csrf-param">
+<meta content="qxVOZu3neV7oYm89/WyUA1GWd0R2NEGfm0bKL3msKJE=" name="csrf-token">
+		<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-39670045-1', { 'userId': '286204' });
+  ga('send', 'pageview');
+
+</script>
+		<!--[if lt IE 9]>
+    <script src="//assets.slid.es/assets/html5shiv-b51d49ab0e89834a02ffce4a59905afb.js"></script>
+<![endif]-->
+	<style type="text/css"></style><style>a, button, .sl-select, .sl-checkbox label, .radio label { outline: none !important; }</style></head>
+	<body data-pinterest-extension-installed="cr1.35">
+		<div class="page-loader frozen">
+			<div class="page-loader-inner">
+				<div class="page-loader-spinner"></div>
+				<p class="page-loader-message">Loading deck</p>
+			</div>
+		</div>
+
+		<div class="reveal-viewport theme-font-montserrat theme-color-white-blue">
+			<div class="reveal slide" role="application" data-transition-speed="default" data-background-transition="slide">
+				<div class="slides" style="width: 960px; height: 700px; zoom: 0.981214285714286;">
+					<section class="present" style="display: block;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 250px; height: auto;" data-block-id="e04b2cec9e73727e9c8ef03567a424fb">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" dir="ui" gramm="gramm" gramm_id="7d86d8e6-395c-0934-3c20-98482f7aec51" gr_new_editor="true" style="overflow: visible; z-index: 10;"><h1>Neo4j</h1></div>
+<div class="gr-btn-freemium gr-shown gr-btn-freemium-checking" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly">&nbsp;</div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 350px; height: auto;" data-block-id="43af0a457c291af9c286e8a15ec2c5c2">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" dir="ui" gramm="gramm" gramm_id="7d86d8e6-395c-0934-3c20-98482f7aec51" gr_new_editor="true" style="overflow: visible; z-index: 12; font-size: 50%;">
+<h1>Draft</h1>
+
+<p>Based on <strong>Online Training by Neo4j: Getting Started with Neo4j</strong></p>
+</div>
+<div class="gr-btn-freemium gr-shown gr-btn-freemium-checking" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly">&nbsp;</div>
+</div>
+</div></section><section hidden="" aria-hidden="true" class="future" style="display: block;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 270px; height: auto;" data-block-id="fa95ba09be98022e70c31c4c3d6efcf2"><div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text">
+<h1>Introduction</h1>
+</div></div></section><section class="stack future" hidden="" aria-hidden="true" style="display: block;"><section style="display: block;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 0px; height: auto;" data-block-id="2db641a0abdd809d63335bd1fc8de3d5">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" dir="ui" gramm="gramm" gramm_id="7d86d8e6-395c-0934-3c20-98482f7aec51" gr_new_editor="true" style="overflow: visible; z-index: 11;">
+<h1>What is a graph?</h1>
+</div>
+<div class="gr-btn-freemium gr-shown gr-btn-freemium-checking" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly">&nbsp;</div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" data-block-id="2f41569d9f1e5881a9635d788f8c5fb8" style="height: auto; min-width: 30px; min-height: 30px; width: 960px; left: 0px; top: 140px;">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 12; overflow: visible;" gramm="gramm" gramm_id="43c67b37-0e47-ae68-649d-5971703cba63" gr_new_editor="true">
+<ul>
+	<li>A Graph Database stores data in a <strong>Graph</strong>.</li>
+	<li>The records in a graph database are called <strong>Nodes</strong>.</li>
+	<li>Nodes are connected through typed, directed <strong>Relationships</strong>.</li>
+	<li>Each single Node and Relationship can have named attributes referred to as <strong>Properties</strong>.</li>
+	<li>A <strong>Label</strong> is a name that organizes nodes into groups.</li>
+</ul>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 768px; margin-top: 240px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 0px; height: auto;" data-block-id="1277f2bfb80325adfe6ffa5ea9aa17be">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" dir="ui" gramm="gramm" gramm_id="7d86d8e6-395c-0934-3c20-98482f7aec51" gr_new_editor="true" style="overflow: visible; z-index: 11;">
+<h1>Notation</h1>
+</div>
+<div class="gr-btn-freemium gr-shown gr-btn-freemium-checking" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly">&nbsp;</div>
+</div>
+</div>
+<div class="sl-block" data-block-type="shape" data-block-id="761c15093ed10f22b01a39ca0316f642" style="min-width: 4px; min-height: 4px; width: 118px; height: 69px; left: 320px; top: 140px;"><div class="sl-block-content" data-shape-type="circle" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="false" style="z-index: 12;" data-shape-stroke-color="#000000" data-shape-stroke-width="1"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="xMidYMid" viewBox="0 0 69 69"><defs><clippath id="shape-mask-1-1425838696523"><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5"></ellipse></clippath></defs><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5" clip-path="url(#shape-mask-1-1425838696523)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#000000" stroke-width="2"></ellipse></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="min-width: 4px; min-height: 4px; width: 118px; height: 69px; left: 490px; top: 141px;" data-block-id="221f4c58c056ae9e5e7805bbe02eeac4"><div class="sl-block-content" data-shape-type="circle" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="false" style="z-index: 13;" data-shape-stroke-color="#000000" data-shape-stroke-width="1"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="xMidYMid" viewBox="0 0 69 69"><defs><clippath id="shape-mask-2-1425838696529"><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5"></ellipse></clippath></defs><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5" clip-path="url(#shape-mask-2-1425838696529)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#000000" stroke-width="2"></ellipse></svg></div></div>
+<div class="sl-block" data-block-type="shape" data-block-id="db5a79e86a2d21f7cb21c74ba7e77a02" style="min-width: 4px; min-height: 4px; width: 108px; height: 34px; left: 409px; top: 158px;"><div class="sl-block-content" data-shape-type="symbol-thin-arrow-right" data-shape-fill-color="#000000" data-shape-stretch="true" style="z-index: 14;" href=""><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="2 4 28 24"><g class="shape-element" fill="#000000"><path d="M19.414 27.414l10-10c0.781-0.781 0.781-2.047 0-2.828l-10-10c-0.781-0.781-2.047-0.781-2.828 0s-0.781 2.047 0 2.828l6.586 6.586h-19.172c-1.105 0-2 0.895-2 2s0.895 2 2 2h19.172l-6.586 6.586c-0.39 0.39-0.586 0.902-0.586 1.414s0.195 1.024 0.586 1.414c0.781 0.781 2.047 0.781 2.828 0z"></path></g></svg></div></div>
+<div class="sl-block" data-block-type="text" data-block-id="6d7806c474e8259595d6ad58ed73eeba" style="height: auto; min-width: 30px; min-height: 30px; width: 69px; left: 345px; top: 153px;">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 15; overflow: visible; white-space: normal;" gramm="gramm" gramm_id="77b23038-28fe-1e68-8bf7-b67f4b13a65f" gr_new_editor="true">
+<p>a</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 19; margin-left: 37px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; min-width: 30px; min-height: 30px; width: 69px; left: 515px; top: 153px;" data-block-id="68f7257fbcfa424cbc5d06c25baae84d">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 16; overflow: visible; white-space: normal;" gramm="gramm" gramm_id="77b23038-28fe-1e68-8bf7-b67f4b13a65f" gr_new_editor="true">
+<p>b</p>
+</div>
+<div class="gr-btn-freemium gr-shown" style="display: none; z-index: 19; margin-left: 37px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" data-block-id="ae8210fc1ce195a75270ea5a97b50312" style="height: auto; min-width: 30px; min-height: 30px; width: 187px; left: 611px; top: 154px;">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 17; overflow: visible;" gramm="gramm" gramm_id="55b84db3-6c7f-6df2-87d5-b9c5d60440d3" gr_new_editor="true">
+<p>(a) --&gt; (b)</p>
+</div>
+<div class="gr-btn-freemium gr-shown" style="display: none; z-index: 19; margin-left: 155px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" data-block-id="46affc0a8c0a4cbbf2e068e93ef71453" style="height: auto; min-width: 30px; min-height: 30px; width: 251px; left: 80px; top: 155px;">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 18; overflow: visible;" gramm="gramm" gramm_id="e588f760-ca65-d974-5f86-eb676a897da1" gr_new_editor="true">
+<p>Connections</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 19; margin-left: 219px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="shape" style="min-width: 4px; min-height: 4px; width: 118px; height: 69px; left: 319px; top: 281px;" data-block-id="4f76898f106d0b5f55437b4f3cfb4ee0"><div class="sl-block-content" data-shape-type="circle" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="false" style="z-index: 19;" data-shape-stroke-color="#000000" data-shape-stroke-width="1"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="xMidYMid" viewBox="0 0 69 69"><defs><clippath id="shape-mask-3-1425838696542"><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5"></ellipse></clippath></defs><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5" clip-path="url(#shape-mask-3-1425838696542)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#000000" stroke-width="2"></ellipse></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="min-width: 4px; min-height: 4px; width: 118px; height: 69px; left: 489px; top: 282px;" data-block-id="c3417572d1a71a7e2bd530dcdacba795"><div class="sl-block-content" data-shape-type="circle" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="false" style="z-index: 20;" data-shape-stroke-color="#000000" data-shape-stroke-width="1"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="xMidYMid" viewBox="0 0 69 69"><defs><clippath id="shape-mask-4-1425838696545"><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5"></ellipse></clippath></defs><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5" clip-path="url(#shape-mask-4-1425838696545)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#000000" stroke-width="2"></ellipse></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="min-width: 4px; min-height: 4px; width: 108px; height: 34px; left: 408px; top: 299px;" data-block-id="f24f4dbab1c179bcc9747e45fe1c16bf"><div class="sl-block-content" data-shape-type="symbol-thin-arrow-right" data-shape-fill-color="#000000" data-shape-stretch="true" style="z-index: 21;" href=""><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="2 4 28 24"><g class="shape-element" fill="#000000"><path d="M19.414 27.414l10-10c0.781-0.781 0.781-2.047 0-2.828l-10-10c-0.781-0.781-2.047-0.781-2.828 0s-0.781 2.047 0 2.828l6.586 6.586h-19.172c-1.105 0-2 0.895-2 2s0.895 2 2 2h19.172l-6.586 6.586c-0.39 0.39-0.586 0.902-0.586 1.414s0.195 1.024 0.586 1.414c0.781 0.781 2.047 0.781 2.828 0z"></path></g></svg></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; min-width: 30px; min-height: 30px; width: 69px; left: 344px; top: 294px;" data-block-id="cfbdc2b8b01f00428783bc3d1cffdfef">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 22; overflow: visible; white-space: normal;" gramm="gramm" gramm_id="77b23038-28fe-1e68-8bf7-b67f4b13a65f" gr_new_editor="true">
+<p>a</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 19; margin-left: 37px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; min-width: 30px; min-height: 30px; width: 187px; left: 610px; top: 295px;" data-block-id="cc5ecc93d54a9c633f5d03777de43d6c">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 23; overflow: visible;" gramm="gramm" gramm_id="55b84db3-6c7f-6df2-87d5-b9c5d60440d3" gr_new_editor="true">
+<p>(a) --&gt; ()</p>
+</div>
+<div class="gr-btn-freemium gr-shown" style="display: none; z-index: 19; margin-left: 155px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; min-width: 30px; min-height: 30px; width: 251px; left: 79px; top: 296px;" data-block-id="827c4689bfa0a4973c72eec39e7537bb">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 24; overflow: visible;" gramm="gramm" gramm_id="e588f760-ca65-d974-5f86-eb676a897da1" gr_new_editor="true">
+<p>Query</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 19; margin-left: 219px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="shape" style="min-width: 4px; min-height: 4px; width: 118px; height: 69px; left: 322px; top: 420px;" data-block-id="9641d71f62632f6a55b6cbbef795928f"><div class="sl-block-content" data-shape-type="circle" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="false" style="z-index: 25;" data-shape-stroke-color="#000000" data-shape-stroke-width="1"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="xMidYMid" viewBox="0 0 69 69"><defs><clippath id="shape-mask-5-1425838696554"><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5"></ellipse></clippath></defs><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5" clip-path="url(#shape-mask-5-1425838696554)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#000000" stroke-width="2"></ellipse></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="min-width: 4px; min-height: 4px; width: 118px; height: 69px; left: 492px; top: 421px;" data-block-id="9900efc1b4dbf43d588af5bf05b2d30a"><div class="sl-block-content" data-shape-type="circle" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="false" style="z-index: 26;" data-shape-stroke-color="#000000" data-shape-stroke-width="1"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="xMidYMid" viewBox="0 0 69 69"><defs><clippath id="shape-mask-6-1425838696557"><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5"></ellipse></clippath></defs><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5" clip-path="url(#shape-mask-6-1425838696557)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#000000" stroke-width="2"></ellipse></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="min-width: 4px; min-height: 4px; width: 108px; height: 34px; left: 411px; top: 438px;" data-block-id="6c01bc86193fe5113e5bc0a2b2cf7407"><div class="sl-block-content" data-shape-type="symbol-thin-arrow-right" data-shape-fill-color="#000000" data-shape-stretch="true" style="z-index: 27;" href=""><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="2 4 28 24"><g class="shape-element" fill="#000000"><path d="M19.414 27.414l10-10c0.781-0.781 0.781-2.047 0-2.828l-10-10c-0.781-0.781-2.047-0.781-2.828 0s-0.781 2.047 0 2.828l6.586 6.586h-19.172c-1.105 0-2 0.895-2 2s0.895 2 2 2h19.172l-6.586 6.586c-0.39 0.39-0.586 0.902-0.586 1.414s0.195 1.024 0.586 1.414c0.781 0.781 2.047 0.781 2.828 0z"></path></g></svg></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; min-width: 30px; min-height: 30px; width: 69px; left: 347px; top: 433px;" data-block-id="f2331b431680d68eb6aad04636ee11db">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 28; overflow: visible; white-space: normal;" gramm="gramm" gramm_id="77b23038-28fe-1e68-8bf7-b67f4b13a65f" gr_new_editor="true">
+<p>a</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 19; margin-left: 37px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; min-width: 30px; min-height: 30px; width: 187px; left: 613px; top: 434px;" data-block-id="f85cc17947a2d382713af9e869a225cb">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 29; overflow: visible;" gramm="gramm" gramm_id="55b84db3-6c7f-6df2-87d5-b9c5d60440d3" gr_new_editor="true">
+<p>(a) -[r]-&gt; ()</p>
+</div>
+<div class="gr-btn-freemium gr-shown" style="display: none; z-index: 19; margin-left: 155px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; min-width: 30px; min-height: 30px; width: 251px; left: 82px; top: 419px;" data-block-id="bdf4b5eb5caea58ff1c209fb82b63cf7">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 30; overflow: visible;" gramm="gramm" gramm_id="e588f760-ca65-d974-5f86-eb676a897da1" gr_new_editor="true">
+<p>Querying relationships</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 19; margin-left: 219px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" data-block-id="7b23384f792deec5d520a21b05e53ede" style="height: auto; min-width: 30px; min-height: 30px; width: 60px; left: 433px; top: 399px;">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 31; overflow: visible;" gramm="gramm" gramm_id="690b61c2-2a42-4f41-df8e-f8d14d4ecff8" gr_new_editor="true">
+<p>r</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 32; margin-left: 28px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="shape" style="min-width: 4px; min-height: 4px; width: 118px; height: 69px; left: 318px; top: 562px;" data-block-id="eb513e3b273bd320b429c1eb78df57cf"><div class="sl-block-content" data-shape-type="circle" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="false" style="z-index: 32;" data-shape-stroke-color="#000000" data-shape-stroke-width="1"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="xMidYMid" viewBox="0 0 69 69"><defs><clippath id="shape-mask-7-1425838696567"><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5"></ellipse></clippath></defs><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5" clip-path="url(#shape-mask-7-1425838696567)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#000000" stroke-width="2"></ellipse></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="min-width: 4px; min-height: 4px; width: 118px; height: 69px; left: 488px; top: 560px;" data-block-id="244e420a702aa319f3d0702c4be14d6a"><div class="sl-block-content" data-shape-type="circle" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="false" style="z-index: 33;" data-shape-stroke-color="#000000" data-shape-stroke-width="1"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="xMidYMid" viewBox="0 0 69 69"><defs><clippath id="shape-mask-8-1425838696571"><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5"></ellipse></clippath></defs><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5" clip-path="url(#shape-mask-8-1425838696571)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#000000" stroke-width="2"></ellipse></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="min-width: 4px; min-height: 4px; width: 108px; height: 34px; left: 407px; top: 577px;" data-block-id="96dc24b6328a615432a5396a593a2cc8"><div class="sl-block-content" data-shape-type="symbol-thin-arrow-right" data-shape-fill-color="#000000" data-shape-stretch="true" style="z-index: 34;" href=""><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="2 4 28 24"><g class="shape-element" fill="#000000"><path d="M19.414 27.414l10-10c0.781-0.781 0.781-2.047 0-2.828l-10-10c-0.781-0.781-2.047-0.781-2.828 0s-0.781 2.047 0 2.828l6.586 6.586h-19.172c-1.105 0-2 0.895-2 2s0.895 2 2 2h19.172l-6.586 6.586c-0.39 0.39-0.586 0.902-0.586 1.414s0.195 1.024 0.586 1.414c0.781 0.781 2.047 0.781 2.828 0z"></path></g></svg></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; min-width: 30px; min-height: 30px; width: 69px; left: 343px; top: 572px;" data-block-id="f1066451034a46082e745c57f4f4881b">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 35; overflow: visible; white-space: normal;" gramm="gramm" gramm_id="77b23038-28fe-1e68-8bf7-b67f4b13a65f" gr_new_editor="true">
+<p>a</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 19; margin-left: 37px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; min-width: 30px; min-height: 30px; width: 187px; left: 609px; top: 573px;" data-block-id="a00d1ee3eeec470fd62531db29e127c6">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 36; overflow: visible;" gramm="gramm" gramm_id="55b84db3-6c7f-6df2-87d5-b9c5d60440d3" gr_new_editor="true">
+<p>(a:Person)</p>
+</div>
+<div class="gr-btn-freemium gr-shown" style="display: none; z-index: 19; margin-left: 155px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; min-width: 30px; min-height: 30px; width: 251px; left: 78px; top: 574px;" data-block-id="da63806c4c4f2d2145ae4218854250b9">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 37; overflow: visible;" gramm="gramm" gramm_id="e588f760-ca65-d974-5f86-eb676a897da1" gr_new_editor="true">
+<p>Labels</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 19; margin-left: 219px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" data-block-id="ad0ac5792c018dddafe862060a879a4a" style="height: auto; min-width: 30px; min-height: 30px; width: 128px; left: 353px; top: 537px;">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 38; overflow: visible; font-size: 75%;" gramm="gramm" gramm_id="c831af41-4b01-b0a5-1988-5909bee47676" gr_new_editor="true">
+<p>Person</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 39; margin-left: 96px; margin-top: -4px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 0px; height: auto;" data-block-id="c2cc9e2ccc35d7332daab530e67a57f3">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" dir="ui" gramm="gramm" gramm_id="7d86d8e6-395c-0934-3c20-98482f7aec51" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Notation (2)</h1>
+</div>
+<div class="gr-btn-freemium gr-shown gr-btn-freemium-checking" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly">&nbsp;</div>
+</div>
+</div>
+<div class="sl-block" data-block-type="shape" style="width: 118px; height: 69px; left: 320px; top: 141px;" data-block-id="71d31887f315df7d3eb88247b1f9efb0"><div class="sl-block-content" data-shape-type="circle" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="false" style="z-index: 11;" data-shape-stroke-color="#000000" data-shape-stroke-width="1"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="xMidYMid" viewBox="0 0 69 69"><defs><clippath id="shape-mask-13-1425839081950"><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5"></ellipse></clippath></defs><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5" clip-path="url(#shape-mask-13-1425839081950)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#000000" stroke-width="2"></ellipse></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="width: 118px; height: 69px; left: 490px; top: 141px;" data-block-id="97a0a8c979e8a883282699492f48b077"><div class="sl-block-content" data-shape-type="circle" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="false" style="z-index: 12;" data-shape-stroke-color="#000000" data-shape-stroke-width="1"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="xMidYMid" viewBox="0 0 69 69"><defs><clippath id="shape-mask-14-1425839081955"><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5"></ellipse></clippath></defs><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5" clip-path="url(#shape-mask-14-1425839081955)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#000000" stroke-width="2"></ellipse></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="width: 108px; height: 34px; left: 409px; top: 156px;" data-block-id="f51c044490a2e090874c8347ce575b5c"><div class="sl-block-content" data-shape-type="symbol-thin-arrow-right" data-shape-fill-color="#000000" data-shape-stretch="true" style="z-index: 13;" href=""><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="2 4 28 24"><g class="shape-element" fill="#000000"><path d="M19.414 27.414l10-10c0.781-0.781 0.781-2.047 0-2.828l-10-10c-0.781-0.781-2.047-0.781-2.828 0s-0.781 2.047 0 2.828l6.586 6.586h-19.172c-1.105 0-2 0.895-2 2s0.895 2 2 2h19.172l-6.586 6.586c-0.39 0.39-0.586 0.902-0.586 1.414s0.195 1.024 0.586 1.414c0.781 0.781 2.047 0.781 2.828 0z"></path></g></svg></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 69px; left: 345px; top: 156px;" data-block-id="77b739bcfd67b82ae5bfc3f051361e0d">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 14; overflow: visible; white-space: normal;" gramm="gramm" gramm_id="77b23038-28fe-1e68-8bf7-b67f4b13a65f" gr_new_editor="true">
+<p>a</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 19; margin-left: 37px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 69px; left: 515px; top: 156px;" data-block-id="fff25e573a00ce7aaba5b8cf4a04b39b">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 15; overflow: visible; white-space: normal;" gramm="gramm" gramm_id="77b23038-28fe-1e68-8bf7-b67f4b13a65f" gr_new_editor="true" dir="ui"><p>m</p></div>
+<div class="gr-btn-freemium gr-shown" style="display: none; z-index: 19; margin-left: 37px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 211px; left: 611px; top: 154px;" data-block-id="e270e88e111fd21e708a9986afced438">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 16; overflow: visible;" gramm="gramm" gramm_id="55b84db3-6c7f-6df2-87d5-b9c5d60440d3" gr_new_editor="true">
+<p>-[:ACTED:IN]-&gt;</p>
+</div>
+<div class="gr-btn-freemium gr-shown" style="display: none; z-index: 19; margin-left: 155px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 251px; left: 80px; top: 141px;" data-block-id="802e80d145a74d564cd389ce6c490345">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 17; overflow: visible;" gramm="gramm" gramm_id="e588f760-ca65-d974-5f86-eb676a897da1" gr_new_editor="true">
+<p>Type of relationship</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 19; margin-left: 219px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="shape" style="width: 118px; height: 69px; left: 319px; top: 280px;" data-block-id="a12efcdf7fdf134a15f381a1ed340000"><div class="sl-block-content" data-shape-type="circle" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="false" style="z-index: 18;" data-shape-stroke-color="#000000" data-shape-stroke-width="1"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="xMidYMid" viewBox="0 0 69 69"><defs><clippath id="shape-mask-15-1425839081966"><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5"></ellipse></clippath></defs><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5" clip-path="url(#shape-mask-15-1425839081966)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#000000" stroke-width="2"></ellipse></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="width: 118px; height: 69px; left: 489px; top: 280px;" data-block-id="e6b02599a8a80fbf49eb8deedaa642ff"><div class="sl-block-content" data-shape-type="circle" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="false" style="z-index: 19;" data-shape-stroke-color="#000000" data-shape-stroke-width="1"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="xMidYMid" viewBox="0 0 69 69"><defs><clippath id="shape-mask-16-1425839081968"><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5"></ellipse></clippath></defs><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5" clip-path="url(#shape-mask-16-1425839081968)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#000000" stroke-width="2"></ellipse></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="width: 108px; height: 34px; left: 408px; top: 299px;" data-block-id="f662ca938b5c3262bf5a0798e261d1bc"><div class="sl-block-content" data-shape-type="symbol-thin-arrow-right" data-shape-fill-color="#000000" data-shape-stretch="true" style="z-index: 20;" href=""><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="2 4 28 24"><g class="shape-element" fill="#000000"><path d="M19.414 27.414l10-10c0.781-0.781 0.781-2.047 0-2.828l-10-10c-0.781-0.781-2.047-0.781-2.828 0s-0.781 2.047 0 2.828l6.586 6.586h-19.172c-1.105 0-2 0.895-2 2s0.895 2 2 2h19.172l-6.586 6.586c-0.39 0.39-0.586 0.902-0.586 1.414s0.195 1.024 0.586 1.414c0.781 0.781 2.047 0.781 2.828 0z"></path></g></svg></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 69px; left: 343px; top: 433px;" data-block-id="3ee2fdafab9cf805c52331fb3e2c6e24">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 21; overflow: visible; white-space: normal;" gramm="gramm" gramm_id="77b23038-28fe-1e68-8bf7-b67f4b13a65f" gr_new_editor="true">
+<p>a</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 19; margin-left: 37px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 308px; left: 610px; top: 295px;" data-block-id="9c076f107d55049d15f2ad258b669871">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 22; overflow: visible;" gramm="gramm" gramm_id="55b84db3-6c7f-6df2-87d5-b9c5d60440d3" gr_new_editor="true">
+<p>(a) -[:ACTED_IN]-&gt; (m)</p>
+</div>
+<div class="gr-btn-freemium gr-shown" style="display: none; z-index: 19; margin-left: 155px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 251px; left: 79px; top: 281px;" data-block-id="e3cb118a66b644fee4b599eb858fd0ed">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 23; overflow: visible;" gramm="gramm" gramm_id="e588f760-ca65-d974-5f86-eb676a897da1" gr_new_editor="true">
+<p>Querying ACTED_IN</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 19; margin-left: 219px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="shape" style="width: 118px; height: 69px; left: 318px; top: 418px;" data-block-id="7a5ba908b297a459749aa8da2a41ffe4"><div class="sl-block-content" data-shape-type="circle" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="false" style="z-index: 24;" data-shape-stroke-color="#000000" data-shape-stroke-width="1"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="xMidYMid" viewBox="0 0 69 69"><defs><clippath id="shape-mask-17-1425839081978"><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5"></ellipse></clippath></defs><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5" clip-path="url(#shape-mask-17-1425839081978)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#000000" stroke-width="2"></ellipse></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="width: 118px; height: 69px; left: 492px; top: 421px;" data-block-id="6237c234883f58a87d45c84d193a7e6e"><div class="sl-block-content" data-shape-type="circle" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="false" style="z-index: 25;" data-shape-stroke-color="#000000" data-shape-stroke-width="1"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="xMidYMid" viewBox="0 0 69 69"><defs><clippath id="shape-mask-18-1425839081981"><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5"></ellipse></clippath></defs><ellipse rx="34.5" ry="34.5" cx="34.5" cy="34.5" clip-path="url(#shape-mask-18-1425839081981)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#000000" stroke-width="2"></ellipse></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="width: 108px; height: 34px; left: 411px; top: 438px;" data-block-id="132b76e76831bed7f8f2bcaeffe5077c"><div class="sl-block-content" data-shape-type="symbol-thin-arrow-right" data-shape-fill-color="#000000" data-shape-stretch="true" style="z-index: 26;" href=""><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="2 4 28 24"><g class="shape-element" fill="#000000"><path d="M19.414 27.414l10-10c0.781-0.781 0.781-2.047 0-2.828l-10-10c-0.781-0.781-2.047-0.781-2.828 0s-0.781 2.047 0 2.828l6.586 6.586h-19.172c-1.105 0-2 0.895-2 2s0.895 2 2 2h19.172l-6.586 6.586c-0.39 0.39-0.586 0.902-0.586 1.414s0.195 1.024 0.586 1.414c0.781 0.781 2.047 0.781 2.828 0z"></path></g></svg></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 69px; left: 342px; top: 294px;" data-block-id="14e66f435e4f1fb2ddf03ecf7068c383">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 27; overflow: visible; white-space: normal;" gramm="gramm" gramm_id="77b23038-28fe-1e68-8bf7-b67f4b13a65f" gr_new_editor="true">
+<p>a</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 19; margin-left: 37px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 320px; left: 613px; top: 434px;" data-block-id="a05f71519f6e7b1c29905954b7a0a971">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 28; overflow: visible;" gramm="gramm" gramm_id="55b84db3-6c7f-6df2-87d5-b9c5d60440d3" gr_new_editor="true">
+<p>(a) -[:DIRECTED]-&gt; (m)</p>
+</div>
+<div class="gr-btn-freemium gr-shown" style="display: none; z-index: 19; margin-left: 155px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 251px; left: 82px; top: 419px;" data-block-id="cd7359f9894d37b2669518c69b14969c">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 29; overflow: visible;" gramm="gramm" gramm_id="e588f760-ca65-d974-5f86-eb676a897da1" gr_new_editor="true">
+<p>Querying DIRECTED</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 19; margin-left: 219px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 235px; left: 343px; top: 102px;" data-block-id="2c178ef2abea6b04ba17d0322e76ec65">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 30; overflow: visible;" gramm="gramm" gramm_id="690b61c2-2a42-4f41-df8e-f8d14d4ecff8" gr_new_editor="true" dir="ui">
+<p>ACTED_IN</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 32; margin-left: 28px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+
+
+
+
+
+
+
+<div class="sl-block" data-block-type="text" style="height: auto; width: 235px; left: 347px; top: 241px;" data-block-id="bfc5b256a9193e0f9c8f0fa3429284ce">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 38; overflow: visible;" gramm="gramm" gramm_id="690b61c2-2a42-4f41-df8e-f8d14d4ecff8" gr_new_editor="true" dir="ui">
+<p>ACTED_IN</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 32; margin-left: 28px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 69px; left: 513px; top: 433px;" data-block-id="1b3acbc6f4dd0e4ed88a911e369699c4">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 39; overflow: visible; white-space: normal;" gramm="gramm" gramm_id="77b23038-28fe-1e68-8bf7-b67f4b13a65f" gr_new_editor="true" dir="ui"><p>m</p></div>
+<div class="gr-btn-freemium gr-shown" style="display: none; z-index: 19; margin-left: 37px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 235px; left: 349px; top: 382px;" data-block-id="4509341f9f8002ee92c09e8b70562612">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 41; overflow: visible;" gramm="gramm" gramm_id="690b61c2-2a42-4f41-df8e-f8d14d4ecff8" gr_new_editor="true" dir="ui">
+<p>DIRECTED</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 32; margin-left: 28px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 69px; left: 513px; top: 294px;" data-block-id="8016277f413c5ed2b8458f7f2f930b5c">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 42; overflow: visible; white-space: normal;" gramm="gramm" gramm_id="77b23038-28fe-1e68-8bf7-b67f4b13a65f" gr_new_editor="true" dir="ui"><p>m</p></div>
+<div class="gr-btn-freemium gr-shown" style="display: none; z-index: 19; margin-left: 37px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 0px; height: auto;" data-block-id="f514db0e3e556b8f733a116074e5715d">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="60125b8c-b896-6da3-e0d2-24657f403783" gr_new_editor="true" style="overflow: visible; z-index: 11;" dir="ui"><h1>Labels</h1></div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 880px; left: 0px; top: 140px;" data-block-id="99da1ca202b3b6d16566c5690897de40">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 12; overflow: visible; text-align: left;" gramm="gramm" gramm_id="5454523f-a845-4246-cc5f-dd0dc1cf1dc2" gr_new_editor="true">
+<p>Labels allow us to distinguish between different types of nodes</p>
+
+<p>Any Node can have one or more labels.</p>
+</div>
+<div class="gr-btn-freemium gr-btn-errors-count gr-btn-errors" style="display: none; z-index: 13; margin-left: 768px; margin-top: 84px; opacity: 1;">	<div class="gr-btn-status" title="Found 1 error in text">1</div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 560px; height: 70px; left: 80px; top: 280px;" data-block-id="7bcba7943d9add52935a2c31e6f24b2d"><div class="sl-block-content" style="z-index: 13; font-size: 150%;"><pre><code class=" hljs lisp"><span class="hljs-list">(<span class="hljs-keyword">a</span><span class="hljs-keyword">:Person</span>)</span></code></pre></div></div>
+<div class="sl-block" data-block-type="code" style="width: 560px; height: 70px; left: 80px; top: 350px;" data-block-id="d567a9070ddaae5455ad78569c67d0ae"><div class="sl-block-content" style="z-index: 14; font-size: 150%;"><pre><code class=" hljs css">(<span class="hljs-tag">a</span><span class="hljs-pseudo">:Person</span> <span class="hljs-rules">{<span class="hljs-rule"><span class="hljs-attribute">name</span>:<span class="hljs-value"><span class="hljs-string">"Keanu Reeves"</span></span></span></span>})</code></pre></div></div>
+<div class="sl-block" data-block-type="code" style="width: 560px; height: 70px; left: 80px; top: 420px;" data-block-id="cffa9d1949633b0528fbda5c9bff8615"><div class="sl-block-content" style="z-index: 15; font-size: 150%;"><pre><code class=" hljs css">(<span class="hljs-tag">a</span><span class="hljs-pseudo">:Person)-</span><span class="hljs-attr_selector">[:ACTED_IN]</span><span class="hljs-tag">-</span>&gt;(<span class="hljs-tag">m</span><span class="hljs-pseudo">:Movie)</span></code></pre></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 0px; height: auto;" data-block-id="81f22870af88ba22b999a961a9010a97">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="60125b8c-b896-6da3-e0d2-24657f403783" gr_new_editor="true" style="overflow: visible; z-index: 11;">
+<h1>Properties</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" data-block-id="15e09b5adeff1846112ca1a44f2c43b0" style="height: auto; min-width: 30px; min-height: 30px; width: 960px; left: 0px; top: 140px;">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 12; overflow: visible; text-align: left;" gramm="gramm" gramm_id="5454523f-a845-4246-cc5f-dd0dc1cf1dc2" gr_new_editor="true">
+<p>Both Nodes and Relationships can have Properties.</p>
+
+<p><strong>Properties are </strong><strong>key:value</strong><strong> pairs</strong> used to add information about the nodes and relationships.</p>
+</div>
+<div class="gr-btn-freemium gr-btn-errors-count gr-btn-errors" style="display: none; z-index: 13; margin-left: 768px; margin-top: 84px; opacity: 1;">	<div class="gr-btn-status" title="Found 1 error in text">1</div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" data-block-id="f8a7abb6089618ba1925cd77b492b616" style="min-width: 30px; min-height: 30px; width: 560px; height: 70px; left: 80px; top: 280px;"><div class="sl-block-content" style="z-index: 13; font-size: 150%;"><pre><code class=" hljs css">(<span class="hljs-tag">m</span> <span class="hljs-rules">{<span class="hljs-rule"><span class="hljs-attribute">title</span>:<span class="hljs-value"><span class="hljs-string">"The Matrix"</span></span></span></span>})</code></pre></div></div>
+<div class="sl-block" data-block-type="code" style="min-width: 30px; min-height: 30px; width: 560px; height: 70px; left: 80px; top: 350px;" data-block-id="d3bb6b88ce442c47c896218eb137353a"><div class="sl-block-content" style="z-index: 14; font-size: 150%;"><pre><code class=" hljs clojure"><span class="hljs-list">(<span class="hljs-keyword">a</span> <span class="hljs-collection">{name:<span class="hljs-string">"Keanu Reeves"</span>,born<span class="hljs-attribute">:1964</span>}</span>)</span></code></pre></div></div>
+<div class="sl-block" data-block-type="code" data-block-id="c147a3e670b1a05f27f73034e70a1ace" style="min-width: 30px; min-height: 30px; width: 560px; height: 70px; left: 80px; top: 420px;"><div class="sl-block-content" style="z-index: 15; font-size: 150%;"><pre><code class=" hljs elixir">(a)-[<span class="hljs-symbol">:ACTED_IN</span> {<span class="hljs-symbol">roles:</span>[<span class="hljs-string">"Neo"</span>]}]-&gt;(m) </code></pre></div></div>
+<div class="sl-block" data-block-type="text" data-block-id="76f9a23a0fa5895051c8402f8ed97a89" style="height: auto; min-width: 30px; min-height: 30px; width: 960px; left: 0px; top: 560px;">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 16; overflow: visible; white-space: normal; text-align: left;" gramm="gramm" gramm_id="1bb58376-c853-e9d4-a834-beac242e5439" gr_new_editor="true">
+<p>Properties can be attached to both nodes and relationships and are referred to by <strong>node.property</strong> or <strong>relationship.property</strong>.</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 17; margin-left: 838px; margin-top: 2955px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 0px; height: auto;" data-block-id="6b4777a5bb9cffc330c82909c53b64ef">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" style="z-index: 10; overflow: visible;" gramm="gramm" gramm_id="4a6883d4-b190-d024-7851-12118a68eda8" gr_new_editor="true">
+<h1>Database snapshot</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 11; margin-left: 735px; margin-top: 1131px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="image" data-block-id="b1be5fa316ffa38419d1cd08408fc12b" style="min-width: 30px; min-height: 30px; width: 960px; height: 540px; left: 0px; top: 120px;"><div class="sl-block-content" style="z-index: 12;"><img data-natural-width="800" data-natural-height="450" style="visibility: visible;" src="./Neo4j  Slides_files/d582c924-34b2-42b3-b892-6e97b939489a"></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 0px; height: auto;" data-block-id="d7224c051bd916677548cbab5318f3c0">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="6e8633ce-b4ec-53a8-13f6-eeb8e88dbc42" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>What is Neo4j?</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 702px; margin-top: 2198px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" data-block-id="608cceee47f45203dbed27be0a30ea1e" style="height: auto; min-width: 30px; min-height: 30px; width: 843px; left: 0px; top: 140px;">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11; overflow: visible;" gramm="gramm" gramm_id="be448352-0d94-71b9-773a-3635e9939e13" gr_new_editor="true">
+<ul>
+	<li>Neo4j is a Graph Database</li>
+	<li>Neo4j's data model is a (Property) Graph</li>
+	<li>Cypher is Neo4j's graph query language (SQL for graphs!)</li>
+</ul>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 742px; margin-top: 2315px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="image" style="min-width: 30px; min-height: 30px; width: 800px; height: 407.161125319693px; left: 80px; top: 280px;" data-block-id="e5a9ce153e0bed2682adba2852683066"><div class="sl-block-content" style="z-index: 13;"><img data-natural-width="782" data-natural-height="398" style="visibility: visible;" src="./Neo4j  Slides_files/bec5e899-d075-4005-8d45-eee5f1713439"></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 0px; height: auto;" data-block-id="d0d805bcfa5bcc48ce70090a88fba79e">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="acee6f91-c5e1-ab5f-d342-0181258db100" gr_new_editor="true" style="overflow: visible; z-index: 11;">
+<h1>Summary</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 738px; margin-top: 1034px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="image" data-block-id="d463bb53e419a8fe0a6a21cc3dae7775" style="min-width: 30px; min-height: 30px; width: 480px; height: 606px; left: 240px; top: 97px;"><div class="sl-block-content" style="z-index: 13;"><img style="visibility: visible;" data-natural-width="400" data-natural-height="505" src="./Neo4j  Slides_files/pasted-from-clipboard.png"></div></div></section></section><section class="stack future" hidden="" aria-hidden="true" style="display: none;"><section style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 270px; height: auto;" data-block-id="0aa97c2a5f7dfce1002074858b46aa42">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="3bff8be3-3e0b-d136-ba45-2134af97c604" gr_new_editor="true" style="overflow: visible;">
+<h1>Cypher</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 741px; margin-top: 937px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 880px; left: 40px; top: 0px; height: auto;" data-block-id="25f263a447de51b24678814b1aee294f">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="0d0232de-92f8-048e-f173-32aa8379a1ee" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Cypher Query Clauses</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 819px; margin-top: 890px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" data-block-id="cdd4c53f97ab2ada701e6a6ddde31087" style="height: auto; min-width: 30px; min-height: 30px; width: 960px; left: 0px; top: 140px;">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 12; overflow: visible;" gramm="gramm" gramm_id="470d35d3-e636-be02-7031-cf542cf58850" gr_new_editor="true">
+<ul>
+	<li>MATCH: Matches the given graph pattern in the graph data.</li>
+	<li>WHERE: Filters using predicates or anchors pattern elements.</li>
+	<li>RETURN: Returns and projects result data, also handles aggregation.</li>
+	<li>ORDER BY: Sorts the query result.</li>
+	<li>SKIP/LIMIT: Paginates the query result.</li>
+</ul>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 898px; margin-top: 1135px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 0px; height: auto;" data-block-id="402cf0aa77a70b43e1eb6fd47bd7a6d6">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" dir="ui" gramm="gramm" gramm_id="7d86d8e6-395c-0934-3c20-98482f7aec51" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Movies &amp; Actors Graph Data Model</h1>
+</div>
+<div class="gr-btn-freemium gr-shown gr-btn-freemium-checking" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly">&nbsp;</div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" data-block-id="772b943260e5d238baf58368f2e23e51" style="height: auto; min-width: 30px; min-height: 30px; width: 960px; left: 0px; top: 505px;">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11; overflow: visible;" gramm="gramm" gramm_id="8b03a9ab-cfb8-bfbd-4a5b-09daec217ee3" gr_new_editor="true">
+<ul>	<li>
+<strong>movies</strong> with <g class="gr_ gr_34 gr-alert gr_gramm Punctuation replaceWithoutSep" id="34" data-gr-id="34">a :Movie</g> label and title</li>	<li>
+<strong>people</strong> with <g class="gr_ gr_33 gr-alert gr_gramm Punctuation replaceWithoutSep" id="33" data-gr-id="33">a :Person</g> label and name and born properties</li>	<li>an <strong>ACTED_IN relationship</strong> from actors to movies, with a roles property that contains a list of character names</li>	<li>a <strong>DIRECTED relationship</strong> from directors to movies</li>
+</ul>
+</div>
+<div class="gr-btn-freemium gr-btn-errors-count gr-btn-errors" style="display: none; z-index: 13; margin-left: 928px; margin-top: 162px; opacity: 1;">	<div class="gr-btn-status" title="Found 2 errors in text">2</div>
+</div>
+</div>
+<div class="sl-block" data-block-type="image" style="min-width: 30px; min-height: 30px; width: 579.623115577889px; height: 295px; left: 190px; top: 210px;" data-block-id="dd5a18ffa58bd657ed2c624a7e76dcf3"><div class="sl-block-content" style="z-index: 13;"><img data-natural-width="782" data-natural-height="398" style="visibility: visible;" data-src="https://static.versal.com/restapi/assets/bec5e899-d075-4005-8d45-eee5f1713439"></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 960px; left: 0px; top: 0px; height: auto;" data-block-id="9a8b0baaa440bfd45b844f1c97f8183b">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="a0478a09-f1f6-61ad-88e7-182189d85173" gr_new_editor="true" style="overflow: visible; z-index: 11;">
+<h1>Basic structure</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 898px; margin-top: 1034px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" data-block-id="f5cbdc980efa93f629edff5569c3276a" style="min-width: 30px; min-height: 30px; width: 650px; height: 140px; left: 150px; top: 280px;"><div class="sl-block-content" style="z-index: 12; font-size: 150%;"><pre><code class=" hljs vhdl">MATCH (node) <span class="hljs-keyword">RETURN</span> node.<span class="hljs-keyword">property</span>
+
+MATCH (node1)<span class="hljs-comment">--&gt;(node2) </span>
+<span class="hljs-keyword">RETURN</span> node2.propertyA, node2.propertyB</code></pre></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 0px; height: auto;" data-block-id="4e7372c95857432fbf69819659b8b6c4">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="3711505f-91f8-9eac-5e10-f687f1e2feee" gr_new_editor="true" style="overflow: visible; z-index: 11;">
+<h1>Sample Queries</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 745px; left: 108px; top: 140px;" data-block-id="6324d123a59cfb8e394e24fbe198791b">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 12; overflow: visible;" gramm="gramm" gramm_id="aaeaa357-2867-b332-b699-7d0aa888bcd6" gr_new_editor="true">
+<p>Return every&nbsp;node that is related with another node</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 500px; height: 80px; left: 230px; top: 200px;" data-block-id="943bb41e5580398d0c9ba76bba26e61d"><div class="sl-block-content" style="z-index: 13; font-size: 150%;"><pre><code class=" hljs ruby"><span class="hljs-prompt">MATCH(n)--&gt;</span>()
+<span class="hljs-constant">RETURN</span> n</code></pre></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 600px; left: 180px; top: 331px;" data-block-id="a49411f608ff597ed72235eccb3b2edd">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 14; overflow: visible;" gramm="gramm" gramm_id="59892963-f32c-904a-7eb2-442e029fad14" gr_new_editor="true">
+<p>Returning properties</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 15; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 500px; height: 80px; left: 230px; top: 420px;" data-block-id="42b94c36382414e70f8cd7f953183ac2"><div class="sl-block-content" style="z-index: 15; font-size: 150%;"><pre><code class=" hljs ruby"><span class="hljs-prompt">MATCH(person)--&gt;</span>()
+<span class="hljs-constant">RETURN</span> person.name</code></pre></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 0px; height: auto;" data-block-id="8846e9563546e6fa9f300d2604ac98f0">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="3711505f-91f8-9eac-5e10-f687f1e2feee" gr_new_editor="true" style="overflow: visible; z-index: 11;">
+<h1>Sample Queries</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 738px; margin-top: 890px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" data-block-id="5d19ba253b4223fd8a9f33194a7b3da5" style="height: auto; min-width: 30px; min-height: 30px; width: 600px; left: 174px; top: 140px;">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 12; overflow: visible;" gramm="gramm" gramm_id="aaeaa357-2867-b332-b699-7d0aa888bcd6" gr_new_editor="true">
+<p>Return every single node in the graph</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 539px; margin-top: 787px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" data-block-id="40859e5ead1e1f84733057171566896b" style="min-width: 30px; min-height: 30px; width: 500px; height: 80px; left: 230px; top: 200px;"><div class="sl-block-content" style="z-index: 13; font-size: 150%;"><pre><code class=" hljs lasso"><span class="hljs-keyword">MATCH</span>(n)
+<span class="hljs-keyword">RETURN</span> n</code></pre></div></div>
+<div class="sl-block" data-block-type="text" data-block-id="c2da8c32fc4a6b79257db651038990d9" style="height: auto; min-width: 30px; min-height: 30px; width: 600px; left: 180px; top: 331px;">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 14; overflow: visible;" gramm="gramm" gramm_id="59892963-f32c-904a-7eb2-442e029fad14" gr_new_editor="true">
+<p>Return all the node pairs connected</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 15; margin-left: 538px; margin-top: 787px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" data-block-id="ba0c82fcf5ff0d15a80f8fbc5ddde90b" style="min-width: 30px; min-height: 30px; width: 500px; height: 80px; left: 230px; top: 420px;"><div class="sl-block-content" style="z-index: 15; font-size: 150%;"><pre><code class=" hljs ruby"><span class="hljs-prompt">MATCH(n)--&gt;</span>(m)
+<span class="hljs-constant">RETURN</span> n, m</code></pre></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 0px; height: auto;" data-block-id="d816da17b976986a1a32ff36fc8e3ea2">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="3711505f-91f8-9eac-5e10-f687f1e2feee" gr_new_editor="true" style="overflow: visible; z-index: 11;">
+<h1>Sample Queries</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 960px; left: 0px; top: 140px;" data-block-id="42104996fe42a056ca7a0e98f9b6bf37">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 12; overflow: visible;" gramm="gramm" gramm_id="aaeaa357-2867-b332-b699-7d0aa888bcd6" gr_new_editor="true">
+<p style="text-align: left;">About relationships in queries:</p>
+
+<ul>
+	<li style="text-align: left;">A relationship must have a start node and an end node (yes, they can be the same node).&nbsp;</li>
+	<li style="text-align: left;">Every relationship must have a type.</li>
+	<li style="text-align: left;">We can assign an identifier to a relationship and then return the properties or the type of the relationship.</li>
+</ul>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" data-block-id="4e9be551cc97e00652c092c2c8c24a66" style="min-width: 30px; min-height: 30px; width: 500px; height: 70px; left: 240px; top: 490px;"><div class="sl-block-content" style="z-index: 13; font-size: 150%;"><pre><code class=" hljs livecodeserver">MATCH(person)-[<span class="hljs-built_in">rel</span>]-&gt;(movie)
+<span class="hljs-constant">RETURN</span> <span class="hljs-built_in">rel</span></code></pre></div></div>
+<div class="sl-block" data-block-type="text" data-block-id="382c80d26e11a3ff8727898bf0476e8a" style="height: auto; min-width: 30px; min-height: 30px; width: 609px; left: 176px; top: 420px;">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 14; overflow: visible;" gramm="gramm" gramm_id="9dbd802a-b971-b7d0-0e64-b98a794112f9" gr_new_editor="true">
+<p>Relationships between persons and movies</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 15; margin-left: 555px; margin-top: 560px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 960px; left: 0px; top: 0px; height: auto;" data-block-id="17f33a280f80ecd91cb61a252ffd7d9c">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="a0478a09-f1f6-61ad-88e7-182189d85173" gr_new_editor="true" style="overflow: visible; z-index: 11;">
+<h1>Using Relationships</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 928px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 640px; height: 140px; left: 160px; top: 280px;" data-block-id="72c3bd47549c83cc9c7cac29365fc4fe"><div class="sl-block-content" style="z-index: 15; font-size: 150%;"><pre><code class=" hljs livecodeserver">MATCH (node1)-[<span class="hljs-built_in">rel</span>:TYPE]-&gt;(node2) 
+<span class="hljs-constant">RETURN</span> <span class="hljs-built_in">rel</span>.property</code></pre></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 0px; height: auto;" data-block-id="a5a9162a751b91f77f8c2a5dc10d8b05">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="3711505f-91f8-9eac-5e10-f687f1e2feee" gr_new_editor="true" style="overflow: visible; z-index: 11;">
+<h1>Sample Queries</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 720px; height: 70px; left: 121px; top: 210px;" data-block-id="0a8836e19410596a97505395f47f6809"><div class="sl-block-content" style="z-index: 12; font-size: 150%;"><pre class="none"><code class=" hljs ruby"><span class="hljs-prompt">MATCH(person)-[:ACTED_IN]-&gt;</span>(movie)
+<span class="hljs-constant">RETURN</span> person.name, movie.title</code></pre></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 609px; left: 176px; top: 140px;" data-block-id="56a238f8fdc5dfc245eeffc77a638abb">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 13; overflow: visible;" gramm="gramm" gramm_id="9dbd802a-b971-b7d0-0e64-b98a794112f9" gr_new_editor="true">
+<p>Return the stars of the movies</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 15; margin-left: 577px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" data-block-id="8bb69ab2b89ca9aeaeb9d8a5e435d0e8" style="min-width: 30px; min-height: 30px; width: 720px; height: 70px; left: 121px; top: 420px;"><div class="sl-block-content" style="z-index: 14; font-size: 150%;"><pre><code class=" hljs ruby"><span class="hljs-prompt">MATCH(person)-[role:ACTED_IN]-&gt;</span>(movie)
+<span class="hljs-constant">RETURN</span> person.name, role.roles, movie.title</code></pre></div></div>
+<div class="sl-block" data-block-type="text" data-block-id="532f6ad4479d5c6761e96e8a4bd594f5" style="height: auto; min-width: 30px; min-height: 30px; width: 798px; left: 89px; top: 350px;">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 15; overflow: visible; white-space: normal;" gramm="gramm" gramm_id="377d3fa4-3fbc-dc4a-f554-9eb21ffa4515" gr_new_editor="true">
+<p>Return the stars of the movies and their character</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 16; margin-left: 766px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 0px; height: auto;" data-block-id="595141241efdfffcc98d99cd6a2ccf14">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="3711505f-91f8-9eac-5e10-f687f1e2feee" gr_new_editor="true" style="overflow: visible; z-index: 11;">
+<h1>Sample Queries</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 798px; left: 81px; top: 140px;" data-block-id="58b4109be4cf8b556d93d299d8e15456">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 12; overflow: visible; white-space: normal;" gramm="gramm" gramm_id="377d3fa4-3fbc-dc4a-f554-9eb21ffa4515" gr_new_editor="true">
+<p>Return the directors and movies&nbsp;actors have&nbsp;worked in</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 16; margin-left: 766px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" data-block-id="f68d02034da8020d817c2a370f4cc0d0" style="min-width: 30px; min-height: 30px; width: 880px; height: 80px; left: 40px; top: 210px;"><div class="sl-block-content" style="z-index: 13; font-size: 150%;"><pre><code class=" hljs ruby"><span class="hljs-prompt">MATCH (actor)-[:ACTED_IN]-&gt;</span>(movie)&lt;-[<span class="hljs-symbol">:DIRECTED</span>]-(director)
+<span class="hljs-constant">RETURN</span> actor.name, movie.title, director.name</code></pre></div></div>
+<div class="sl-block" data-block-type="code" data-block-id="62da76baae1dc8aa2b5e3133d28e797f" style="min-width: 30px; min-height: 30px; width: 731px; height: 104px; left: 155px; top: 420px;"><div class="sl-block-content" style="z-index: 14; font-size: 150%;"><pre><code class=" hljs ruby"><span class="hljs-prompt">MATCH	(actor)-[:ACTED_IN]-&gt;</span>(movie),
+	(movie)&lt;-[<span class="hljs-symbol">:DIRECTED</span>]-(director)
+<span class="hljs-constant">RETURN</span> actor.name, movie.title, director.name</code></pre></div></div>
+<div class="sl-block" data-block-type="code" data-block-id="2d4f462c0e66499c52d3b2932513e1a3" style="min-width: 30px; min-height: 30px; width: 722px; height: 112px; left: 238px; top: 560px;"><div class="sl-block-content" style="z-index: 15; font-size: 150%;"><pre class="none"><code class=" hljs elixir"><span class="hljs-constant">MATCH	</span>(actor)-[<span class="hljs-symbol">:ACTED_IN</span>]-&gt;(movie),
+	(director)-[<span class="hljs-symbol">:DIRECTED</span>]-&gt;(movie)
+<span class="hljs-constant">RETURN </span>actor.name, movie.title, director.name</code></pre></div></div>
+<div class="sl-block" data-block-type="text" data-block-id="626f7a3d2a252f63c5e963a59bce2336" style="height: auto; min-width: 30px; min-height: 30px; width: 600px; left: 180px; top: 350px;"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 16; overflow: visible;">
+<p>Alternative notations</p>
+</div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 960px; left: 0px; top: 0px; height: auto;" data-block-id="0f93497c174dbfb29f01c1b9e09143de">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="a0478a09-f1f6-61ad-88e7-182189d85173" gr_new_editor="true" style="overflow: visible; z-index: 11;">
+<h1>Using Labels</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 928px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 800px; height: 140px; left: 80px; top: 280px;" data-block-id="9429733771356e3eb3b6ad23ece5060b"><div class="sl-block-content" style="z-index: 16; font-size: 150%;"><pre><code class=" hljs css"><span class="hljs-tag">MATCH</span> (<span class="hljs-tag">node</span><span class="hljs-pseudo">:Label)</span> <span class="hljs-tag">RETURN</span> <span class="hljs-tag">node</span>
+
+<span class="hljs-tag">MATCH</span> (<span class="hljs-tag">node1</span><span class="hljs-pseudo">:Label1)-</span><span class="hljs-attr_selector">[:REL_TYPE]</span><span class="hljs-tag">-</span>&gt;(<span class="hljs-tag">node2</span><span class="hljs-pseudo">:Label2)</span> 
+<span class="hljs-tag">RETURN</span> <span class="hljs-tag">node1</span>, <span class="hljs-tag">node2</span></code></pre></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 0px; height: auto;" data-block-id="78647b26ba746a1f2189062b2ab14321">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="3711505f-91f8-9eac-5e10-f687f1e2feee" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Sample Queries</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 640px; height: 70px; left: 160px; top: 210px;" data-block-id="8a506f9620fcb0e112e82d4cef111daf"><div class="sl-block-content" style="z-index: 11; font-size: 150%;"><pre class="none"><code class=" hljs ruby"><span class="hljs-prompt">MATCH(actor:Person)-[:ACTED_IN]-&gt;</span>(movie)
+<span class="hljs-constant">RETURN</span> actor.name, movie.title</code></pre></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 695px; left: 133px; top: 140px;" data-block-id="8afc78557d1ee4839a7bc2da5e2e0d52">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 12; overflow: visible;" gramm="gramm" gramm_id="9dbd802a-b971-b7d0-0e64-b98a794112f9" gr_new_editor="true">
+<p>Return the stars of the movies using node Labels</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 15; margin-left: 577px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 500px; height: 101px; left: 230px; top: 599px;" data-block-id="7d805b6e28b0a37a0fa9e1bfe7ca834c"><div class="sl-block-content" style="z-index: 14; font-size: 150%;"><pre><code class=" hljs lasso"><span class="hljs-keyword">MATCH</span>(tom:Person)
+<span class="hljs-keyword">WHERE</span> tom<span class="hljs-built_in">.</span>name <span class="hljs-subst">=</span> <span class="hljs-string">"Tom Hanks"</span>
+<span class="hljs-keyword">RETURN</span> tom</code></pre></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 798px; left: 80px; top: 521px;" data-block-id="453b6af57b684660eb6ade5397fc7e81">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 15; overflow: visible; white-space: normal;" gramm="gramm" gramm_id="377d3fa4-3fbc-dc4a-f554-9eb21ffa4515" gr_new_editor="true">
+<p>Return the&nbsp;node of Tom Hanks</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 16; margin-left: 766px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; min-width: 30px; min-height: 30px; width: 600px; left: 181px; top: 311px;" data-block-id="569d6a473cee1a66c9bc96a065f343dc">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 16; overflow: visible;" gramm="gramm" gramm_id="4b60c83a-f9a8-6d45-1655-f4962298b09a" gr_new_editor="true">
+<p>Return all characters in the Movie Matrix</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="min-width: 30px; min-height: 30px; width: 809px; height: 106px; left: 80px; top: 384px;" data-block-id="96e84e38c25d0504b83332f94ecd3262"><div class="sl-block-content" style="z-index: 17; font-size: 150%;"><pre><code class=" hljs groovy">MATCH (<span class="hljs-string">actor:</span>Person)-[<span class="hljs-string">role:</span>ACTED_IN]-&gt;(<span class="hljs-string">movie:</span>Movie)
+WHERE movie.title = <span class="hljs-string">"The Matrix"</span>
+RETURN role.roles, actor.name</code></pre></div></div></section></section><section class="stack future" hidden="" aria-hidden="true" style="display: none;"><section style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 270px; height: auto;" data-block-id="b66f322dbe2748ef9c2f45400072b529">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="3bff8be3-3e0b-d136-ba45-2134af97c604" gr_new_editor="true" style="overflow: visible;">
+<h1>Paths in Cypher</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 741px; margin-top: 937px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 0px; height: auto;" data-block-id="25ba0555d1a80b1829aec83605a211ef">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="3711505f-91f8-9eac-5e10-f687f1e2feee" gr_new_editor="true" style="overflow: visible; z-index: 11;">
+<h1>Paths in Cypher</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 800px; left: 80px; top: 140px;" data-block-id="34ff785ae856aa645bae8e796c064939">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 13; overflow: visible;" gramm="gramm" gramm_id="9dbd802a-b971-b7d0-0e64-b98a794112f9" gr_new_editor="true">
+<ul>
+	<li>A Path is series of connected nodes and relationships.</li>
+	<li>Paths can be matched by a pattern.</li>
+</ul>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 15; margin-left: 577px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 798px; left: 81px; top: 630px;" data-block-id="749f5c9b9d05d839ba258d7699f8e867">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 15; overflow: visible; white-space: normal;" gramm="gramm" gramm_id="377d3fa4-3fbc-dc4a-f554-9eb21ffa4515" gr_new_editor="true">
+<p>(a)--&gt;(b)--&gt;(c) is equivalent to (c)&lt;--(b)&lt;--(a)</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 16; margin-left: 766px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="image" data-block-id="4f6ebd842d5ac76848952f822a2916c6" style="min-width: 30px; min-height: 30px; width: 590.222222222222px; height: 332px; left: 185px; top: 254px;"><div class="sl-block-content" style="z-index: 16;"><img data-natural-width="800" data-natural-height="450" style="visibility: visible;" data-src="https://static.versal.com/restapi/assets/62bad7aa-e139-435f-9be7-2248bdfc6b0d"></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 0px; height: auto;" data-block-id="52c08498281a2093e8763abb51612c12">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="3711505f-91f8-9eac-5e10-f687f1e2feee" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Using Paths</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 960px; left: 0px; top: 140px;" data-block-id="15a7cab05f540c196b3c8de2ffb93f89">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11; overflow: visible; white-space: normal;" gramm="gramm" gramm_id="377d3fa4-3fbc-dc4a-f554-9eb21ffa4515" gr_new_editor="true">
+<p>&nbsp;We can name paths and <strong>return</strong> <strong>them</strong> as part of the result.&nbsp;</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 16; margin-left: 766px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 720px; height: 80px; left: 120px; top: 350px;" data-block-id="4798f6f7b1f1c6d182b043b29ca7e3b1"><div class="sl-block-content" style="z-index: 12; font-size: 150%;"><pre><code class=" hljs elixir"><span class="hljs-constant">MATCH </span>p=(a)-[<span class="hljs-symbol">:ACTED_IN</span>]-&gt;(m)&lt;-[<span class="hljs-symbol">:DIRECTED</span>]-(d)
+<span class="hljs-constant">RETURN </span>p</code></pre></div></div>
+<div class="sl-block" data-block-type="code" style="width: 724px; height: 70px; left: 236px; top: 490px;" data-block-id="0be3d14aa70e3a31a33dcf41a239565f"><div class="sl-block-content" style="z-index: 13; font-size: 150%;"><pre><code class=" hljs elixir"><span class="hljs-constant">MATCH </span>p=(a)-[<span class="hljs-symbol">:ACTED_IN</span>]-&gt;(m)&lt;-[<span class="hljs-symbol">:DIRECTED</span>]-(d)
+<span class="hljs-constant">RETURN </span>nodes(p)</code></pre></div></div>
+<div class="sl-block" data-block-type="code" style="width: 720px; height: 74px; left: 240px; top: 591px;" data-block-id="e6d7b106945c39a24d58eb5a17c96043"><div class="sl-block-content" style="z-index: 14; font-size: 150%;"><pre class="none"><code class=" hljs elixir"><span class="hljs-constant">MATCH </span>p=(a)-[<span class="hljs-symbol">:ACTED_IN</span>]-&gt;(m)&lt;-[<span class="hljs-symbol">:DIRECTED</span>]-(d)
+<span class="hljs-constant">RETURN </span>rels(p)</code></pre></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 960px; left: 0px; top: 210px;" data-block-id="5b41c469333cc828e212afbae3d74203"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 15; overflow: visible;">
+<p><span>Return the paths of directors and movies&nbsp;actors have&nbsp;worked in</span></p>
+
+<p><span>(Returns all the nodes and relationships of the paths)</span></p>
+</div></div>
+<div class="sl-block" data-block-type="text" data-block-id="2400cd44ba85507b6894ee1d5535d9a7" style="height: auto; min-width: 30px; min-height: 30px; width: 166px; left: 0px; top: 506px;"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 16; color: rgb(255, 0, 0);">
+<p>Only nodes</p>
+</div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; min-width: 30px; min-height: 30px; width: 236px; left: 0px; top: 591px;" data-block-id="d7b6ea6feef4046b1a79655c89e9a2b8"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 17; text-align: left; color: rgb(255, 0, 0);">
+<p>Only relationships</p>
+</div></div>
+<div class="sl-block" data-block-type="shape" data-block-id="b1a3405e53329b6ac73e569b4598e738" style="min-width: 4px; min-height: 4px; width: 244px; height: 42px; left: 236px; top: 519px;"><div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="true" style="z-index: 18;" data-shape-stroke-color="#ff0000" data-shape-stroke-width="5"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 244 42"><defs><clippath id="shape-mask-9-1425838787152"><rect width="244" height="42"></rect></clippath></defs><rect width="244" height="42" clip-path="url(#shape-mask-9-1425838787152)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#ff0000" stroke-width="10"></rect></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="min-width: 4px; min-height: 4px; width: 244px; height: 42px; left: 236px; top: 623px;" data-block-id="330a0712e31446466d69089be5227b0a"><div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="true" style="z-index: 20;" data-shape-stroke-color="#ff0000" data-shape-stroke-width="5"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 244 42"><defs><clippath id="shape-mask-10-1425838787157"><rect width="244" height="42"></rect></clippath></defs><rect width="244" height="42" clip-path="url(#shape-mask-10-1425838787157)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#ff0000" stroke-width="10"></rect></svg></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 0px; height: auto;" data-block-id="6ef3dc81f7487c7c250e07c5ecae509f">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="3711505f-91f8-9eac-5e10-f687f1e2feee" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Lab</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 960px; left: 0px; top: 140px;" data-block-id="e14e8b7edeee06770508df050c2aeac4">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11; overflow: visible; white-space: normal;" gramm="gramm" gramm_id="377d3fa4-3fbc-dc4a-f554-9eb21ffa4515" gr_new_editor="true">
+<p>&nbsp;We can name paths and <strong>return</strong> <strong>them</strong> as part of the result.&nbsp;</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 16; margin-left: 766px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 720px; height: 80px; left: 120px; top: 350px;" data-block-id="f9587f629d31931d14f66d4af2c1c257"><div class="sl-block-content" style="z-index: 12; font-size: 150%;"><pre><code class=" hljs ruby"><span class="hljs-prompt">MATCH (a)-[:ACTED_IN]-&gt;</span>(m)&lt;-[<span class="hljs-symbol">:DIRECTED</span>]-(a)
+<span class="hljs-constant">RETURN</span> a.name, m.title;</code></pre></div></div>
+<div class="sl-block" data-block-type="code" style="width: 726px; height: 70px; left: 234px; top: 490px;" data-block-id="8e9a182d2c497c74e1dedb98b8308867"><div class="sl-block-content" style="z-index: 13; font-size: 150%;"><pre><code class=" hljs elixir"><span class="hljs-constant">MATCH </span>p=(a)-[<span class="hljs-symbol">:ACTED_IN</span>]-&gt;(m)&lt;-[<span class="hljs-symbol">:DIRECTED</span>]-(d)
+<span class="hljs-constant">RETURN </span>nodes(p)</code></pre></div></div>
+<div class="sl-block" data-block-type="code" style="width: 720px; height: 74px; left: 240px; top: 591px;" data-block-id="de27a04ade7c0e5b96a10f864df981db"><div class="sl-block-content" style="z-index: 14; font-size: 150%;"><pre class="none"><code class=" hljs elixir"><span class="hljs-constant">MATCH </span>p=(a)-[<span class="hljs-symbol">:ACTED_IN</span>]-&gt;(m)&lt;-[<span class="hljs-symbol">:DIRECTED</span>]-(d)
+<span class="hljs-constant">RETURN </span>rels(p)</code></pre></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 960px; left: 0px; top: 210px;" data-block-id="a59f8c1a51c5cd88aaa01bb9093688b5"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 15; overflow: visible;">
+<p><span>Return the paths of directors and movies&nbsp;actors have&nbsp;worked in</span></p>
+
+<p><span>(Returns all the nodes and relationships of the paths)</span></p>
+</div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 166px; left: 0px; top: 506px;" data-block-id="88ffe1ba610802e30ee511b3eb2b70c7"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 16; color: rgb(255, 0, 0);">
+<p>Only nodes</p>
+</div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 236px; left: 0px; top: 591px;" data-block-id="91bc4d65ac6bd08f1adcccce93e789a1"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 17; text-align: left; color: rgb(255, 0, 0);">
+<p>Only relationships</p>
+</div></div>
+<div class="sl-block" data-block-type="shape" style="width: 246px; height: 42px; left: 234px; top: 519px;" data-block-id="43e8f2743ad7b0a8f68963007e8a047b"><div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="true" style="z-index: 18;" data-shape-stroke-color="#ff0000" data-shape-stroke-width="5"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 246 42"><defs><clippath id="shape-mask-11-1425838788280"><rect width="246" height="42"></rect></clippath></defs><rect width="246" height="42" clip-path="url(#shape-mask-11-1425838788280)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#ff0000" stroke-width="10"></rect></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="width: 244px; height: 42px; left: 236px; top: 623px;" data-block-id="f85d2e04ced66b09dd5c3c20699b9faf"><div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="true" style="z-index: 20;" data-shape-stroke-color="#ff0000" data-shape-stroke-width="5"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 244 42"><defs><clippath id="shape-mask-12-1425838788282"><rect width="244" height="42"></rect></clippath></defs><rect width="244" height="42" clip-path="url(#shape-mask-12-1425838788282)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#ff0000" stroke-width="10"></rect></svg></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 0px; height: auto;" data-block-id="82d9eab5b73051900085f35b0b60d090">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 11;">
+<h1>Summary</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" data-block-id="d83fa48d2a88db6a577ae271b3ab0f73" style="height: auto; min-width: 30px; min-height: 30px; width: 800px; left: 80px; top: 140px;">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 12; overflow: visible;" gramm="gramm" gramm_id="4b60c83a-f9a8-6d45-1655-f4962298b09a" gr_new_editor="true">
+<p style="text-align: left;">Neo4j stores information in graphs comprised of :</p>
+
+<ul>
+	<li>nodes (actors, movies)</li>
+	<li>relationships between them (who ACTED_IN or DIRECTED a given movie).</li>
+</ul>
+
+<p style="text-align: left;">&nbsp;</p>
+
+<p style="text-align: left;">Both nodes and relationships have key:value properties (the name of an actor, the title of&nbsp;a movie or the roles that an actor played in a movie).</p>
+
+<p style="text-align: left;">&nbsp;</p>
+
+<p style="text-align: left;">MATCH: Describe patterns</p>
+
+<p style="text-align: left;">WHERE: Constraint the result set</p>
+
+<p style="text-align: left;">RETURN: Get the information we want</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+</section></section><section class="stack future" hidden="" aria-hidden="true" style="display: none;"><section style="display: none;"><div class="sl-block" data-block-type="text" style="width: 960px; left: 0px; top: 270px; height: auto;" data-block-id="676b0df3862447587a967c408d7622db">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="3bff8be3-3e0b-d136-ba45-2134af97c604" gr_new_editor="true" style="overflow: visible;">
+<h1>Give me more Cypher</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 741px; margin-top: 937px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 0px; height: auto;" data-block-id="6204ed62326b6ed1bacbb18f0fdf4c7c">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 11;">
+<h1>Filtering</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 800px; left: 80px; top: 140px;" data-block-id="02b6b543ef526001a0171bc8452813f9">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 12; overflow: visible;" gramm="gramm" gramm_id="4b60c83a-f9a8-6d45-1655-f4962298b09a" gr_new_editor="true">
+<p>Return the node of persons named Tom Hanks</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" data-block-id="8439e44d07fae14849f0c49bba952a21" style="min-width: 30px; min-height: 30px; width: 500px; height: 140px; left: 230px; top: 210px;"><div class="sl-block-content" style="z-index: 13; font-size: 150%;"><pre><code class=" hljs lasso"><span class="hljs-keyword">MATCH</span>(n:Person)
+<span class="hljs-keyword">WHERE</span> n<span class="hljs-built_in">.</span>name <span class="hljs-subst">=</span> <span class="hljs-string">"Tom Hanks"</span>
+<span class="hljs-keyword">RETURN</span> n</code></pre></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 0px; height: auto;" data-block-id="2a3c09f84f1da8aaeb0bdf1456c74932">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Order, Limit and Skip</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 960px; left: 0px; top: 140px;" data-block-id="9a9d355856ab6b2589899ab919956a20">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11; overflow: visible;" gramm="gramm" gramm_id="4b60c83a-f9a8-6d45-1655-f4962298b09a" gr_new_editor="true">
+<p>Return the name and year or birth of actors ordered by year of birth</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 500px; height: 172px; left: 230px; top: 210px;" data-block-id="a659cfbca947228d9bae61d04723adb2"><div class="sl-block-content" style="z-index: 12; font-size: 150%;"><pre><code class=" hljs livecodeserver">MATCH (<span class="hljs-operator">a</span>:Person)-[:ACTED_IN]-&gt;()
+<span class="hljs-constant">RETURN</span> <span class="hljs-operator">a</span>.name, <span class="hljs-operator">a</span>.born
+ORDER BY <span class="hljs-operator">a</span>.born
+SKIP <span class="hljs-number">10</span>
+LIMIT <span class="hljs-number">10</span></code></pre></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 960px; left: 0px; top: 420px;" data-block-id="043f7e40dadc718488f76b1b949e0387">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 14; overflow: visible;" gramm="gramm" gramm_id="4b60c83a-f9a8-6d45-1655-f4962298b09a" gr_new_editor="true">
+<p>The same but skipping 10 and limiting 10 for paging issues</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 500px; height: 176px; left: 230px; top: 490px;" data-block-id="a13fc360f3ff07650535fd9bd77aa0e9"><div class="sl-block-content" style="z-index: 15; font-size: 150%;"><pre><code class=" hljs livecodeserver">MATCH (<span class="hljs-operator">a</span>:Person)-[:ACTED_IN]-&gt;()
+<span class="hljs-constant">RETURN</span> <span class="hljs-operator">a</span>.name, <span class="hljs-operator">a</span>.born
+ORDER BY <span class="hljs-operator">a</span>.born
+SKIP <span class="hljs-number">10</span>
+LIMIT <span class="hljs-number">10</span></code></pre></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 0px; height: auto;" data-block-id="e886dd57d0a2098f22332ff4debb2ae4">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Distinct results</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 959px; left: 1px; top: 140px;" data-block-id="63472df78355e1f465f98ec4e6b38432">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11; overflow: visible;" gramm="gramm" gramm_id="4b60c83a-f9a8-6d45-1655-f4962298b09a" gr_new_editor="true">
+<p>Return the name and year or birth of actors ordered by year of birth showing only distinct results</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 500px; height: 172px; left: 230px; top: 280px;" data-block-id="bc97c9e7fdeb1095a80bdb99ffd60aa1"><div class="sl-block-content" style="z-index: 12; font-size: 150%;"><pre><code class=" hljs livecodeserver">MATCH (<span class="hljs-operator">a</span>:Person)-[:ACTED_IN]-&gt;()
+<span class="hljs-constant">RETURN</span> DISTINCT <span class="hljs-operator">a</span>.name, <span class="hljs-operator">a</span>.born
+ORDER BY <span class="hljs-operator">a</span>.born</code></pre></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="77944cfa8072de7f93b4fdc89ce91587">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Knowing the rels</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 959px; left: 1px; top: 140px;" data-block-id="bd2e776aa450f9aa913977178e51b2d0">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11; overflow: visible;" gramm="gramm" gramm_id="4b60c83a-f9a8-6d45-1655-f4962298b09a" gr_new_editor="true">
+<p>Return all the relationships of persons</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 500px; height: 140px; left: 230px; top: 210px;" data-block-id="f98462ea14907584b68ac89e44cefed7"><div class="sl-block-content" style="z-index: 12; font-size: 150%;"><pre><code class=" hljs haskell"><span class="hljs-type">MATCH</span> (p:<span class="hljs-type">Person</span>)-[rel]-&gt;()
+<span class="hljs-type">RETURN</span> <span class="hljs-type">DISTINCT</span> <span class="hljs-typedef"><span class="hljs-keyword">type</span><span class="hljs-container">(<span class="hljs-title">rel</span>)</span></span></code></pre></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="cff8dc0fc6ac4e995ec47ddb2c195a49">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Who has&nbsp;this property?</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 959px; left: 1px; top: 140px;" data-block-id="f67e251be9ac8c473c4d144b0badcee1">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11; overflow: visible;" gramm="gramm" gramm_id="4b60c83a-f9a8-6d45-1655-f4962298b09a" gr_new_editor="true">
+<p>Return the labels of nodes having the property <em>name</em></p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 500px; height: 140px; left: 230px; top: 210px;" data-block-id="9aaa687571cbe4de982766af25dfc3c9"><div class="sl-block-content" style="z-index: 12; font-size: 150%;"><pre><code class=" hljs cs">MATCH (n)
+<span class="hljs-function">WHERE <span class="hljs-title">has</span><span class="hljs-params">(n.name)</span>
+RETURN DISTINCT <span class="hljs-title">labels</span><span class="hljs-params">(n)</span></span></code></pre></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="1bad79fb1756348db80fee4f6cc8ee21">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Lab</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 959px; left: 1px; top: 140px;" data-block-id="71c11c27d8fd5bd14fadcbc628985cef">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11; overflow: visible;" gramm="gramm" gramm_id="4b60c83a-f9a8-6d45-1655-f4962298b09a" gr_new_editor="true">
+<p>Return all the movies Tom Hanks acted in</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 650px; height: 140px; left: 155px; top: 210px;" data-block-id="2f0807c56370ca0afd75bb7db62bc99b"><div class="sl-block-content" style="z-index: 12; font-size: 150%;"><pre><code class=" hljs livecodeserver">MATCH (<span class="hljs-operator">a</span>:Person)-[:ACTED_IN]-&gt;(m:Movie)
+WHERE <span class="hljs-operator">a</span>.name = <span class="hljs-string">"Tom Hanks"</span>
+<span class="hljs-constant">RETURN</span> DISTINCT m</code></pre></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="32124fb1981fbf1cca201da4508f2333">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Lab (Using IN)</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 959px; left: 1px; top: 140px;" data-block-id="62ad5d08a366df0edbd3fab54b1c060c">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11; overflow: visible;" gramm="gramm" gramm_id="4b60c83a-f9a8-6d45-1655-f4962298b09a" gr_new_editor="true">
+<p>Return all the movies Keanu Reeves played the character <em>Neo</em></p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 650px; height: 140px; left: 155px; top: 210px;" data-block-id="54fea1e42786e49a283cf258b8e93261"><div class="sl-block-content" style="z-index: 12; font-size: 150%;"><pre><code class=" hljs vbnet">MATCH (a:Person)-[role:ACTED_IN]-&gt;(m:Movie)
+<span class="hljs-keyword">WHERE</span> a.name = <span class="hljs-string">"Keanu Reeves"</span> <span class="hljs-keyword">AND</span>
+    <span class="hljs-string">"Neo"</span> <span class="hljs-keyword">IN</span> role.roles
+<span class="hljs-keyword">RETURN</span> <span class="hljs-keyword">DISTINCT</span> m</code></pre></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="bd92a588628be38b04b85f9d40b824a1">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Lab (Renaming results)</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 800px; left: 80px; top: 140px;" data-block-id="fde0e73dfbb1506867aed570da2ffc2f">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11; overflow: visible;" gramm="gramm" gramm_id="4b60c83a-f9a8-6d45-1655-f4962298b09a" gr_new_editor="true">
+<p>Return all the actors who acted with Tom Hanks and are older than him</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 959px; height: 210px; left: 1px; top: 280px;" data-block-id="7da175afcce8f3ff3b8a6f9dc4dc8fa8"><div class="sl-block-content" style="z-index: 12; font-size: 150%;"><pre><code class=" hljs vbnet">MATCH (tom:Person)-[:ACTED_IN]-&gt;(movie),
+    (actor:Person)-&gt;[:ACTED_IN]-(movie)
+<span class="hljs-keyword">WHERE</span> tom.name = <span class="hljs-string">"Tom Hanks"</span> <span class="hljs-keyword">AND</span>
+	tom.born &gt; actor.born
+<span class="hljs-keyword">RETURN</span> <span class="hljs-keyword">DISTINCT</span> actor.name, (tom.born - actor.born) <span class="hljs-keyword">AS</span> diff</code></pre></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="531cc8830663c779fd3b87020535b108">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Lab</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 800px; left: 80px; top: 140px;" data-block-id="2b5bfb6613992fe1218509584a4bd97b">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11; overflow: visible;" gramm="gramm" gramm_id="4b60c83a-f9a8-6d45-1655-f4962298b09a" gr_new_editor="true">
+<p>Return all the actors who acted with Gene Hackman&nbsp;and&nbsp;has also directed a movie</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 959px; height: 210px; left: 1px; top: 280px;" data-block-id="f141da99b03baf86d4e6d4bee9a0f2db"><div class="sl-block-content" style="z-index: 12; font-size: 150%;"><pre><code class=" hljs elixir"><span class="hljs-constant">MATCH </span>(<span class="hljs-symbol">gene:</span><span class="hljs-constant">Person)</span>-[<span class="hljs-symbol">:ACTED_IN</span>]-&gt;(movie),
+	(<span class="hljs-symbol">actor:</span><span class="hljs-constant">Person)</span>-[<span class="hljs-symbol">:ACTED_IN</span>]-&gt;(movie)
+<span class="hljs-constant">WHERE </span>gene.name = <span class="hljs-string">"Gene Hackman"</span> <span class="hljs-constant">AND</span>
+	(actor)-[<span class="hljs-symbol">:DIRECTED</span>]-&gt;()
+<span class="hljs-constant">RETURN DISTINCT </span>actor.name</code></pre></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="b26075396c311a966ebd3ed2728ba487">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Lab</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 800px; left: 80px; top: 140px;" data-block-id="2e0edc529d696de544656c5b0e5707c1">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11; overflow: visible;" gramm="gramm" gramm_id="4b60c83a-f9a8-6d45-1655-f4962298b09a" gr_new_editor="true">
+<p>Return all the actors who acted with Gene Hackman&nbsp;but not working in the same movie with Robin Williams</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 719px; height: 210px; left: 121px; top: 280px;" data-block-id="1f7b47b32c4f34874f569ae3d41e3180"><div class="sl-block-content" style="z-index: 12; font-size: 150%;"><pre><code class=" hljs vbnet">MATCH (gene:Person)-[:ACTED_IN]-&gt;(movie),
+	(actor:Person)-[:ACTED_IN]-&gt;(movie),
+	(robin:Person)
+<span class="hljs-keyword">WHERE</span> gene.name = <span class="hljs-string">"Gene Hackman"</span> <span class="hljs-keyword">AND</span>
+	robin.name = <span class="hljs-string">"Robin Williams"</span> <span class="hljs-keyword">AND</span>
+	<span class="hljs-keyword">NOT</span> (robin)-[:ACTED_IN]-&gt;(movie)
+<span class="hljs-keyword">RETURN</span> <span class="hljs-keyword">DISTINCT</span> actor.name</code></pre></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="7c2d645f48b9b0e514418fd3336d5540">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Lab</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 800px; left: 80px; top: 140px;" data-block-id="b8c800577846fb550aee8ce0662e9169">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11; overflow: visible;" gramm="gramm" gramm_id="4b60c83a-f9a8-6d45-1655-f4962298b09a" gr_new_editor="true">
+<p>Return all the characters in the movie <em>The Matrix</em></p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 640px; height: 140px; left: 161px; top: 210px;" data-block-id="8bc6ff0e2b7f06318d98425b2b9c5939"><div class="sl-block-content" style="z-index: 12; font-size: 150%;"><pre><code class=" hljs vbnet">MATCH (actor)-[role:ACTED_IN]-&gt;(movie)
+<span class="hljs-keyword">WHERE</span> movie.title = <span class="hljs-string">"The Matrix"</span>
+<span class="hljs-keyword">RETURN</span> <span class="hljs-keyword">DISTINCT</span> role.roles</code></pre></div></div></section></section><section hidden="" aria-hidden="true" class="future" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="c8077cb040e76ea94359fbb5fd7e1d85">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Creating indexes</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 800px; left: 80px; top: 140px;" data-block-id="8a283fa58429e16fdcbee9ced46c68c8">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11; overflow: visible;" gramm="gramm" gramm_id="4b60c83a-f9a8-6d45-1655-f4962298b09a" gr_new_editor="true">
+<p>Use the Label and the property name</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 479px; height: 140px; left: 240px; top: 210px;" data-block-id="0b49fe038782200a3f1ed5cbe8110f07"><div class="sl-block-content" style="z-index: 12; font-size: 150%;"><pre><code class=" hljs sql"><span class="hljs-operator"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">INDEX</span> <span class="hljs-keyword">ON</span> :Person(name);</span>
+
+<span class="hljs-operator"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">INDEX</span> <span class="hljs-keyword">ON</span> :Movie(title);</span></code></pre></div></div></section><section class="stack future" hidden="" aria-hidden="true" style="display: none;"><section style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 270px; height: auto;" data-block-id="d37b6c60d3bbb9783803df934edfe71e"><div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text">
+<h1>Aggregation</h1>
+</div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="45390c8d11b80c78c53d857d375c5a0f">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Operations</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 800px; left: 80px; top: 140px;" data-block-id="6bd38dc4dc1c15415cae9f40bc03aa6a">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11; overflow: visible;" gramm="gramm" gramm_id="4b60c83a-f9a8-6d45-1655-f4962298b09a" gr_new_editor="true">
+<ul>
+	<li>count(x):&nbsp;Count the number of occurrences</li>
+	<li>min(x):&nbsp;Get the lowest value</li>
+	<li>max(x):&nbsp;Get the highest value</li>
+	<li>avg(x):&nbsp;Get the average of a numeric value</li>
+	<li>sum(x):&nbsp;Sum up values</li>
+	<li>collect(x):&nbsp;Collect all the values into an collection</li>
+</ul>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+</section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="54c72a214e17fc11297bc38e3194e42f">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Aggregation queries</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 800px; left: 80px; top: 140px;" data-block-id="f0958c634d8b52a81dbcb97d6553efe5">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11; overflow: visible;" gramm="gramm" gramm_id="4b60c83a-f9a8-6d45-1655-f4962298b09a" gr_new_editor="true">
+<p>Number of movies played by each actor [Top 5]</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="min-width: 30px; min-height: 30px; width: 800px; height: 140px; left: 80px; top: 210px;" data-block-id="efa88c3a80cd227d6b2c1f97bd4c60b4"><div class="sl-block-content" style="z-index: 13; font-size: 150%;"><pre><code class=" hljs scss">MATCH (actor)-<span class="hljs-attr_selector">[:ACTED_IN]</span>-&gt;(movie)
+RETURN actor<span class="hljs-class">.name</span>, <span class="hljs-function">count</span>(movie)
+<span class="hljs-attribute">ORDER</span> BY <span class="hljs-function">count</span>(movie) DESC
+LIMIT 5
+</code></pre></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="a9889318971fc8d032383534bb44b54f">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 11;">
+<h1>Aggregation queries</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 960px; left: 0px; top: 140px;" data-block-id="230d7788ad4dc0a8ef7486533c7d7afe">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 12; overflow: visible;" gramm="gramm" gramm_id="4b60c83a-f9a8-6d45-1655-f4962298b09a" gr_new_editor="true">
+<p>&nbsp;Return all director names that each actor has ever worked with</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" data-block-id="139ee1e179023d941ebbfd4106f2c9c4" style="min-width: 30px; min-height: 30px; width: 800px; height: 140px; left: 80px; top: 210px;"><div class="sl-block-content" style="z-index: 13; font-size: 150%;"><pre><code class=" hljs elixir"><span class="hljs-constant">MATCH </span>(actor)-[<span class="hljs-symbol">:ACTED_IN</span>]-&gt;(movie),
+	(director)-[<span class="hljs-symbol">:DIRECTED</span>]-&gt;(movie)
+<span class="hljs-constant">RETURN </span>(actor.name), collect(director.name)</code></pre></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="18d78e20342813253448218187aef8d5">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 11;">
+<h1>Aggregation queries</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 960px; left: 0px; top: 140px;" data-block-id="e640cac5ab323776b974d2af2f5b1f2d">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 12; overflow: visible;" gramm="gramm" gramm_id="4b60c83a-f9a8-6d45-1655-f4962298b09a" gr_new_editor="true">
+<p>&nbsp;Return the 3 best friend-of-a-friend actors to play with&nbsp;<em>Keanu Reeves</em></p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 960px; height: 280px; left: 0px; top: 210px;" data-block-id="21cea896a98c6efe9b7b7d028c37f68e"><div class="sl-block-content" style="z-index: 13; font-size: 140%;"><pre><code class=" hljs cs">MATCH (keanu:Person)-[:ACTED_IN]-&gt;()&lt;-[:ACTED_IN]-(colleague),
+	(colleague)-[:ACTED_IN]-&gt;()&lt;-[:ACTED_IN]-(anotherColleague)
+WHERE keanu.name = <span class="hljs-string">"Keanu Reeves"</span> AND
+	colleague &lt;&gt; <span class="hljs-function">keanu AND
+	<span class="hljs-title">NOT</span> <span class="hljs-params">((keanu)</span>-[:ACTED_IN]-&gt;<span class="hljs-params">()</span>&lt;-[:ACTED_IN]-<span class="hljs-params">(anotherColleague)</span>)
+RETURN anotherColleague.name, <span class="hljs-title">count</span><span class="hljs-params">(anotherColleague)</span>	
+ORDER BY <span class="hljs-title">count</span><span class="hljs-params">(anotherColleague)</span> DESC
+LIMIT 3</span>;
+</code></pre></div></div></section></section><section class="stack future" hidden="" aria-hidden="true" style="display: none;"><section style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 270px; height: auto;" data-block-id="eab95e643ee77512184845d98fb70f72"><div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text">
+<h1>Modifying the graph</h1>
+</div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 81px; top: 0px; height: auto;" data-block-id="a9341581d14c40e2e435b081994b2be8">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Creating nodes</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 960px; left: 1px; top: 280px;" data-block-id="8fac4ae1db97026c0a16d1382c96586f">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11; overflow: visible;" gramm="gramm" gramm_id="4b60c83a-f9a8-6d45-1655-f4962298b09a" gr_new_editor="true">
+<p>&nbsp;Return the node just created</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 720px; height: 70px; left: 120px; top: 140px;" data-block-id="888e92bec5979385f5b8bbe32fd2f592"><div class="sl-block-content" style="z-index: 12; font-size: 140%;"><pre><code class=" hljs css"><span class="hljs-tag">CREATE</span> (<span class="hljs-tag">manolo</span><span class="hljs-pseudo">:Person</span> <span class="hljs-rules">{<span class="hljs-rule"><span class="hljs-attribute">name</span>:<span class="hljs-value"> <span class="hljs-string">"Manolo Torres"</span></span></span></span>})
+<span class="hljs-tag">RETURN</span> <span class="hljs-tag">manolo</span></code></pre></div></div>
+<div class="sl-block" data-block-type="code" style="width: 720px; height: 140px; left: 120px; top: 350px;" data-block-id="06f6837cf58613c5bcaa54c670c34947"><div class="sl-block-content" style="z-index: 14; font-size: 140%;"><pre><code class=" hljs lasso"><span class="hljs-keyword">MATCH</span> (p:Person)
+<span class="hljs-keyword">WHERE</span> p<span class="hljs-built_in">.</span>name <span class="hljs-subst">=</span> <span class="hljs-string">"Manolo Torres"</span>
+<span class="hljs-keyword">RETURN</span> p;</code></pre></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="dfbc0f5f0a347198de96358843a76307">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Adding/Updating</h1>
+
+<h1>&nbsp;properties</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 960px; left: 1px; top: 350px;" data-block-id="26bc3cb627e1f8e4e92b9da3a045d61e">
+<div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11; overflow: visible;" gramm="gramm" gramm_id="4b60c83a-f9a8-6d45-1655-f4962298b09a" gr_new_editor="true">
+<p>&nbsp;Return the node just created</p>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 13; margin-left: 568px; margin-top: 6px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+<div class="sl-block" data-block-type="code" style="width: 720px; height: 140px; left: 120px; top: 210px;" data-block-id="4a8a44611f524d9f85287294fc184606"><div class="sl-block-content" style="z-index: 12; font-size: 140%;"><pre><code class=" hljs lasso"><span class="hljs-keyword">MATCH</span> (p:Person)
+<span class="hljs-keyword">WHERE</span> p<span class="hljs-built_in">.</span>name <span class="hljs-subst">=</span> <span class="hljs-string">"Manolo Torres"</span>
+<span class="hljs-built_in">SET</span> p<span class="hljs-built_in">.</span>worksAt <span class="hljs-subst">=</span> <span class="hljs-string">"UAL"</span>
+<span class="hljs-keyword">RETURN</span> p;</code></pre></div></div>
+<div class="sl-block" data-block-type="code" style="width: 720px; height: 140px; left: 120px; top: 420px;" data-block-id="8e5f79f5b1a54fe0fa719b972ee586cf"><div class="sl-block-content" style="z-index: 14; font-size: 140%;"><pre><code class=" hljs lasso"><span class="hljs-keyword">MATCH</span> (p:Person)
+<span class="hljs-keyword">WHERE</span> p<span class="hljs-built_in">.</span>name <span class="hljs-subst">=</span> <span class="hljs-string">"Manolo Torres"</span>
+<span class="hljs-built_in">SET</span> p<span class="hljs-built_in">.</span>name <span class="hljs-subst">=</span> <span class="hljs-string">"Manuel Torres"</span>
+<span class="hljs-keyword">RETURN</span> p</code></pre></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="29608544a3c7afe4d116b921bcdc965f">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 11;">
+<h1>Adding relationships</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+
+<div class="sl-block" data-block-type="code" style="width: 799px; height: 140px; left: 82px; top: 230px;" data-block-id="d18af1fd6cdd6ad0aee8e4e070f68c76"><div class="sl-block-content" style="z-index: 12; font-size: 140%;"><pre><code class=" hljs vbscript">MATCH (<span class="hljs-keyword">me</span>:Person), (movie:Movie)      
+WHERE <span class="hljs-keyword">me</span>.name=<span class="hljs-string">"Manuel Torres"</span> <span class="hljs-keyword">AND</span> 
+      movie.title=<span class="hljs-string">"Top Gun"</span>
+CREATE (<span class="hljs-keyword">me</span>)-[:REVIEWED {rating:<span class="hljs-number">50</span>}]-&gt;(movie);</code></pre></div></div>
+<div class="sl-block" data-block-type="code" data-block-id="636f0a1124074dfa40b2075ae04d7041" style="min-width: 30px; min-height: 30px; width: 801px; height: 140px; left: 77px; top: 490px;"><div class="sl-block-content" style="z-index: 13; font-size: 150%;"><pre><code class=" hljs nix">MATCH (a:Person), (m:Movie)
+WHERE a.<span class="hljs-variable">name =</span> <span class="hljs-string">"Kevin Bacon"</span> AND
+	m.<span class="hljs-variable">title =</span> <span class="hljs-string">"Mystic River"</span>
+CREATE (a)-[ACTED_IN {<span class="hljs-variable">roles =</span> [<span class="hljs-string">"Sean"</span>]}]-&gt;(m)</code></pre></div></div>
+<div class="sl-block" data-block-type="text" data-block-id="4fb121f00bac57575897219b0461fa75" style="height: auto; min-width: 30px; min-height: 30px; width: 798px; left: 80px; top: 140px;"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 14;">
+<p>Create a REVIEWED relationship between me and <em>Top Gun</em> with an attribute <em>rating</em> with value 50</p>
+</div></div>
+<div class="sl-block" data-block-type="text" data-block-id="6782e7629347d2fc0cb02a2b3f7f1223" style="height: auto; min-width: 30px; min-height: 30px; width: 798px; left: 80px; top: 393px;"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 15;">
+<p>Add&nbsp;<em>Kevin Bacon</em>&nbsp;as actor of&nbsp;<em>Mystic River</em>&nbsp;with the role of ["<em>Sean</em>"]</p>
+</div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="68c2ecbdded5f9e7f044940ad1d60fe9">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 11;">
+<h1>Updating relationships</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+
+<div class="sl-block" data-block-type="code" style="width: 799px; height: 140px; left: 82px; top: 230px;" data-block-id="0ad9d7ce5a7f2ef20fc078b64386b021"><div class="sl-block-content" style="z-index: 12; font-size: 140%;"><pre><code class=" hljs vbscript">MATCH (<span class="hljs-keyword">me</span>:Person), (movie:Movie)      
+WHERE <span class="hljs-keyword">me</span>.name=<span class="hljs-string">"Manuel Torres"</span> <span class="hljs-keyword">AND</span> 
+      movie.title=<span class="hljs-string">"Top Gun"</span>
+CREATE (<span class="hljs-keyword">me</span>)-[:REVIEWED {rating:<span class="hljs-number">50</span>}]-&gt;(movie);</code></pre></div></div>
+<div class="sl-block" data-block-type="code" style="width: 801px; height: 140px; left: 77px; top: 490px;" data-block-id="ffa17ac0f845178be97d0c65a574a897"><div class="sl-block-content" style="z-index: 13; font-size: 150%;"><pre><code class=" hljs livecodeserver">MATCH (<span class="hljs-operator">a</span>:Person)-[<span class="hljs-built_in">rel</span>:ACTED_IN]-&gt;(m:Movie)
+WHERE <span class="hljs-operator">a</span>.name = <span class="hljs-string">"Kevin Bacon"</span> AND
+	m.title = <span class="hljs-string">"Mystic River"</span>
+SET <span class="hljs-built_in">rel</span>.roles = [<span class="hljs-string">"Sean Devine"</span>]</code></pre></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 798px; left: 80px; top: 140px;" data-block-id="bfe6c4f5806a6d798351ca128662b407"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 14;">
+<p>Create a REVIEWED relationship between me and <em>Top Gun</em> with an attribute <em>rating</em> with value 50</p>
+</div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 959px; left: 0px; top: 420px;" data-block-id="2f1e2c64d2ac97f6b1ddfb05519a7c02"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 15;">
+<p>Update the role of&nbsp;<em>Kevin Bacon</em>&nbsp;in&nbsp;<em>Mystic River</em>&nbsp;as ["<em>Sean Devine</em>"]</p>
+</div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="c440eee47418f536ce52712a4eb5270a">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 11;">
+<h1>Avoiding duplicates</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+
+<div class="sl-block" data-block-type="code" style="width: 799px; height: 140px; left: 82px; top: 230px;" data-block-id="51414aa2babbc0b6b2126a17477eaa2c"><div class="sl-block-content" style="z-index: 12; font-size: 140%;"><pre><code class=" hljs vbnet">MATCH (clint:Person),(mystic:Movie)      
+<span class="hljs-keyword">WHERE</span> clint.name=<span class="hljs-string">"Clint Eastwood"</span> <span class="hljs-keyword">AND</span> mystic.title=<span class="hljs-string">"Mystic River"</span>
+MERGE (clint)-[:DIRECTED]-&gt;(mystic)
+<span class="hljs-keyword">RETURN</span> clint, mystic;</code></pre></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 798px; left: 91px; top: 140px;" data-block-id="f11b22fc29bdb9a3fd98d2f318be0032"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 13;">
+<p>Add&nbsp;<em>Clint Eastwood</em>&nbsp;as director of&nbsp;<em>Mystic River</em>&nbsp;if not exist</p>
+</div></div>
+<div class="sl-block" data-block-type="shape" data-block-id="eae283d8c62b9fc3dd94a5fe87bcf05d" style="min-width: 4px; min-height: 4px; width: 500px; height: 31px; left: 82px; top: 288px;"><div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="true" style="z-index: 14;" data-shape-stroke-color="#ff0000" data-shape-stroke-width="5"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 500 31"><defs><clippath id="shape-mask-19-1425839521657"><rect width="500" height="31"></rect></clippath></defs><rect width="500" height="31" clip-path="url(#shape-mask-19-1425839521657)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#ff0000" stroke-width="10"></rect></svg></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="02ac0c4abeb295b22aae75aacb3b4dcf">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Matching multiple relationships</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+
+<div class="sl-block" data-block-type="code" style="width: 880px; height: 140px; left: 39px; top: 350px;" data-block-id="f3ae5bf7787a6788086640fa842fda0f"><div class="sl-block-content" style="z-index: 11; font-size: 140%;"><pre><code class=" hljs elixir"><span class="hljs-constant">MATCH </span>(a)-[<span class="hljs-symbol">:ACTED_IN|</span><span class="hljs-symbol">:DIRECTED</span>]-&gt;()&lt;-[<span class="hljs-symbol">:ACTED_IN|</span><span class="hljs-symbol">:DIRECTED</span>]-(b)
+<span class="hljs-constant">WHERE NOT </span>(a)-[<span class="hljs-symbol">:KNOWS</span>]-(b)
+<span class="hljs-constant">MERGE </span>(a)-[<span class="hljs-symbol">:KNOWS</span>]-&gt;(b);</code></pre></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 798px; left: 80px; top: 210px;" data-block-id="c1af312976d73eb42ed2bdc4e905913a"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 12;">
+<p>Create a KNOWS relationship between anyone who either ACTED_IN or DIRECTED the same movie</p>
+</div></div>
+<div class="sl-block" data-block-type="shape" style="width: 298px; height: 36px; left: 179px; top: 350px;" data-block-id="26cc3b9240d8eb969a53fa311a3f9c22"><div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="true" style="z-index: 13;" data-shape-stroke-color="#ff0000" data-shape-stroke-width="5"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 298 36"><defs><clippath id="shape-mask-20-1425839522757"><rect width="298" height="36"></rect></clippath></defs><rect width="298" height="36" clip-path="url(#shape-mask-20-1425839522757)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#ff0000" stroke-width="10"></rect></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="width: 298px; height: 36px; left: 553px; top: 350px;" data-block-id="b40c4c35293b81b67adf3e0fc2c43289"><div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="true" style="z-index: 15;" data-shape-stroke-color="#ff0000" data-shape-stroke-width="5"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 298 36"><defs><clippath id="shape-mask-21-1425839522759"><rect width="298" height="36"></rect></clippath></defs><rect width="298" height="36" clip-path="url(#shape-mask-21-1425839522759)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#ff0000" stroke-width="10"></rect></svg></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="f51d10877fb053fb6e516c58feede449">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Deleting nodes (and rels)</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+
+<div class="sl-block" data-block-type="code" style="width: 480px; height: 140px; left: 240px; top: 280px;" data-block-id="03b54960e0a13a33403b73cef343010b"><div class="sl-block-content" style="z-index: 11; font-size: 140%;"><pre><code class=" hljs dos">MATCH (emil:Person)
+WHERE emil.name="Emil Eif<span class="hljs-comment">rem"</span>
+OPTIONAL MATCH (emil)-[r]-()
+DELETE emil,r;</code></pre></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 800px; left: 80px; top: 140px;" data-block-id="a5cc33772807a3bc78df94cb04360e2f"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 12;">
+<p>Delete my node. Relationships with other nodes must also be deleted</p>
+</div></div>
+<div class="sl-block" data-block-type="shape" style="width: 403px; height: 65px; left: 240px; top: 332px;" data-block-id="7b6647e80f75fdbc3482f5513273de50"><div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="true" style="z-index: 13;" data-shape-stroke-color="#ff0000" data-shape-stroke-width="5"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 403 65"><defs><clippath id="shape-mask-22-1425839523570"><rect width="403" height="65"></rect></clippath></defs><rect width="403" height="65" clip-path="url(#shape-mask-22-1425839523570)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#ff0000" stroke-width="10"></rect></svg></div></div></section></section><section class="stack future" hidden="" aria-hidden="true" style="display: none;"><section style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 270px; height: auto;" data-block-id="2e82d637639afd973cbdbc05170cfb90"><div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text">
+<h1>More on paths</h1>
+</div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="e05e009d98894189915291bdc4a1fab1">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Variable length Paths</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+
+<div class="sl-block" data-block-type="code" style="width: 879px; height: 70px; left: 41px; top: 211px;" data-block-id="d928bb42c0852dc896bc33ed946895f4"><div class="sl-block-content" style="z-index: 11; font-size: 140%;"><pre><code class=" hljs css"><span class="hljs-tag">MATCH</span> (<span class="hljs-tag">a</span><span class="hljs-pseudo">:Person</span> <span class="hljs-rules">{<span class="hljs-rule"><span class="hljs-attribute">name</span>:<span class="hljs-value"> <span class="hljs-string">"Keanu Reeves"</span></span></span></span>})<span class="hljs-tag">-</span><span class="hljs-attr_selector">[:KNOWS*2]</span><span class="hljs-tag">-</span>&gt;(<span class="hljs-tag">fof</span>)
+<span class="hljs-tag">RETURN</span> <span class="hljs-tag">DISTINCT</span> <span class="hljs-tag">fof</span><span class="hljs-class">.name</span></code></pre></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 960px; left: 0px; top: 140px;" data-block-id="2b863b450623be681cfa89b61f451369"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 12;">
+<p>How can we get friends of friends (fof)?</p>
+</div></div>
+<div class="sl-block" data-block-type="shape" style="width: 144px; height: 36px; left: 600px; top: 211px;" data-block-id="fd96510a8fa0c847bd9ed26fae176a17"><div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="true" style="z-index: 13;" data-shape-stroke-color="#ff0000" data-shape-stroke-width="5"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 144 36"><defs><clippath id="shape-mask-23-1425839566802"><rect width="144" height="36"></rect></clippath></defs><rect width="144" height="36" clip-path="url(#shape-mask-23-1425839566802)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#ff0000" stroke-width="10"></rect></svg></div></div>
+<div class="sl-block" data-block-type="code" style="width: 879px; height: 70px; left: 41px; top: 421px;" data-block-id="c37acdba4064a287409c425bb85c4127"><div class="sl-block-content" style="z-index: 14; font-size: 140%;"><pre><code class=" hljs css"><span class="hljs-tag">MATCH</span> (<span class="hljs-tag">a</span><span class="hljs-pseudo">:Person</span> <span class="hljs-rules">{<span class="hljs-rule"><span class="hljs-attribute">name</span>:<span class="hljs-value"> <span class="hljs-string">"Keanu Reeves"</span></span></span></span>})<span class="hljs-tag">-</span><span class="hljs-attr_selector">[:KNOWS*3]</span><span class="hljs-tag">-</span>&gt;(<span class="hljs-tag">fof</span>)
+<span class="hljs-tag">RETURN</span> <span class="hljs-tag">DISTINCT</span> <span class="hljs-tag">fof</span><span class="hljs-class">.name</span></code></pre></div></div>
+<div class="sl-block" data-block-type="shape" style="width: 144px; height: 36px; left: 600px; top: 421px;" data-block-id="9fd888a760e4376427f49d93ad7069e1"><div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="true" style="z-index: 15;" data-shape-stroke-color="#ff0000" data-shape-stroke-width="5"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 144 36"><defs><clippath id="shape-mask-24-1425839566829"><rect width="144" height="36"></rect></clippath></defs><rect width="144" height="36" clip-path="url(#shape-mask-24-1425839566829)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#ff0000" stroke-width="10"></rect></svg></div></div>
+<div class="sl-block" data-block-type="text" data-block-id="d71e6f7d0d541c7f62b3b694e6a2e809" style="height: auto; min-width: 30px; min-height: 30px; width: 600px; left: 320px; top: 325px;"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 16;">
+<p>Length of the path</p>
+</div></div>
+<div class="sl-block" data-block-type="shape" data-block-id="71c3d36c06d4adf2d8c8ddd5aabea4fa" style="min-width: 4px; min-height: 4px; width: 51px; height: 161px; left: 654px; top: 210px;"><div class="sl-block-content" data-shape-type="symbol-thin-arrow-up" data-shape-fill-color="#000000" data-shape-stretch="false" style="z-index: 17;"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="xMidYMid" viewBox="4 2 24 28"><g class="shape-element" fill="#000000"><path d="M27.414 12.586l-10-10c-0.781-0.781-2.047-0.781-2.828 0l-10 10c-0.781 0.781-0.781 2.047 0 2.828s2.047 0.781 2.828 0l6.586-6.586v19.172c0 1.105 0.895 2 2 2s2-0.895 2-2v-19.172l6.586 6.586c0.39 0.39 0.902 0.586 1.414 0.586s1.024-0.195 1.414-0.586c0.781-0.781 0.781-2.047 0-2.828z"></path></g></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="min-width: 4px; min-height: 4px; width: 51px; height: 161px; left: 654px; top: 313px;" data-block-id="e0c75075626a13f0aa3d2bac0c5e77af"><div class="sl-block-content" data-shape-type="symbol-thin-arrow-down" data-shape-fill-color="#000000" data-shape-stretch="false" style="z-index: 19;"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="xMidYMid" viewBox="4 2 24 28"><g class="shape-element" fill="#000000"><path d="M4.586 19.414l10 10c0.781 0.781 2.047 0.781 2.828 0l10-10c0.781-0.781 0.781-2.047 0-2.828s-2.047-0.781-2.828 0l-6.586 6.586v-19.172c0-1.105-0.895-2-2-2s-2 0.895-2 2v19.172l-6.586-6.586c-0.391-0.39-0.902-0.586-1.414-0.586s-1.024 0.195-1.414 0.586c-0.781 0.781-0.781 2.047 0 2.828z"></path></g></svg></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="191b6a83b1ccc0b086f2a31cabef3fcd">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Variable length Paths</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+
+<div class="sl-block" data-block-type="code" style="width: 879px; height: 140px; left: 41px; top: 210px;" data-block-id="ca1611a2e090ddf3161d0642d7a4507d"><div class="sl-block-content" style="z-index: 11; font-size: 140%;"><pre><code class=" hljs css"><span class="hljs-tag">MATCH</span> (<span class="hljs-tag">a</span><span class="hljs-pseudo">:Person</span> <span class="hljs-rules">{<span class="hljs-rule"><span class="hljs-attribute">name</span>:<span class="hljs-value"> <span class="hljs-string">"Keanu Reeves"</span></span></span></span>})<span class="hljs-tag">-</span><span class="hljs-attr_selector">[:KNOWS*2]</span><span class="hljs-tag">-</span>&gt;(<span class="hljs-tag">fof</span>)
+<span class="hljs-tag">WHERE</span> <span class="hljs-tag">NOT</span> (<span class="hljs-tag">a</span>)<span class="hljs-tag">-</span><span class="hljs-attr_selector">[:KNOWS]</span><span class="hljs-tag">-</span>&gt;(<span class="hljs-tag">fof</span>)
+<span class="hljs-tag">RETURN</span> <span class="hljs-tag">DISTINCT</span> <span class="hljs-tag">fof</span><span class="hljs-class">.name</span></code></pre></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 960px; left: 0px; top: 140px;" data-block-id="186aa9db48beaa01f65b547528d83882"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 12;">
+<p>Return&nbsp;friends of friends that are not immediate friends?</p>
+</div></div>
+<div class="sl-block" data-block-type="shape" style="width: 412px; height: 36px; left: 41px; top: 238px;" data-block-id="ddefdda0ddcaad2e901defd134491c16"><div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="true" style="z-index: 13;" data-shape-stroke-color="#ff0000" data-shape-stroke-width="5"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 412 36"><defs><clippath id="shape-mask-25-1425839566997"><rect width="412" height="36"></rect></clippath></defs><rect width="412" height="36" clip-path="url(#shape-mask-25-1425839566997)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#ff0000" stroke-width="10"></rect></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="width: 146px; height: 39px; left: 598px; top: 210px;" data-block-id="f506ed87599f963c3377cf37e03fd4d3"><div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="true" style="z-index: 16;" data-shape-stroke-color="#ff0000" data-shape-stroke-width="5"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 146 39"><defs><clippath id="shape-mask-26-1425839567002"><rect width="146" height="39"></rect></clippath></defs><rect width="146" height="39" clip-path="url(#shape-mask-26-1425839567002)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#ff0000" stroke-width="10"></rect></svg></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="d5f86be23c2a3b59fd6a17eb7edd0637">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Shortest Path</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+
+<div class="sl-block" data-block-type="code" style="width: 879px; height: 140px; left: 41px; top: 280px;" data-block-id="7456bdb623402156b5b7c5eb58ea89c5"><div class="sl-block-content" style="z-index: 11; font-size: 140%;"><pre><code class=" hljs groovy">MATCH p=shortestPath(
+  (<span class="hljs-string">keanu:</span>Person {<span class="hljs-string">name:</span> <span class="hljs-string">"Keanu Reeves"</span>})-
+  [:KNOWS*]-&gt;
+  (<span class="hljs-string">kevin:</span>Person {<span class="hljs-string">name:</span> <span class="hljs-string">"Kevin Bacon"</span>}))
+RETURN length(p)</code></pre></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 960px; left: 0px; top: 140px;" data-block-id="d826cccac6c8038b41951b1cc5b608b7"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 12;">
+<p>Return the length of the shortest path between two nodes following a relationship</p>
+</div></div>
+<div class="sl-block" data-block-type="shape" style="width: 223px; height: 36px; left: 122px; top: 280px;" data-block-id="fdb920402c50a7d21a9b2e87e3cd7dd3"><div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="true" style="z-index: 13;" data-shape-stroke-color="#ff0000" data-shape-stroke-width="5"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 223 36"><defs><clippath id="shape-mask-27-1425839567151"><rect width="223" height="36"></rect></clippath></defs><rect width="223" height="36" clip-path="url(#shape-mask-27-1425839567151)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#ff0000" stroke-width="10"></rect></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="width: 235px; height: 39px; left: 41px; top: 387px;" data-block-id="969ecbbe52a16e8268b39e19de764db2"><div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="true" style="z-index: 14;" data-shape-stroke-color="#ff0000" data-shape-stroke-width="5"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 235 39"><defs><clippath id="shape-mask-28-1425839567156"><rect width="235" height="39"></rect></clippath></defs><rect width="235" height="39" clip-path="url(#shape-mask-28-1425839567156)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#ff0000" stroke-width="10"></rect></svg></div></div>
+<div class="sl-block" data-block-type="code" style="width: 879px; height: 140px; left: 41px; top: 554px;" data-block-id="0bee45efc59875a0d37e6d1b3bbdceb4"><div class="sl-block-content" style="z-index: 16; font-size: 140%;"><pre><code class=" hljs groovy">MATCH p=shortestPath(
+  (<span class="hljs-string">keanu:</span>Person {<span class="hljs-string">name:</span> <span class="hljs-string">"Keanu Reeves"</span>})-
+  [:KNOWS*]-&gt;
+  (<span class="hljs-string">kevin:</span>Person {<span class="hljs-string">name:</span> <span class="hljs-string">"Kevin Bacon"</span>}))
+RETURN nodes(p)</code></pre></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 960px; left: 1px; top: 471px;" data-block-id="1dd59dbd50482e27ffc98904954bb55c"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 17;">
+<p>Return the set of nodes of the shortest path</p>
+</div></div>
+<div class="sl-block" data-block-type="shape" style="width: 223px; height: 36px; left: 122px; top: 554px;" data-block-id="c155ac4471024f19e4e07c336c6e244d"><div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="true" style="z-index: 18;" data-shape-stroke-color="#ff0000" data-shape-stroke-width="5"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 223 36"><defs><clippath id="shape-mask-29-1425839567204"><rect width="223" height="36"></rect></clippath></defs><rect width="223" height="36" clip-path="url(#shape-mask-29-1425839567204)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#ff0000" stroke-width="10"></rect></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="width: 235px; height: 39px; left: 41px; top: 658px;" data-block-id="e31a9fc230dc631b6c5d6ef358f66b29"><div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="true" style="z-index: 19;" data-shape-stroke-color="#ff0000" data-shape-stroke-width="5"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 235 39"><defs><clippath id="shape-mask-30-1425839567213"><rect width="235" height="39"></rect></clippath></defs><rect width="235" height="39" clip-path="url(#shape-mask-30-1425839567213)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#ff0000" stroke-width="10"></rect></svg></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="7bd0341c502e31e703f7162eaf184b71">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 10;">
+<h1>Shortest Path</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+
+<div class="sl-block" data-block-type="code" style="width: 879px; height: 140px; left: 41px; top: 210px;" data-block-id="d0607aeebafe87b497171531ea1fc69b"><div class="sl-block-content" style="z-index: 11; font-size: 140%;"><pre><code class=" hljs groovy">MATCH p=shortestPath(
+  (<span class="hljs-string">keanu:</span>Person {<span class="hljs-string">name:</span> <span class="hljs-string">"Keanu Reeves"</span>})-
+  [:KNOWS*]-&gt;
+  (<span class="hljs-string">kevin:</span>Person {<span class="hljs-string">name:</span> <span class="hljs-string">"Kevin Bacon"</span>}))
+RETURN [n <span class="hljs-keyword">in</span> nodes(p) | n.name]</code></pre></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 960px; left: 0px; top: 140px;" data-block-id="c04430a0fc73f37fdb6cb13b5e73b23d"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 12;">
+<p>Return the name of the actor nodes</p>
+</div></div>
+<div class="sl-block" data-block-type="shape" style="width: 223px; height: 36px; left: 122px; top: 210px;" data-block-id="94ac320657252dd9af7bbb984ac84b0d"><div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="true" style="z-index: 13;" data-shape-stroke-color="#ff0000" data-shape-stroke-width="5"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 223 36"><defs><clippath id="shape-mask-31-1425839567606"><rect width="223" height="36"></rect></clippath></defs><rect width="223" height="36" clip-path="url(#shape-mask-31-1425839567606)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#ff0000" stroke-width="10"></rect></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="width: 440.5px; height: 39px; left: 41px; top: 317px;" data-block-id="79456358879fc03266f0568dea587ace"><div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="true" style="z-index: 14;" data-shape-stroke-color="#ff0000" data-shape-stroke-width="5"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 441 39"><defs><clippath id="shape-mask-32-1425839567609"><rect width="441" height="39"></rect></clippath></defs><rect width="441" height="39" clip-path="url(#shape-mask-32-1425839567609)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#ff0000" stroke-width="10"></rect></svg></div></div>
+<div class="sl-block" data-block-type="code" style="width: 879px; height: 140px; left: 42px; top: 523px;" data-block-id="9140c2d21c572b803b47f30d4d0a5740"><div class="sl-block-content" style="z-index: 16; font-size: 140%;"><pre><code class=" hljs groovy">MATCH p=shortestPath(
+  (<span class="hljs-string">keanu:</span>Person {<span class="hljs-string">name:</span> <span class="hljs-string">"Keanu Reeves"</span>})-
+  [:KNOWS*]-&gt;
+  (<span class="hljs-string">kevin:</span>Person {<span class="hljs-string">name:</span> <span class="hljs-string">"Kevin Bacon"</span>}))
+RETURN nodes(p)</code></pre></div></div>
+<div class="sl-block" data-block-type="text" style="height: auto; width: 960px; left: 1px; top: 420px;" data-block-id="384481bf2ab65c07a401c12079830773"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 17;">
+<p>Return the length of the shortest path between two nodes following a relationship</p>
+</div></div>
+<div class="sl-block" data-block-type="shape" style="width: 223px; height: 36px; left: 123px; top: 523px;" data-block-id="ff464930dcf80bf6a1ca5114f5610a0d"><div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="true" style="z-index: 18;" data-shape-stroke-color="#ff0000" data-shape-stroke-width="5"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 223 36"><defs><clippath id="shape-mask-33-1425839567632"><rect width="223" height="36"></rect></clippath></defs><rect width="223" height="36" clip-path="url(#shape-mask-33-1425839567632)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#ff0000" stroke-width="10"></rect></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="width: 235px; height: 39px; left: 42px; top: 630px;" data-block-id="7d58d8e744e9bfbd054f8dce56512508"><div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="rgba(0, 0, 0, 0)" data-shape-stretch="true" style="z-index: 19;" data-shape-stroke-color="#ff0000" data-shape-stroke-width="5"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 235 39"><defs><clippath id="shape-mask-34-1425839567636"><rect width="235" height="39"></rect></clippath></defs><rect width="235" height="39" clip-path="url(#shape-mask-34-1425839567636)" class="shape-element" fill="rgba(0, 0, 0, 0)" stroke="#ff0000" stroke-width="10"></rect></svg></div></div></section></section><section class="stack future" hidden="" aria-hidden="true" style="display: none;"><section style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 270px; height: auto;" data-block-id="709dcb6285c419ee371ab1a1316f1aea"><div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text">
+<h1>Data Modeling</h1>
+</div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="67b9b034a150c6904e2e1339cfe5fa3d">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 11;">
+<h1>Model incrementally</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+
+
+<div class="sl-block" data-block-type="text" style="height: auto; width: 960px; left: 0px; top: 140px;" data-block-id="a02540e27bce9dccb177c3a842ad6935"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 12;">
+<ul>
+	<li>You don't have to get all of the possible data into your model immediately</li>
+	<li>Start with a fairly simple model.</li>
+</ul>
+</div></div>
+<div class="sl-block" data-block-type="image" data-block-id="aef6bac67eb24ba85fb961b3690172b3" style="min-width: 30px; min-height: 30px; width: 746.666666666667px; height: 420px; left: 107px; top: 280px;"><div class="sl-block-content" style="z-index: 13;"><img data-natural-width="800" data-natural-height="450" style="visibility: visible;" data-src="https://static.versal.com/restapi/assets/99b0de84-5741-4f46-a045-d8aade86f12e"></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="9a56615c281d24b1c3157ff8598f3572">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 11;" dir="ui"><h1>Adding refinement and infomation over time</h1></div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+
+
+
+<div class="sl-block" data-block-type="image" data-block-id="ff5cbe4ebdf669b07837807502151740" style="min-width: 30px; min-height: 30px; width: 871.111111111111px; height: 490px; left: 45px; top: 210px;"><div class="sl-block-content" style="z-index: 13;"><img data-natural-width="800" data-natural-height="450" style="visibility: visible;" data-src="https://static.versal.com/restapi/assets/53439f4e-e9d8-49b1-b9a3-68abc3d30af6"></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="a47d2474e96a6bd834398f728263495b">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 11;" dir="ui">
+<h1>Provide indexes for important entities</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+
+
+
+<div class="sl-block" data-block-type="code" data-block-id="a918feadf83759142afaa8db81225b35" style="min-width: 30px; min-height: 30px; width: 490px; height: 70px; left: 230px; top: 210px;"><div class="sl-block-content" style="z-index: 12; font-size: 150%;"><pre><code class=" hljs delphi">CREATE <span class="hljs-keyword">INDEX</span> <span class="hljs-keyword">ON</span> :<span class="hljs-keyword">Label</span>(<span class="hljs-keyword">property</span>)</code></pre></div></div>
+<div class="sl-block" data-block-type="code" data-block-id="58a859b17654d0dddfbae5da6041c16d" style="min-width: 30px; min-height: 30px; width: 490px; height: 150px; left: 230px; top: 350px;"><div class="sl-block-content" style="z-index: 13; font-size: 150%;"><pre><code class=" hljs sql"><span class="hljs-operator"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">INDEX</span> <span class="hljs-keyword">ON</span> :Movie(title)
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">INDEX</span> <span class="hljs-keyword">ON</span> :Person(name)</span></code></pre></div></div></section><section class="future" aria-hidden="true" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 959px; left: 1px; top: 0px; height: auto;" data-block-id="8e473f76488ee7eb8fce63085cc79d5e">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" gramm="gramm" gramm_id="f98f89f2-b6a4-786b-3239-4b9f062349d8" gr_new_editor="true" style="overflow: visible; z-index: 11;" dir="ui">
+<h1>Indexes in querying</h1>
+</div>
+<div class="gr-btn-freemium" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly"></div>
+</div>
+</div>
+
+
+
+<div class="sl-block" data-block-type="code" style="width: 650px; height: 140px; left: 156px; top: 210px;" data-block-id="e8eb3cc4b10f45552121c20ee8b4b0ce"><div class="sl-block-content" style="z-index: 12; font-size: 150%;"><pre><code class=" hljs vbnet">MATCH (m:Movie)&lt;-[:ACTED_IN]-(actor)
+<span class="hljs-keyword">WHERE</span> m.title = <span class="hljs-string">"Cloud Atlas"</span>
+<span class="hljs-keyword">RETURN</span> actor;</code></pre></div></div>
+<div class="sl-block" data-block-type="code" style="width: 959px; height: 140px; left: 1px; top: 490px;" data-block-id="12a9c985d7f19a95f06a93ddb7640eae"><div class="sl-block-content" style="z-index: 13; font-size: 150%;"><pre><code class=" hljs css"><span class="hljs-tag">MATCH</span> (<span class="hljs-tag">m</span><span class="hljs-pseudo">:Movie</span> <span class="hljs-rules">{<span class="hljs-rule"><span class="hljs-attribute">title</span>:<span class="hljs-value"> <span class="hljs-string">'Cloud Atlas'</span></span></span></span>})&lt;<span class="hljs-tag">-</span><span class="hljs-attr_selector">[:ACTED_IN]</span><span class="hljs-tag">-</span>(<span class="hljs-tag">actor</span>)
+<span class="hljs-tag">RETURN</span> <span class="hljs-tag">actor</span>;</code></pre></div></div>
+<div class="sl-block" data-block-type="text" data-block-id="3558ace760d7617e670ff2f1a8e9f54c" style="height: auto; min-width: 30px; min-height: 30px; width: 600px; left: 181px; top: 140px;"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 14;" dir="ui"><p>Movie index enhances the performance</p></div></div>
+<div class="sl-block" data-block-type="text" data-block-id="af2f680b69200bd4f86b547f557258f0" style="height: auto; min-width: 30px; min-height: 30px; width: 600px; left: 181px; top: 420px;"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 15;">
+<p>Alternative syntax</p>
+</div></div></section></section><section hidden="" aria-hidden="true" class="future" style="display: none;"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 270px; height: auto;" data-block-id="9cda389769c8f1d8b1179e2170aac942"><div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" style="z-index: 10;">
+<h1>That's all</h1>
+</div></div>
+<div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 420px; height: auto;" data-block-id="30a83e353cc8e5c30d0937428644a3ce">
+<div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" dir="ui" gramm="gramm" gramm_id="7d86d8e6-395c-0934-3c20-98482f7aec51" gr_new_editor="true" style="overflow: visible; z-index: 12; font-size: 50%;">
+<h1>Thank you Neo4j!!</h1>
+
+<h3>Based on <strong>Online Training by Neo4j: Getting Started with Neo4j</strong>
+</h3>
+</div>
+<div class="gr-btn-freemium gr-shown gr-btn-freemium-checking" style="display: none; z-index: 2; margin-left: 768px; margin-top: 64px; opacity: 1;">	<div class="gr-btn-status" title="Protected by Grammarly">&nbsp;</div>
+</div>
+</div></section>
+				</div>
+				<div class="dimmer"></div>
+			<div class="backgrounds"><div class="slide-background present" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background stack future" data-loaded="true" style="display: block;"><div class="slide-background present" data-loaded="true" style="display: block;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div></div><div class="slide-background stack future" style="display: none;"><div class="slide-background present" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div></div><div class="slide-background stack future" style="display: none;"><div class="slide-background present" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div></div><div class="slide-background stack future" style="display: none;"><div class="slide-background present" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div></div><div class="slide-background future" style="display: none;"></div><div class="slide-background stack future" style="display: none;"><div class="slide-background present" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div></div><div class="slide-background stack future" style="display: none;"><div class="slide-background present" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div></div><div class="slide-background stack future" style="display: none;"><div class="slide-background present" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div></div><div class="slide-background stack future" style="display: none;"><div class="slide-background present" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div></div><div class="slide-background future" style="display: none;"></div></div><div class="progress" style="display: block;"><span style="width: 0px;"></span></div><aside class="controls" style="display: block;"><div class="navigate-left"></div><div class="navigate-right enabled"></div><div class="navigate-up"></div><div class="navigate-down"></div></aside><div class="slide-number"></div><div class="pause-overlay"></div><div id="aria-status-div" aria-live="polite" aria-atomic="true" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px 1px 1px 1px);">
+Neo4j
+	&nbsp;
+
+
+
+
+Draft
+
+Based on Online Training by Neo4j: Getting Started with Neo4j
+
+	&nbsp;
+
+</div></div>
+		</div>
+
+		
+<script>
+	var SLConfig = {"current_user":{"id":286204,"username":"manolotorres","name":"Manolo Torres","email":"manuel.torres.gil@gmail.com","description":null,"thumbnail_url":"https://lh5.googleusercontent.com/-bh_beDujZ9k/AAAAAAAAAAI/AAAAAAAABLg/46hkQ2qi4H4/photo.jpg?sz=50","pro":false,"enterprise":false,"enterprise_manager":false,"notify_on_receipt":true,"billing_address":null,"editor_tutorial_completed":true,"settings":{"id":112216,"present_controls":true,"present_upsizing":true,"editor_grid":true,"editor_snap":true,"developer_mode":false},"registered":true},"deck":{"id":356917,"slug":"deck","title":"Neo4j","description":"","visibility":"all","published_at":"2015-03-02T12:07:31.731Z","sanitize_messages":null,"thumbnail_url":"https://s3.amazonaws.com/media-p.slid.es/thumbnails/secure/0f4b1b/decks.jpg","view_count":0,"user":{"id":286204,"username":"manolotorres","name":"Manolo Torres","email":"manuel.torres.gil@gmail.com","description":null,"thumbnail_url":"https://lh5.googleusercontent.com/-bh_beDujZ9k/AAAAAAAAAAI/AAAAAAAABLg/46hkQ2qi4H4/photo.jpg?sz=50","pro":false,"enterprise":false,"enterprise_manager":false,"notify_on_receipt":true,"billing_address":null,"editor_tutorial_completed":true,"settings":{"id":112216,"present_controls":true,"present_upsizing":true,"editor_grid":true,"editor_snap":true,"developer_mode":false},"registered":true},"background_transition":"slide","transition":"slide","theme_id":null,"theme_font":"montserrat","theme_color":"white-blue","auto_slide_interval":0,"comments_enabled":true,"forking_enabled":true,"rolling_links":false,"center":false,"should_loop":false,"rtl":false,"version":2,"access_token":"pyyuRrzeBEd9LBNwiGCe5UkdXMAr","notes":{}}};
+</script>
+		<script defer="defer" src="./Neo4j  Slides_files/application-c12258ac827cdca04749e414e4cd87d5.js"></script>
+		<script defer="defer" src="./Neo4j  Slides_files/reveal.min-9da34be1bd820c8c9e792b8bfb495acf.js"></script>
+		
+
+	
+
+<script type="text/javascript" src="./Neo4j  Slides_files/highlight-7402c6534a9b758348350ef3a07c9a11.js"></script><aside class="presentation-controls"><div class="presentation-controls-content" style="height: 602px;"><h2>Presentation Controls</h2><div class="presentation-controls-section"><h2>Speaker View</h2><p>The control panel for your presentation. Includes speaker notes, an upcoming slide preview and more. It can be used as a remote control when opened from a mobile device. <a href="http://help.slides.com/knowledgebase/articles/333923" target="_blank">Learn more.</a></p><a class="button l outline" href="http://slides.com/manolotorres/deck/speaker" target="_blank">Open speaker view</a></div><div class="presentation-controls-section"><h2>Present Live</h2><p>Share this link with your audience to have them follow along with the presentation in real-time. <a href="http://help.slides.com/knowledgebase/articles/333924" target="_blank">Learn more.</a></p><div class="live-share"><input class="live-view-url input-field" type="text" value="http://slides.com/manolotorres/deck/live" readonly=""></div></div><div class="presentation-controls-section sl-form"><h2>Options</h2><div class="sl-checkbox outline fullscreen-toggle"><input id="fullscreen-checkbox" type="checkbox"><label for="fullscreen-checkbox">Fullscreen</label></div><div class="sl-checkbox outline controls-toggle" data-tooltip="Hide the presentation control arrows and progress bar." data-tooltip-alignment="r" data-tooltip-delay="500" data-tooltip-maxwidth="250"><input id="controls-checkbox" type="checkbox"><label for="controls-checkbox">Hide controls</label></div><div class="sl-checkbox outline upsizing-toggle" data-tooltip="Your content is automatically scaled up to fill as much of the browser window as possible. This option disables that scaling and favors the original authored at size." data-tooltip-alignment="r" data-tooltip-delay="500" data-tooltip-maxwidth="300"><input id="upsizing-checkbox" type="checkbox"><label for="upsizing-checkbox">Disable upsizing</label></div></div></div><footer class="presentation-controls-footer"><button class="button xl positive start-presentation">Start presentation</button></footer><div class="sl-scroll-shadow-top" style="height: 10px; opacity: 0; top: 0px;"></div><div class="sl-scroll-shadow-bottom" style="height: 10px; opacity: 1; bottom: 121px;"></div></aside><script src="./Neo4j  Slides_files/nr-593.min.js"></script><span style="height: 20px; width: 40px; min-height: 20px; min-width: 40px; position: absolute; opacity: 0.85; z-index: 8675309; display: none; cursor: pointer; background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAUCAYAAAD/Rn+7AAADU0lEQVR42s2WXUhTYRjHz0VEVPRFUGmtVEaFUZFhHxBhsotCU5JwBWEf1EWEEVHQx4UfFWYkFa2biPJiXbUta33OXFtuUXMzJ4bK3Nqay7m5NeZq6h/tPQ+xU20zugjOxR/+7/O8539+5znnwMtNTExwJtMb3L/fiLv3botCSmUjeCaejTOb39AiFothfHxcFIrHY8RksZjBsckJcOIRMfFsHD/SsbExUYpnI8DR0dGUGjSb0byhEJp5Uqg5CTSzc2CQleJbMEj9/ywBcGRkJEk9DQqouEVQT1sK444yWI9UonmTjGqauVLEIlHa9x8lAMbj8SSpp0rwKGMVvg8P46vbg0C7na8z8JsMcgHe7jlEa+edRhiLy8n/TUMfu6EvLElk+U0WtGwrTrdfAGQf5J8iiK4LVzDU28t8JtMSocf8E+l68myaNFXm/6rXslLK7ay5TOunuRvZWpJuvwAYjUaTpOIWoquuAZ219RTaxKYp9BbjycoN5FvL9qH9TBX5rvoGdJythvXYSTxdtRnWylO/ZdqrLsGwszzhWQ593z2KlAwCYCQSSZJ6ehZ0W7bD9VBLgN0NCqr3qR7R2rBrL3pu3Sb/7nDlz2uy6cG0OXk0GTbZXzNp8trsPAQdTj6frlWzN2DcXZGKQQAMh8NJ6rpyHe+PnkCr/CAFdZyvpfpjuvkifLF9wIt1Wwlo0OHie1RvWrKa93RjzfzliTzPKz3ltB0/Tevmwp14wGUgHAzSOoUEwFAolFaaBSuhnslPRkJexUJtZ6v5HtUeLswl33n1BgEY5fvhs9sJ3FAiT+QYyyvoAQJuD0KBAFRTJNAuz5/s3gJgMBhMJwrVFRThM5tY5zUF/A4X1f2fvQTRLCuBreoim0YmAbqNJryvPEXeeq46kaNdkQ/1HCncbJKPs9ZSv2VHGfWsZ2hfkhKAfr8/pdxWKx4wwD69PmVfNSOL+lr2w+gYqHpWDtXt1xQ8AMlWU0e1lqLd/APRHoP8AJqWrQG9gYxcPMsvSJUvAA4MDKTUJ7MZLaVy8v+qT21tcDx/OemePr0RTkNrur4A6PP5xCgBsL+/X4wiQDpuuVxOeL1eMYmYeDY6sOp0z+B0OuHxeEQhxkJMFosJiSO/UinOI/8Pc+l7KKArAT8AAAAASUVORK5CYII=);"></span></body></html>
