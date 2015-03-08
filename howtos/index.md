@@ -7,4 +7,4 @@ title: "Posts"
 Tutoriales paso a paso:
 
 * [Usando GitLab](Usando GitLab/)
-* [Introducción a Neo4j](Neo4j/)
+* [Introducción a Neo4j](Neo4j/Neo4j  Slides.html)
