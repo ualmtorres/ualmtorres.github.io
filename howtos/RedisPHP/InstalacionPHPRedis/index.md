@@ -1,3 +1,7 @@
+---
+layout: layout
+title: "Posts"
+---
 # Instalación del driver PhpRedis
 
 En Linux y Mac OS X el driver está disponible en forma de código fuente en el [repositorio GitHub del proyecto PhpRedis](https://github.com/nicolasff/phpredis), por lo que tendremos que descargarlo y compilarlo. Este driver está escrito en C. 

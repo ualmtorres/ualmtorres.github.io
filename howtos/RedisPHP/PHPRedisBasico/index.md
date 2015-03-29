@@ -1,3 +1,8 @@
+---
+layout: layout
+title: "Posts"
+---
+
 # Uso básico de PhpRedis
 
 ## Conexión a Redis

@@ -1,3 +1,7 @@
+---
+layout: layout
+title: "Posts"
+---
 # Interacción con Redis usando PHP
 
 Redis nos ofrece gran cantidad de clientes para interactuar con él mediante gran cantidad de lenguajes de programación ([Clientes Redis](http://redis.io/clients)). 

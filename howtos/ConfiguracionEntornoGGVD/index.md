@@ -1,3 +1,7 @@
+---
+layout: layout
+title: "Posts"
+---
 # Configuración del entorno de la asignatura
 
 En la asignatura usaremos una máquina virtual inicializada con Linux 14.04 LTS. Aquí veremos cómo instalar los componentes siguientes:

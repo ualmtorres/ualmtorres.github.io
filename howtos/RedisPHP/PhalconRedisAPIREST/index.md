@@ -1,3 +1,7 @@
+---
+layout: layout
+title: "Posts"
+---
 # Desarrollo de una API REST para Redis usando Phalcon
 
 [Phalcon](http://phalconphp.com/en/) es un framework PHP open source que ofrece un alto rendimiento y un bajo consumo de recursos. Estas prestaciones se deben a que, a diferencia de otros frameworks, Phalcon se instala como una extensión C de PHP. Al ser una extensión de C:
