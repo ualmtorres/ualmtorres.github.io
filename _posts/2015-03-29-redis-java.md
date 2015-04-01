@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Interacción con PHP usando Java
+title: Interacción con Redis usando Java
 category: posts
 ---
 
