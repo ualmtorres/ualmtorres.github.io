@@ -3,7 +3,6 @@ layout: layout
 title: "Posts"
 ---
 
-# DRAFT
 # Usando MongoDB y PHP
 
 MongoDB nos ofrece gran cantidad de clientes para interactuar con él mediante gran cantidad de lenguajes de programación ([Drivers MongoDB](http://api.mongodb.org/)).
@@ -34,7 +33,7 @@ A continuación hay que modificar el archivo `php.ini` para indicar que cargue l
 
 ```
 "extension=mongo.so"
-``
+```
 
 Ahora, reiniciaremos el servidor Apache para que tengan efecto los cambios
 
@@ -87,7 +86,7 @@ La búsqueda de documentos se realiza mediante el método `find()` aplicado a un
  
 ### Framework de agregación
 
-Las operaciones relacionadas con el framework de agregación se realizan con el método `aggregate()`. A este método le proporcionaremos el *pipeline* de operaciones (`$match`, `$project`, `$group`, `$sort`, ...*) en forma de array asociativo. El método devolverá un array asociativo `result` tal y como ocurre como cuando se usa el framework de agregación desde la shell.
+Las operaciones relacionadas con el framework de agregación se realizan con el método `aggregate()`. A este método le proporcionaremos el *pipeline* de operaciones (`$match`, `$project`, `$group`, `$sort`, ...) en forma de array asociativo. El método devolverá un array asociativo `result` tal y como ocurre como cuando se usa el framework de agregación desde la shell.
 
 <script src="https://gist.github.com/ualmtorres/70899dfccfbedaf5f59f.js"></script>
 
