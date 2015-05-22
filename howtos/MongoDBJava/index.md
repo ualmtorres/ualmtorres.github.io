@@ -1,0 +1,112 @@
+---
+layout: layout
+title: "Posts"
+---
+
+# Usando MongoDB y Java
+
+MongoDB nos ofrece gran cantidad de clientes para interactuar con él mediante gran cantidad de lenguajes de programación ([Drivers MongoDB](http://api.mongodb.org/)).
+
+En nuestro ejemplo interactuaremos con MongoDB mediante el driver Java para MongoDB.
+
+## Dependencias Maven
+
+Comenzaremos creando un proyecto Maven incluyendo la depedencia siguiente en el `pom.xml`. En el momento de crear este documento (Mayo 2015) la última versión del driver es la 3.0.1.
+
+<script src="https://gist.github.com/ualmtorres/3731484ea57c8522e0cd.js"></script>
+
+No obstante, si no te sientes cómodo con Maven y prefieres incluir el archivo JAR en el proyecto puedes [descargar el driver JDBC para MongoDB](http://central.maven.org/maven2/org/mongodb/mongo-java-driver/).
+
+## Conexión a MongoDB
+
+La forma básica de obtener una conexión a MongoDB es instanciando directamente la clase `MongoClient`. Si no indicamos nada, nos conectaremos al host y puerto por defecto.
+
+<script src="https://gist.github.com/ualmtorres/30c9e4f9598907c71276.js"></script>
+
+El host y el puerto se pueden pasar como parámetro al constructor de `MongoClient`. 
+
+La base de datos será seleccionada a través del método `getDatabase()` de la clase `MongoClient`.
+
+<script src="https://gist.github.com/ualmtorres/f988be29982f3c12c79d.js"></script>
+
+También podemos crear la conexión usando un objeto `ServerAddress` al que pasaremos el host y el puerto.
+ 
+<script src="https://gist.github.com/ualmtorres/b6e91174e11bc756ceed.js"></script>
+
+La desconexión de MongoDB se hace mediante el método `close()` de la clase `MongoClient`.
+
+<script src="https://gist.github.com/ualmtorres/8f1bc9a311a9bafdf462.js"></script>
+
+## Selección de la colección
+
+La clase `MongoDatabase` nos ofrece el método `getDatabase()` que nos permite seleccionar la base de datos con la que queremos trabajar. La clase `MongoDatabase` nos ofrece otros métodos interesantes aplicables a la base de datos (p.e. para cuestiones relacioneadas con *write  concern*)
+
+A continuación vemos cómo crear un objeto para una base de datos de ejemplo denominada `ggvdTest`. 
+
+<script src="https://gist.github.com/ualmtorres/cf00fedf513377377543.js"></script> 
+
+## Creación de documentos
+
+En la interacción con MongoDB usando el driver de Java se suele utilizar para casi todo la clase `Document`. Utilizaremos esta clase no sólo para los documentos que tengamos que introducir, sino para definir los criterios de eliminación, actualización, ordenación, y demás.
+
+El constructor de la clase `Document` admite dos parámetros: una clave y un valor. Para crear documentos con más de pareja clave-valor aplicaremos el método `append()` al constructor tantas veces como sea necesario encadenando las llamadas con un punto (`.`). Esta será la técnica básica para construir las listas JSON.
+
+<script src="https://gist.github.com/ualmtorres/d6759f5ceec5649217e7.js"></script>
+
+## Inserción de documentos
+
+Los documentos se insertarán con los métodos `insertOne()` o `insertMany()` dependiendo de si queremos insertar uno o varios documentos simultáneamente. Ambos métodos se aplican sobre la colección correspondiente.  
+
+A continuación se muestran un par de métodos para insertar documentos con `insertOne()`. El primer método inserta un documento sencillo. El segundo método inserta un documento *complejo* con un array en una clave y un documento anidado en otra.
+
+<script src="https://gist.github.com/ualmtorres/772dea93b5bd4489753e.js"></script>
+
+El código siguiente ilustra un ejemplo para insertar una lista de documentos con `insertMany()`.
+
+<script src="https://gist.github.com/ualmtorres/4270d8d35875eec40eb5.js"></script>
+
+### Búsqueda de documentos
+
+La búsqueda de documentos se realiza mediante el método `find()` aplicado a una colección. El método `find()` devuelve un objeto de la clase `FindIterable`. Sobre un objeto `FindIterable` podemos usar el método `first()`, que como su nombre indica nos devuelve el primer elemento de un objeto `FindIterable`. 
+
+A continuación se muestra un ejemplo combinado con el método `toJson()` que muestra el resultado de una consulta en forma de documento en JSON.
+
+<script src="https://gist.github.com/ualmtorres/96548d1329318724aa2d.js"></script>
+
+Si en lugar de recuperar el primer documento queremos recorrer el conjunto de resultados (p.e. para mostrarlos), tenemos que convertir el objeto `FindIterable` que devuelve el método `find()` en un *cursor*. Para ello usaremos el método `iterator()`. El método `iterator()` devuelve un objeto `MongoCursor` que podremos recorrer con el método `next()`. 
+
+Una vez sobre el documento, podremos aplicar métodos `getString()`, `getInteger()` y demás, similares a los usados con JDBC. 
+
+<script src="https://gist.github.com/ualmtorres/f9adae627e7d7eb63d5b.js"></script>
+
+### Ordenación, proyección, skip y limit
+
+Además de `first()`, la clase `FindIterable` nos proporciona métodos interesantes, como son los métodos para la ordenación (`sort()`), proyección (`projection()`), salto (`skip()`) y limitación (`limit()`). 
+
+* `sort()` toma como un documento como argumento indicando los campos por los que se quiere ordenar y el criterio de ordenación: ascendente (1) o descendente (-1), de la misma forma que en la shell de MongoDB.
+* `projection()` toma como un documento como argumento indicando los campos que se quieren mostrar (1) u ocultar (0), de la misma forma que en la shell de MongoDB.
+* `skip()` y `limit()` toman un entero como argumento que representa el número de documentos a saltar y limitar, respectivamente.
+
+ATENCION: `sort()`, `projection()`, `skip()` y `limit()` devuelven un objeto `FindIterable`. Para poder recorrerlo hay que convertirlo en un *cursor* aplicando el método `iterator()`.
+
+<script src="https://gist.github.com/ualmtorres/176a8d2b071ec2e19b64.js"></script>
+
+### Eliminación de documentos
+
+Para eliminar documentos con el driver de MongoDB podemos usar varios métodos (`deleteOne()`, `deleteMany()` y `findOneAndDelete()`). `findAndDelete()` permite realizar de forma atómica la búsqueda de los documentos a eliminar y su posterior eliminación. A este método le pasaremos el documento con los criterios, y de forma optativa las opciones de eliminación. 
+
+<script src="https://gist.github.com/ualmtorres/f6d9bf154f6e349593a7.js"></script>
+
+### Actualización de documentos
+
+Para actualizar documentos con el driver de MongoDB podemos usar varios métodos (`updateOne()`, `updateMany()` y `findOneAndUpdate()`), que como se puede comprobar guardan un gran parecido con sus homólogos para eliminar documentos. `findAndUpdate()` permite realizar de forma atómica la búsqueda de los documentos a eliminar y su posterior eliminación. A este método le pasaremos el documento con los criterios, la actualización y de forma optativa las opciones de actualización. 
+
+<script src="https://gist.github.com/ualmtorres/f971548f9ee900eadb19.js"></script>
+
+### Framework de agregación
+
+Las operaciones relacionadas con el framework de agregación se realizan con el método `aggregate()`. A este método le proporcionaremos el *pipeline* de operaciones (`$match`, `$project`, `$group`, `$sort`, ...) en forma de lista. El método devolverá un objeto `AggregationIterable` que se podrá recorrer como un *cursor*.
+
+<script src="https://gist.github.com/ualmtorres/99f2d7a426a1b3b8294b.js"></script>
+
+Puedes [descargar el código de este tutorial](https://github.com/ualmtorres/MongoDBJava) del GitHub de este proyecto.
