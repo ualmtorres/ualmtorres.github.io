@@ -29,10 +29,17 @@ Si estuviésemos utilizando XAMPP, tendríamos que utilzar el `pecl` de XAMPP. P
 sudo /Applications/XAMPP/xamppfiles/bin/pecl install mongo
 ```
 
+Si no tienes instalado `PEAR` y el paquete `php5-dev` deberás instalarlos con
+
+```
+sudo apt-get install -y php-pear
+sudo apt-get install -y php5-dev
+```
+
 A continuación hay que modificar el archivo `php.ini` para indicar que cargue la extensión de MongoDB (`mongo.so`). `php.ini` se encuentra en `/etc/php5/apache2/php.ini`. Tendrás que añadir lo siguiente en la zona de extensiones.
 
 ```
-"extension=mongo.so"
+extension=mongo.so
 ```
 
 Ahora, reiniciaremos el servidor Apache para que tengan efecto los cambios
