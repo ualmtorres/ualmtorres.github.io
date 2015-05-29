@@ -223,7 +223,7 @@ Después, actualizaremos nuestro sistema e instalaremos el paquete de PHP-Phalco
 
 ```
 sudo apt-get update
-sudo apt-get install -y php5-phalcon libpcre3-dev
+sudo apt-get install -y php5-phalcon libpcre3-dev php5-dev
 ```
 
 La extensión de Phalcon la obtendremos descargado su código fuente del [repositorio GitHub de Phalcon](https://github.com/phalcon/cphalcon), compilando el código fuente e instalándolo en nuestro sistema.
