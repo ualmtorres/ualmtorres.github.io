@@ -344,11 +344,11 @@ ___
 Puedes cambiar los permisos de la carpeta de publicación de Apache para no tener que crear siempre los archivos con `sudo`
 
 ```
-sudo chgrp www-data /var/www
-sudo chmod 775 /var/www
-sudo chmod g+s /var/www
+sudo chgrp -R www-data /var/www
+sudo chmod -R 775 /var/www
+sudo chmod -R g+s /var/www
 sudo useradd -G www-data ubuntu
-sudo chown ubuntu /var/www/
+sudo chown -R ubuntu /var/www/
 ```
 
 Para algún proyecto PHP puede que necesites [Composer](https://getcomposer.org/), un gestor de dependencias para PHP.
