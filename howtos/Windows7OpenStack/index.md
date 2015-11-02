@@ -1,3 +1,8 @@
+---
+layout: layout
+title: "Posts"
+---
+
 # Creación de una imagen Windows 7 para OpenStack
 
 A menudo necesitamos en OpenStack disponer de imágenes diferentes de las que suelen estar disponibles en la red, las cuales suelen ser distribuciones de Linux en su versión servidor. 
