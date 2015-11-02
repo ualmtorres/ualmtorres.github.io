@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Creación de una imagen Windows 7 para OpensStack
+title: Creación de una imagen Windows 7 para OpenStack
 category: posts
 ---
 
