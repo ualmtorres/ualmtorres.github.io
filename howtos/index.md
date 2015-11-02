@@ -6,6 +6,7 @@ title: "Posts"
 # Mis How To
 Tutoriales paso a paso:
 
+* <a href = 'Windows7OpenStack/' target = '_blank'>Creación de una imagen Windows 7 para OpenStack</a>
 * <a href = 'http://ualmtorres.github.io/howtos/Usando%20GitLab/' target = '_blank'>Usando GitLab</a>
 * <a href = 'ConfiguracionEntornoGGVD/' target = '_blank'>Configuración entorno LAMP + NoSQL (Redis, MongoDB, Neo4j)</a>
 * <a href = 'RedisPHP/' target = '_blank'>Interacción con Redis usando PHP</a>
