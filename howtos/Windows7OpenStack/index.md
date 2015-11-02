@@ -137,19 +137,9 @@ Aparecerá un cuadro de diálogo preguntando si queremos instalar el controlador
 
 Aparecerá un cuadro de diálogo informándonos que el controlador ha sido instalado correctamente. Repetiremos estos pasos para el _Dispostivo PCI_. Tras esto, todos los disposivos de nuestra máquina virtual están configurados correctamente. 
 
-### Configurar MTU (Sólo en Windows 7)
+Por último, configuraremos la red, comprobaremos que funciona correctamente y apagaremos la máquina virtual.
 
-La Unidad Máxima de Transferencia (MTU) expresa el tamaño en bytes de la unidad de datos más grande que puede enviarse usando un protocolo de comunicaciones. Un tamaño MTU no adecuado puede derivar en la fragmentación y pérdida de paquetes.
-
-De forma predeterminada, Windows 7, tiene establecido el tamaño en 1500. Esto provoca que nuestra máquina virtual experimente problemas de conexión a Internet. El valor adecuado MTU que debemos especificar es 1432. Veamos cómo hacerlo.
-
-**Abrir como Administrador** una ventana de <i>Símbolo del sistema</i>. Introducimos `netsh interface ipv4 show interfaces` para conocer la lista de tarjetas de red disponibles en la máquina virtual. En el ejemplo vemos que la que tenemos que configurar la de índice 11, que es la que tiene MTU a 1500.
-
-![](images/24_1.png)
-
-Para cambiar la MTU y hacer el cambio persistente, escribiremos `netsh interface ipv4 set subinterface <indice> mtu=1432 store=persistent`. En nuestro caso el valor de índice es `11`. La interfaz de comandos devolverá _Aceptar_ si el cambio se ha llevado a cabo con éxito.
-
-Por último, configuraremos la red, añadiendo la dirección de un DNS, y apagaremos la máquina virtual.
+> NOTA: Si no puedes navegar correctamente, consulta el Anexo al final de este post.
 
 ### Desconectar las unidades de CD de la máquina virtual
 
@@ -260,4 +250,18 @@ slmgr /upk <<clave>>
 ```
 
 A continuación, ya podremos hacer el _snapshot_. Al instanciar este snapshot e iniciar sesión, se le pedirá al usuario que introduzca un número de serie válido.
+
+## Anexo. Configurar MTU (Sólo en el caso de tener problemas de conexión a Internet)
+
+En la creación de algunas imágenes hemos experimentado problemas de conexión a Internet. Para ello, basta comprobar si podemos cargar cualquier página en el navegador. Si no es así, y todos los pasos anteriores han sido llevados a cabo de forma correcta, la solución puede estar en cambiar la Unidad Máxima de Transferencia (MTU).
+
+MTU expresa el tamaño en bytes de la unidad de datos más grande que puede enviarse usando un protocolo de comunicaciones. Un tamaño MTU no adecuado puede derivar en la fragmentación y pérdida de paquetes.
+
+De forma predeterminada, Windows 7, tiene establecido el tamaño en 1500. Esto puede provocar que nuestra máquina virtual experimente problemas de conexión a Internet. En tal caso, el valor adecuado MTU que debemos especificar es 1432. Veamos cómo hacerlo.
+
+**Abrir como Administrador** una ventana de <i>Símbolo del sistema</i>. Introducimos `netsh interface ipv4 show interfaces` para conocer la lista de tarjetas de red disponibles en la máquina virtual. En el ejemplo vemos que la que tenemos que configurar la de índice 11, que es la que tiene MTU a 1500.
+
+![](images/24_1.png)
+
+Para cambiar la MTU y hacer el cambio persistente, escribiremos `netsh interface ipv4 set subinterface <indice> mtu=1432 store=persistent`. En nuestro caso el valor de índice es `11`. La interfaz de comandos devolverá _Aceptar_ si el cambio se ha llevado a cabo con éxito.
 
