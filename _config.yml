@@ -6,7 +6,7 @@ rdiscount:
 exclude: [ Gemfile, Gemfile.lock, gems, _assets, bower_components ]
 title : Manuel Torres - GitHub Pages
 production_url : http://ualmtorres.github.com
-description: "Througths, flamewars, utilities, tutorials, codes, projects and other things by Carlos Alexandro Becker."
+description: "Tutoriales sobre temas variados - Manuel Torres"
 disqus_shortname: ualmtorres
 author :
   name : Manuel Torres

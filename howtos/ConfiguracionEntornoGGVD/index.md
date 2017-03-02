@@ -4,7 +4,7 @@ title: "Posts"
 ---
 # Configuración del entorno de la asignatura
 
-En la asignatura usaremos una máquina virtual inicializada con Linux 14.04 LTS. Aquí veremos cómo instalar los componentes siguientes:
+En la asignatura usaremos una máquina virtual inicializada con Linux 16.04 LTS (Usaremos un Linux Desktop, preferiblemente XUbuntu). Aquí veremos cómo instalar los componentes siguientes:
 
 * [LAMP](#lamp)
 * [Git](Git)
@@ -13,15 +13,38 @@ En la asignatura usaremos una máquina virtual inicializada con Linux 14.04 LTS.
 * [Neo4j](#neo4j)
 * [Otros](#otros)
 
+## Configuración inicial
+
+Antes de nada, actualizaremos nuestro sistema 
+
+```
+sudo apt-get update
+sudo apt-get upgrade
+```
+
+Si durante el proceso, el sistema nos pregunta si deseamos actualizar el archivo de `sudoers` contestaremos que no, que es la opción predetermianda
+
+````
+Configuration file '/etc/sudoers'
+ ==> Modified (by you or by a script) since installation.
+ ==> Package distributor has shipped an updated version.
+   What would you like to do about it ?  Your options are:
+    Y or I  : install the package maintainer's version
+    N or O  : keep your currently-installed version
+      D     : show the differences between the versions
+      Z     : start a shell to examine the situation
+ The default action is to keep your current version.
+*** sudoers (Y/I/N/O/D/Z) [default=N] ? N
+````
+
 ## LAMP
 ___
 
-La información para instalar un entorno LAMP con Apache, MySQL y PHP ha sido extraída del [Tutorial de Digital Ocean para instalar un stack LAMP](https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-on-ubuntu)
+La información para instalar un entorno LAMP con Apache, MySQL y PHP ha sido extraída del [Tutorial de Unixmen para instalar un stack LAMP](https://www.unixmen.com/how-to-install-lamp-stack-on-ubuntu-16-04/)
 
 ### Instalación de Apache
 
 ```
-sudo apt-get update
 sudo apt-get install -y apache2
 ```
 
@@ -32,7 +55,7 @@ Ya tenemos instalado Apache. La carpeta raíz de publicación predeterminada don
 Instalaremos el servidor de MySQL y los paquetes necesarios para que los scripts PHP puedan conectarse a bases de datos MySQL. 
 
 ```
-sudo apt-get install -y mysql-server libapache2-mod-auth-mysql php5-mysql
+sudo apt-get install -y mysql-server php-mysql
 ```
 
 A continuación inicializaremos el diccionario de datos de MySQL creando las tablas de sistema necesarias. En la instalación de MySQL nos pedirá una contraseña para el usuario `root`. Es importante la contraseña que introduzcamos porque habrá que recordarla más adelante.
@@ -52,14 +75,14 @@ sudo /usr/bin/mysql_secure_installation
 Instalaremos los paquetes de PHP, el módulo PHP para el servidor Apache y la extensión de cifrado.
 
 ```
-sudo apt-get install -y php5 libapache2-mod-php5 php5-mcrypt
+sudo apt-get install -y php libapache2-mod-php php-mcrypt
 ```
 
 A continuación, modificaremos el archivo `/etc/apache2/mods-enabled/dir.conf` para que priorizar la carga de archivos `.php` respecto a los `.html`. Eso lo haremos colocando `index.php` antes que `index.html`.
 
 ```
 <IfModule mod_dir.c>
-  DirectoryIndex index.php index.html index.cgi index.pl index.php index.xhtml index.htm
+  DirectoryIndex index.php index.html index.cgi index.pl index.xhtml index.htm
 </IfModule>" 
 ```
 
@@ -149,7 +172,7 @@ PhpRedis es el driver que utilizaremos para interactuar con Redis desde PHP. La 
 Antes de descargar el código fuente de PhpRedis instalaremos el paquete `php-dev`. Este paquete es necesario para compilar módulos PHP adicionales a partir de código fuente.
 
 ```
-sudo apt-get install -y php5-dev
+sudo apt-get install -y php-dev
 ```
 
 El código fuente del driver lo descargaremos a partir del [repositorio GitHub de PhpRedis](https://github.com/phpredis/phpredis)
@@ -170,9 +193,9 @@ make
 sudo make install
 ```
 
-Tras el proceso de instalación, se nos informará en qué carpeta se ha instalado la extensión. La carpeta de instalación de la extensión se situará debajo de `/usr/lib/php5/`. En mi caso la extensión se ha instalado en `/usr/lib/php5/20121212`.
+Tras el proceso de instalación, se nos informará en qué carpeta se ha instalado la extensión. La carpeta de instalación de la extensión se situará debajo de `/usr/lib/php/`. En mi caso la extensión se ha instalado en `/usr/lib/php/20151012`.
 
-A continuación hay que modificar el archivo `php.ini` para indicar que cargue la extensión de PhpRedis (`redis.so`). `php.ini` se encuentra en `/etc/php5/apache2/php.ini`. Tendrás que añadir lo siguiente en la zona de extensiones.
+A continuación hay que modificar el archivo `php.ini` para indicar que cargue la extensión de PhpRedis (`redis.so`). `php.ini` se encuentra en `/etc/php/7.0/apache2/php.ini`. Tendrás que añadir lo siguiente en la zona de extensiones.
 
 ```
 extension=redis.so
@@ -211,31 +234,17 @@ sudo nano /var/www/html/redis.php
 
 ### Instalación del framework Phalcon
 
-[Phalcon](http://phalconphp.com) es un framework para PHP que se cargará como una extensión PHP en `php.ini`. Al igual que PhpRedis, la extensión no la encontramos directamente, sino que tendremos que construirla compilando en nuestro equipo su código fuente.
+[Phalcon](http://phalconphp.com) es un framework para PHP que se cargará como una extensión PHP en `php.ini`. 
 
-En primer lugar añadiremos a nuestro sistema el repositorio de Phalcon 
-
-```
-sudo apt-add-repository -y ppa:phalcon/stable
-```
-
-Después, actualizaremos nuestro sistema e instalaremos el paquete de PHP-Phalcon y el que soporta el uso de expresiones regulares con sintaxis Perl. Este último es necesario para expresar la reescritura de URL's que aparece en los archivos `.htaccess` que usamos con Phalcon.
+En primer lugar, descargaremos e instalaremos Phalcon
 
 ```
-sudo apt-get update
-sudo apt-get install -y php5-phalcon libpcre3-dev php5-dev
+curl -s "https://packagecloud.io/install/repositories/phalcon/stable/script.deb.sh" | sudo bash
+
+sudo apt-get install php7.0-phalcon
 ```
 
-La extensión de Phalcon la obtendremos descargado su código fuente del [repositorio GitHub de Phalcon](https://github.com/phalcon/cphalcon), compilando el código fuente e instalándolo en nuestro sistema.
-
-```
-cd ~
-git clone --depth=1 git://github.com/phalcon/cphalcon.git
-cd cphalcon/build
-sudo ./install
-```
-
-A contunuación hay que modificar el archivo `php.ini` para indicar que cargue la extensión de Phalcon (`phalcon.so`). `php.ini` se encuentra en `/etc/php5/apache2/php.ini`. Tendremos que añadir la línea siguiente en la zona de extensiones.
+A contunuación hay que modificar el archivo `php.ini` para indicar que cargue la extensión de Phalcon (`phalcon.so`). `php.ini` se encuentra en `/etc/php/7.0/apache2/php.ini`. Tendremos que añadir la línea siguiente en la zona de extensiones.
 
 ```
 extension=phalcon.so
@@ -247,14 +256,7 @@ Ahora, reiniciaremos el servidor Apache para que tengan efecto los cambios
 sudo service apache2 restart
 ```
 
-El código fuente de Phalcon ya no lo necesitamos, por lo que lo podemos borrar. Nos situaremos sobre su carpeta superior y lo eliminaremos
-
-```
-cd ~
-sudo rm -rf cphalcon
-```
-
-Podemos comprobar con `phpinfo.php` que la extensión Phalcon ya está instlada en nuestro sistema
+Podemos comprobar con `phpinfo.php` que la extensión Phalcon ya está instalada en nuestro sistema
 
 ![](images/phalconExtension.jpg)
 
@@ -265,12 +267,13 @@ ___
 
 Su instalación es muy sencilla. Simplemente, tenemos que descargarla. No obstante, antes de su descarga hay que seguir dos pasos:
 
-* Importar la clave pública usada por el sistema de gestión de paquetes.
+* Importar la clave pública usada por el sistema de gestión de paquetes para asegurar la consistencia y autenticidad de los paquetes.
 * Crear un *list file* para MongoDB
 
 ```
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
-echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-org/3.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
+
+echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
 
 sudo apt-get update
 sudo apt-get install -y mongodb-org
@@ -311,19 +314,29 @@ ___
 
 [Neo4j](http://neo4j.com/) es una base de datos NoSQL que pertenece a la familia de las Bases de datos orientadas a grafos.
 
-Su instalación es muy sencilla. Simplemente, tenemos que descargarla y descomprimirla. No obstante, necesita que esté instalado JDK 7, ya sea el Oracle JDK 7 o el Open JDK 7.
+Su instalación es muy sencilla. Simplemente, tenemos que descargarla y añadir los repositorios Debian para Neo4j. No obstante, necesita que esté instalado JDK 8, ya sea el Oracle JDK 8 o el Open JDK 8.
+
+La descarga e instalación se realiza con los comandos siguientes
 
 ```
-wget http://neo4j.com/artifact.php?name=neo4j-community-2.1.7-unix.tar.gz
-tar -xf *.gz
+wget -O - https://debian.neo4j.org/neotechnology.gpg.key | sudo apt-key add -
+echo 'deb https://debian.neo4j.org/repo stable/' | sudo tee /etc/apt/sources.list.d/neo4j.list
+sudo apt-get update
 
-sudo apt-get install -y openjdk-7-jdk 
+
+sudo apt-get install neo4j
 ```
 
-Neo4j quedará instalado en una carpeta de nuestro sistema. Desde ella podemos lanzar Neo4j
+Para la instalación de JDK 8 usaremos el comando
 
 ```
-./bin/neo4j console
+sudo apt-get install -y openjdk-8-jdk 
+```
+
+Para lanzar Neo4j escribiremos
+
+```
+neo4j console
 ```
 
 Con esto, ya tendremos un cliente disponible en `http://localhost:7474`
@@ -360,3 +373,4 @@ curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 ```
 
+    

@@ -5,7 +5,7 @@ title: "Posts"
 
 # Usando MongoDB y Java
 
-MongoDB nos ofrece gran cantidad de clientes para interactuar con él mediante gran cantidad de lenguajes de programación ([Drivers MongoDB](http://api.mongodb.org/)).
+MongoDB nos ofrece gran cantidad de clientes para interactuar con él mediante gran cantidad de lenguajes de programación ((http://api.mongodb.org/)[Drivers MongoDB]).
 
 En nuestro ejemplo interactuaremos con MongoDB mediante el driver Java para MongoDB.
 
