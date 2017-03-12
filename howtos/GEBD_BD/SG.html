@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.5.dev">
 <meta name="author" content="Gestión Empresarial con Big Data - Nivel I. Universidad de Almería">
-<title>Módulo de Bases de datos (12 horas)</title>
+<title>Bases de datos - Importación de la base de datos Sporting Goods</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -421,82 +421,99 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Módulo de Bases de datos (12 horas)</h1>
+<h1>Bases de datos - Importación de la base de datos Sporting Goods</h1>
 <div class="details">
 <span id="author" class="author">Gestión Empresarial con Big Data - Nivel I. Universidad de Almería</span><br>
 </div>
 </div>
 <div id="content">
-<div id="preamble">
-<div class="sectionbody">
 <div class="paragraph">
-<p><a href="http://ual.es/cursos/bigdata1/">Web oficial del curso</a></p>
+<p>A partir del <a href="scripts/SG/SG.sql">script de inicialización de la base de datos Sporting Goods</a> podemos crear una base de datos MySQL sobre artículos deportivos.</p>
+</div>
+<div class="paragraph">
+<p>La creación de la base de datos la haremos desde MySQL Workbench en local. Para ello, una vez iniciado nuestro servidor MySQL local, estableceremos la conexión con dicho servidor. A continuación, ejecutaremos el script SG.sql que creará el esquema SG (Sporting Goods – Artículos deportivos) si no existe, e inicializará un conjunto de tablas con datos de ejemplo.</p>
+</div>
+<div class="paragraph">
+<p>El siguiente paso será obtener el esquema de la base de datos de SG. Para ello, desde el menú <code>Database | Reverse Engineering</code> se iniciará un asistente que nos guiará en el proceso de importación de las tablas del esquema SG.</p>
+</div>
+<div class="paragraph">
+<p>A continuación se muestran los pasos que hay que seguir para crear el esquema:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Selección de la conexión al servidor MySQL</p>
+<div class="imageblock">
+<div class="content">
+<img src="docs/SGImport01.jpg" alt="SGImport01.jpg">
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="truematerial-b-sico"><a class="anchor" href="#truematerial-b-sico"></a>1. Material básico</h2>
-<div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p><a href="sql.html" target="_blank">Consultas</a></p>
 </li>
 <li>
-<p><a href="SG.html">Ingeniería inversa para obtener el diagrama de una base de datos</a></p>
-</li>
-</ul>
+<p>Conexión a la base de datos y recuperación de la información del servidor.</p>
+<div class="imageblock">
+<div class="content">
+<img src="docs/SGImport02.jpg" alt="SGImport02.jpg">
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="truebases-de-datos-de-ejemplo"><a class="anchor" href="#truebases-de-datos-de-ejemplo"></a>2. Bases de datos de ejemplo</h2>
-<div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p>Base de datos de Recursos Humanos (RRHH)</p>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="scripts/RRHH/RRHH.sql">Script de inicialización de la Base de datos RRHH</a></p>
 </li>
 <li>
-<p><a href="tables/RRHH/Departamento.html" target="_blank">Tabla Departamento</a></p>
-</li>
-<li>
-<p><a href="tables/RRHH/Empleado.html" target="_blank">Tabla Empleado</a></p>
-</li>
-<li>
-<p><a href="https://github.com/ualmtorres/GEBD_BD/tree/master/scripts/RRHH" target="_blank">Código de las consultas</a></p>
-</li>
-<li>
-<p>Diagrama (<a href="models/RRHH.mwb">.mwb</a>/<a href="models/RRHH.pdf">.pdf</a>)</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Base de datos de Sporting Goods (SG)</p>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="scripts/SG/SG.sql">Script de inicialización de la Base de datos SG</a></p>
-</li>
-<li>
-<p>Diagrama (<a href="models/SG.mwb">.mwb</a>/<a href="models/SG.pdf">.pdf</a>)</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
+<p>Selección del esquema al que hacer ingeniería inversa para obtener sus componentes. Seleccionaremos el esquema <em>SG</em>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="docs/SGImport03.jpg" alt="SGImport03.jpg">
 </div>
 </div>
+</li>
+<li>
+<p>Recuperar la información de los objetos del esquema</p>
+<div class="imageblock">
+<div class="content">
+<img src="docs/SGImport04.jpg" alt="SGImport04.jpg">
+</div>
+</div>
+</li>
+<li>
+<p>Seleccionar los objetos a los que hacer ingeniería inversa. Importaremos todas las tablas del esquema.</p>
+<div class="imageblock">
+<div class="content">
+<img src="docs/SGImport05.jpg" alt="SGImport05.jpg">
+</div>
+</div>
+</li>
+<li>
+<p>Ejecutar la importación de objetos y colocarlos en el diagrama.</p>
+<div class="imageblock">
+<div class="content">
+<img src="docs/SGImport06.jpg" alt="SGImport06.jpg">
+</div>
+</div>
+</li>
+<li>
+<p>Ver los resultados de la importación.</p>
+<div class="imageblock">
+<div class="content">
+<img src="docs/SGImport07.jpg" alt="SGImport07.jpg">
+</div>
+</div>
+<div class="paragraph">
+<p>Una vez finalizada la importación, aparecerán todas las tablas importadas en el diagrama. Las moveremos y las distribuiremos adecuadamente sobre el diagrama.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="docs/SGImport08.jpg" alt="SGImport08.jpg">
+</div>
+</div>
+<div class="paragraph">
+<p>Una vez definidas las relaciones, tendremos disponible el diagrama de la base de datos SG y podremos realizar las consultas más fácilmente.</p>
+</div>
+</li>
+</ol>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-03-12 23:34:31 CET
+Last updated 2017-03-12 23:31:05 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
