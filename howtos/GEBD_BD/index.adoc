@@ -11,7 +11,7 @@ http://ual.es/cursos/bigdata1/[Web oficial del curso]
 == Material básico
 
 * link:sql.html[Consultas, window="_blank"]
-* link:SG.html[Ingeniería inversa para obtener el diagrama de una base de datos]
+* link:SG.html[Ingeniería inversa para obtener el diagrama de una base de datos, window="_blank"]
 
 == Bases de datos de ejemplo
 
