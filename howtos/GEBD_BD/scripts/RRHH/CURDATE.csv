@@ -1,0 +1,15 @@
+nombre,empleo,CURDATE(),fechaEntrada,"CURDATE() - fechaEntrada"
+Smith,Ordenanza,2017-03-11,2000-12-17,169094
+Allen,Vendedor,2017-03-11,2001-02-20,160091
+Ward,Vendedor,2017-03-11,2001-02-22,160089
+Jones,Directivo,2017-03-11,2001-04-02,159909
+Martin,Vendedor,2017-03-11,2001-09-28,159383
+Blake,Directivo,2017-03-11,2001-05-01,159810
+Clark,Directivo,2017-03-11,2001-06-09,159702
+Scott,Analista,2017-03-11,2002-12-09,149102
+King,Director,2017-03-11,2001-11-17,159194
+Turner,Vendedor,2017-03-11,2001-09-08,159403
+Adams,Ordenanza,2017-03-11,2003-01-12,140199
+James,Ordenanza,2017-03-11,2001-12-03,159108
+Ford,Analista,2017-03-11,2001-12-03,159108
+Miller,Ordenanza,2017-03-11,2002-01-23,150188

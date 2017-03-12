@@ -52,16 +52,11 @@ Ya tenemos instalado Apache. La carpeta raíz de publicación predeterminada don
 
 ### Instalación de MySQL 
 
-Instalaremos el servidor de MySQL y los paquetes necesarios para que los scripts PHP puedan conectarse a bases de datos MySQL. 
+Instalaremos el servidor de MySQL y los paquetes necesarios para que los scripts PHP puedan conectarse a bases de datos MySQL. En la instalación de MySQL nos pedirá una contraseña para el usuario `root`. Es importante la contraseña que introduzcamos porque habrá que recordarla más adelante.
+
 
 ```
 sudo apt-get install -y mysql-server php-mysql
-```
-
-A continuación inicializaremos el diccionario de datos de MySQL creando las tablas de sistema necesarias. En la instalación de MySQL nos pedirá una contraseña para el usuario `root`. Es importante la contraseña que introduzcamos porque habrá que recordarla más adelante.
-
-```
-sudo mysql_install_db
 ```
 
 Es conveniente hacer que nuestra instalación de MySQL sea más segura. En concreto podremos establecer una contraseña para las cuentas de `root`, eliminar las cuentas `root`que sean accesibles desde fuera de `localhost`, eliminar las cuentas de usuarios anónimos, eliminar la base de datos `test` (que de forma predeterminada puede ser accedida por todos los usuarios, incluidos los anónimos), y los privilegios que permiten a cualquier usuario acceder a bases de datos que comiencen por `test_`.

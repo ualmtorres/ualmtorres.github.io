@@ -1,0 +1,4 @@
+numero,nombre,empleo,jefe,fechaEntrada,sueldo,complemento,numeroDepartamento,departamento,ciudad
+8000,Lucas,Directivo,7839,2017-02-01,2000,NULL,40,Operaciones,Boston
+8001,Navarro,Vendedor,8000,2017-03-01,1500,200,40,Operaciones,Boston
+8002,Casinello,Vendedor,8000,2017-03-01,1300,100,40,Operaciones,Boston

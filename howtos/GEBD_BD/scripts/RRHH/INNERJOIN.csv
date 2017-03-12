@@ -1,0 +1,4 @@
+numero,nombre,empleo,jefe,fechaEntrada,sueldo,complemento,numeroDepartamento,nombre
+7782,Clark,Directivo,7839,2001-06-09,2450,NULL,10,Contabilidad
+7839,King,Director,NULL,2001-11-17,5000,NULL,10,Contabilidad
+7934,Miller,Ordenanza,7782,2002-01-23,1300,NULL,10,Contabilidad

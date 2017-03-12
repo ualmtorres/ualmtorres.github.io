@@ -1,0 +1,4 @@
+numero,nombre,empleo,jefe,fechaEntrada,sueldo,complemento,numeroDepartamento
+7788,Scott,Analista,7566,2002-12-09,3000,NULL,20
+7839,King,Director,NULL,2001-11-17,5000,NULL,10
+7902,Ford,Analista,7566,2001-12-03,3000,NULL,20

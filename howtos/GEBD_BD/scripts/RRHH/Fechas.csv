@@ -1,0 +1,4 @@
+numero,nombre,empleo,jefe,fechaEntrada,sueldo,complemento,numeroDepartamento
+7788,Scott,Analista,7566,2002-12-09,3000,NULL,20
+7876,Adams,Ordenanza,7788,2003-01-12,1100,NULL,20
+7934,Miller,Ordenanza,7782,2002-01-23,1300,NULL,10

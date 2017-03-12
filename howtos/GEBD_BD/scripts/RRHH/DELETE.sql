@@ -1,0 +1,4 @@
+USE RRHH;
+DELETE
+FROM Empleado
+WHERE numero = 8003;

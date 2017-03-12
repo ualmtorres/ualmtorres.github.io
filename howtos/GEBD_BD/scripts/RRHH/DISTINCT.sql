@@ -1,0 +1,3 @@
+USE RRHH;
+SELECT DISTINCT (empleo)
+FROM Empleado;

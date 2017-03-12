@@ -1,0 +1,13 @@
+= Bases de datos
+Gestión Empresarial con Big Data - Nivel I. Universidad de Almería
+:doctype: article
+:encoding: utf-8
+:lang: en
+:numbered:
+
+# Tabla Departamento
+
+[format="csv",options="header"]
+|===================================================
+include::Departamento.csv[]
+|===================================================

@@ -1,0 +1,4 @@
+USE RRHH;
+SELECT *
+FROM Empleado
+ORDER BY sueldo;

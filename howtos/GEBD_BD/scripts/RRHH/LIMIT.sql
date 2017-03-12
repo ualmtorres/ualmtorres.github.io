@@ -1,0 +1,5 @@
+USE RRHH;
+SELECT *
+FROM Empleado
+ORDER BY sueldo DESC
+LIMIT 3;

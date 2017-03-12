@@ -1,0 +1,1026 @@
+= Bases de datos - SQL
+Gestión Empresarial con Big Data - Nivel I. Universidad de Almería
+:doctype: article
+:encoding: utf-8
+:lang: en
+:toc: left
+:numbered:
+
+== Introducción
+
+* Del inglés _Structured Query Language_.
+* Lenguaje más extendido para consultar y manipular Bases de datos relacionales
+* SQL es un lenguaje estándar. No obstante, existen gran cantidad de _dialectos_
+
+== Usos
+
+* Consulta de datos
+* Manipulación de datos (Inserción, modificación, eliminación)
+* Definición de datos (Tablas, Indices, Vistas, ...)
+* Configuración de seguridad (Usuarios, permisos, ...)
+* ...
+
+== Sintaxis básica
+
+[source, sql]
+----
+SELECT COLUMNAS SEPARADAS POR COMAS
+FROM TABLA
+WHERE CONDICION
+----
+
+== Operaciones de consulta sencillas para el filtrado de filas y columnas
+
+.Mostrar todos los empleados 
+====
+[source, sql]
+include::scripts/RRHH/MostrarTodo.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/MostrarTodo.csv[]
+|===================================================
+
+.Mostrar las filas de todos los empleados con empleo _Vendedor_.
+====
+[source, sql]
+include::scripts/RRHH/FiltrarFilas.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/FiltrarFilas.csv[]
+|===================================================
+
+.Mostrar el nombre, empleo y sueldo de todos los empleados
+====
+[source, sql]
+include::scripts/RRHH/FiltrarColumnas.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/FiltrarColumnas.csv[]
+|===================================================
+
+=== Consultas con varias condiciones
+
+==== El operador lógico AND
+
+.Mostrar las filas de todos los empleados con empleo _Vendedor_ y complemento de al menos 500 EUR.
+====
+[source, sql]
+include::scripts/RRHH/FiltrarFilasConVariasCondiciones.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/FiltrarFilasConVariasCondiciones.csv[]
+|===================================================
+
+.Mostrar el nombre, empleo y sueldo de todos los empleados con empleo _Vendedor_ y complemento de al menos 500 EUR.
+====
+[source, sql]
+include::scripts/RRHH/FiltrarFilasYColumnas.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/FiltrarFilasYColumnas.csv[]
+|===================================================
+
+==== El operador lógico OR
+
+.Mostrar todas las filas de los empleados que tengan empleo de Vendedor, Directivo u Ordenanza
+====
+[source, sql]
+include::scripts/RRHH/OR.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/OR.csv[]
+|===================================================
+
+=== El operador lógico IN y búsqueda aproximada
+
+.Uso del operador IN para mostrar todas las filas de los empleados que tengan empleo de Vendedor, Directivo u Ordenanza
+====
+[source, sql]
+include::scripts/RRHH/IN.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/IN.csv[]
+|===================================================
+
+.Mostrar todas las filas de los empleados que no tienen como empleo Vendedor, Directivo u Ordenanza
+====
+[source, sql]
+include::scripts/RRHH/NOTIN.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/NOTIN.csv[]
+|===================================================
+
+.Mostrar todas las filas de los empleados que tienen algún empleo de dirección.
+====
+[source, sql]
+include::scripts/RRHH/LIKE.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/LIKE.csv[]
+|===================================================
+
+=== Manejo de nulos
+
+.Mostrar las filas de todos los empleados que no tienen datos de complemento
+====
+[source, sql]
+include::scripts/RRHH/NULL.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/NULL.csv[]
+|===================================================
+
+.Mostrar las filas de todos los empleados que tiene datos de complemento
+====
+[source, sql]
+include::scripts/RRHH/NOTNULL.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/NOTNULL.csv[]
+|===================================================
+
+=== Consultas de un rango de valores
+
+.Mostrar las filas de todos los empleados que tienen sueldo mayor o igual que 2000 y menor o igual que 3000
+====
+[source, sql]
+include::scripts/RRHH/Rango.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/Rango.csv[]
+|===================================================
+
+.Mostrar las filas de todos los empleados que tienen el sueldo comprendido entre 2000 y 3000
+====
+[source, sql]
+include::scripts/RRHH/BETWEEN.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/BETWEEN.csv[]
+|===================================================
+
+=== Uso de expresiones en SELECT
+
+.Mostrar nombre y la suma de sueldo y complemento de todos los empleados
+====
+[source, sql]
+include::scripts/RRHH/ExpresionesEnSELECT.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/ExpresionesEnSELECT.csv[]
+|===================================================
+
+[CAUTION]
+====
+La aparición de un valor NULL en una operación aritmética hace que el resultado sea NULL. Por ejemplo, `NULL + valor = NULL`
+====
+
+.Mostrar nombre, sueldo, complemento, sueldo y complemento de todos los empleados
+====
+[source, sql]
+include::scripts/RRHH/AnomaliasConNULL.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/AnomaliasConNULL.csv[]
+|===================================================
+
+[NOTE]
+====
+`COALESCE` es una función que permite asociar un valor a una columna cuando es `NULL`. Por ejemplo, `COALESCE(complemento, 0)` indica que `complemento` tome el valor `0` cuando tenga un valor de `NULL`.
+====
+
+.Mostrar nombre, sueldo, complemento, sueldo y complemento de todos los empleados considerando como 0 los complementos nulos.
+====
+[source, sql]
+include::scripts/RRHH/COALESCE.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/COALESCE.csv[]
+|===================================================
+
+=== Renombrado de columnas
+
+.Mostrar nombre, sueldo, complemento y sueldo total de todos los empleados considerando como 0 los complementos nulos.
+====
+[source, sql]
+include::scripts/RRHH/AliasDeColumna.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/AliasDeColumna.csv[]
+|===================================================
+
+== Manejo de fechas
+
+.Mostrar todas las filas de los empleados que se incorporaron a partir del 1 de enero de 2002
+====
+[source, sql]
+include::scripts/RRHH/Fechas.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/Fechas.csv[]
+|===================================================
+
+=== Funciones para el manejo de fechas
+
+[NOTE]
+====
+La función `YEAR()` aplicada a una fecha devuelve el año de la fecha en formato numérico.
+====
+
+.Mostrar todas las filas de los empleados cuya fecha de entrada no sea del año 2000
+====
+[source, sql]
+include::scripts/RRHH/YEAR.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/YEAR.csv[]
+|===================================================
+
+.Mostrar todas las filas de los empleados cuya fecha de entrada no sea del año 2000 ni 2001
+====
+[source, sql]
+include::scripts/RRHH/YEAR_IN.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/YEAR_IN.csv[]
+|===================================================
+
+[NOTE]
+====
+La función `CURDATE()` devuelve la fecha actual.
+====
+
+.Mostrar nombre, empleo, fecha actual, fecha de entrada y diferencia entre fecha actual y fecha de entrada
+====
+[source, sql]
+include::scripts/RRHH/CURDATE.sql[]
+====
+
+[CAUTION]
+====
+La diferencia aritmética entre `CURDATE()` y la fecha de entrada devuelve un resultado anómalo. Usar en su lugar la función `DATEDIFF()`.
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/CURDATE.csv[]
+|===================================================
+
+[NOTE]
+====
+La función `DATEDIFF()` devuelve la diferencia en días entre dos fechas.
+====
+
+.Mostrar nombre, empleo y antigüedad en días de todos los empleados.
+====
+[source, sql]
+include::scripts/RRHH/DATEDIFF.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/DATEDIFF.csv[]
+|===================================================
+
+
+[NOTE]
+====
+La función `DATE_FORMAT()` permite dar formato a un valor de tipo fecha. El formato se define en una cadena aplicando unos códigos de formato como los de la tabla siguiente.
+====
+
+.Códigos de formato habituales para `DATEDIFF()`
+[options="header"]
+|====
+| Código de formato | Descripción 
+| %d | Día del mes con dos dígitos
+| %e | Día del mes
+| %a | Nombre abreviado del día de la semana (Sun-Sat)
+| %W | Nombre del día de la semana (Sunday-Saturday)
+| %b | Nombre abreviado del mes (Jan-Dec)
+| %M | Nombre del mes (January-December)
+| %y | Año con dos dígitos
+| %Y | Año con cuatro dígitos
+|====
+
+.Mostrar el nombre, empleo y feha de entrada de todos los empleados. La fecha de entrada se presentará con el día con dos dígitos, el mes abreviado y el año con cuatro dígitos.
+====
+[source, sql]
+include::scripts/RRHH/DATEFORMAT.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/DATEFORMAT.csv[]
+|===================================================
+
+=== Eliminación de duplicados
+
+[NOTE]
+====
+`DISTINCT` elimina los resultados duplicados tras la evaluación de una consulta.
+====
+
+.Mostrar los diferentes empleos que tienen los empleados almacenados.
+====
+[source, sql]
+include::scripts/RRHH/DISTINCT.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/DISTINCT.csv[]
+|===================================================
+
+=== Ordenación y limitación de resultados
+
+[NOTE]
+====
+La cláusula ORDER BY ordena los resultados de una consulta usando como criterios de ordenación la lista de columnas proporcionada.
+====
+
+.Mostrar todas las filas de empleados ordenadas por sueldo.
+====
+[source, sql]
+include::scripts/RRHH/ORDERBY.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/ORDERBY.csv[]
+|===================================================
+
+.Mostrar todas las filas de empleados ordenados por empleo y orden decreciente de sueldo.
+====
+[source, sql]
+include::scripts/RRHH/ORDERBYVariosCriterios.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/ORDERBYVariosCriterios.csv[]
+|===================================================
+
+[NOTE]
+====
+La cláusula LIMIT limita el número de filas devueltas al valor especificado.
+====
+
+.Mostrar las filas de los 3 empleados que tienen mayor sueldo
+====
+[source, sql]
+include::scripts/RRHH/LIMIT.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/LIMIT.csv[]
+|===================================================
+
+=== Funciones de agregación
+
+[NOTE]
+====
+La función `MAX()` aplicada a una columna obtiene el valor máximo de la columna en los registros aplicados.
+====
+
+.Obtener el sueldo máximo de la tabla de empleados
+====
+[source, sql]
+include::scripts/RRHH/MAX.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/MAX.csv[]
+|===================================================
+
+.Obtener el máximo de la combinación de sueldo y complemento de la tabla de empleados. Considerar como 0 los complementos nulos.
+====
+[source, sql]
+include::scripts/RRHH/sueldoTotalMaximo.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/sueldoTotalMaximo.csv[]
+|===================================================
+
+[NOTE]
+====
+La función `MIN()` aplicada a una columna obtiene el valor mínimo de la columna en los registros aplicados.
+====
+
+.Obtener la fecha de entrada más antigua
+====
+[source, sql]
+include::scripts/RRHH/MIN.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/MIN.csv[]
+|===================================================
+
+.Obtener la fecha de entrada más antigua aplicando el formato a la fecha de día con dos dígitos, mes abreviado y año con cuatro dígitos.
+====
+[source, sql]
+include::scripts/RRHH/primeraEntrada.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/primeraEntrada.csv[]
+|===================================================
+
+[NOTE]
+====
+La función `SUM()` aplicada a una columna obtiene la sumna de los valores numéricos de la columna en los registros aplicados.
+====
+
+.Obtener la suma de los sueldos dedicados a empleos de dirección.
+====
+[source, sql]
+include::scripts/RRHH/SUM.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/SUM.csv[]
+|===================================================
+
+[NOTE]
+====
+La función `AVG()` aplicada a una columna obtiene la media de los valores numéricos de la columna en los registros aplicados.
+====
+
+.Obtener el sueldo medio del empleo Vendedor.
+====
+[source, sql]
+include::scripts/RRHH/AVG.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/AVG.csv[]
+|===================================================
+
+[NOTE]
+====
+La función `COUNT()` aplicada a una columna obtiene la cantidad de valores no nulos en los registros aplicados. La función `COUNT(*)` devuelve la cantidad de filas del resultado.
+====
+
+.Obtener la cantidad de empleados que tenemos almacenados.
+====
+[source, sql]
+include::scripts/RRHH/COUNT.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/COUNT.csv[]
+|===================================================
+
+[TIP]
+====
+Al añadir `DISTINCT` a la columna a la que se aplica `COUNT()` se obtiene la cuenta de valores diferentes eliminando los duplicados.
+====
+
+.Obtener el número de empleos diferentes que tienen los empleados.
+====
+[source, sql]
+include::scripts/RRHH/COUNT_DISTINCT.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/COUNT_DISTINCT.csv[]
+|===================================================
+
+[NOTE]
+====
+`COUNT (DISTINCT columna)` descarta los valores nulos.
+====
+
+.Obtener la cantidad de jefes diferentes
+====
+[source, sql]
+include::scripts/RRHH/COUNT_DISTINCT_YNULL.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/COUNT_DISTINCT_YNULL.csv[]
+|===================================================
+
+== Agregación de resultados
+
+[NOTE]
+====
+La cláusula GROUP BY crea grupos para la lista de columnas indicadas. Los grupos creados son la base a los que se les puede aplicar funciones de agregación `COUNT()`, `SUM()`, `MAX()`, `MIN()` y `AVG()`.
+====
+
+.Obtener la cantidad de empleados que tiene cada empleo.
+====
+[source, sql]
+include::scripts/RRHH/GROUPBY.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/GROUPBY.csv[]
+|===================================================
+
+.Obtener la cantidad de empleados que tiene cada empleo para los empleados cuya fecha de entrada sea el año 2001.
+====
+[source, sql]
+include::scripts/RRHH/GROUPBY_WHERE.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/GROUPBY_WHERE.csv[]
+|===================================================
+
+.Obtener la cantidad de empleados por año de entrada
+====
+[source, sql]
+include::scripts/RRHH/GROUPBY_YEAR.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/GROUPBY_YEAR.csv[]
+|===================================================
+
+[NOTE]
+====
+La cláusula HAVING actúa como un filtro sobre los valores agregados. 
+====
+
+.Obtener la cantidad de empleados por año de entrada para aquellos años que tengan más de 5 empleados.
+====
+[source, sql]
+include::scripts/RRHH/HAVING.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/HAVING.csv[]
+|===================================================
+
+[IMPORTANT]
+====
+No confundir la cláusula `WHERE` con la cláusula `HAVING`. `WHERE` actúa como un filtro para filas previo a la agregación. `HAVING` actúa como un filtro para grupos posterior al proceso de agregación.
+====
+
+.Obtener la cantidad de empleados por año de entrada considerando sólo aquellos empleados con sueldos comprendidos entre 2000 y 3000.
+====
+[source, sql]
+include::scripts/RRHH/SIN_HAVING.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/SIN_HAVING.csv[]
+|===================================================
+
+.Obtener la cantidad de empleados por año de entrada considerando sólo aquellos empleados con sueldos comprendidos entre 2000 y 3000. mostrar sólo los resultados de aquellos años que tuvieron más de 3 empleados.
+====
+[source, sql]
+include::scripts/RRHH/CON_HAVING.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/CON_HAVING.csv[]
+|===================================================
+
+== Combinación de tablas
+
+=== Combinación de tablas con producto cartesiano
+
+[NOTE]
+====
+La operación de producto cartesiano (o `CROSS`JOIN`) combina todas las filas de las tablas indicadas
+====
+
+.Mostrar todas las filas resultantes de combinar los empleados con los departamentos
+====
+[source, sql]
+include::scripts/RRHH/ProductoCartesiano.sql[]
+====
+
+[WARNING]
+====
+El resultado combina cada empleado con todos los departamentos existentes, aunque no sea el departamento en que trabaja.
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/ProductoCartesiano.csv[]
+|===================================================
+
+.Usar `CROSS JOIN` para mostrar todas las filas resultantes de combinar los empleados con los departamentos
+====
+[source, sql]
+include::scripts/RRHH/CrossJoin.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/CrossJoin.csv[]
+|===================================================
+
+[TIP]
+====
+La eliminación de las filas que combinan los empleados con departamentos en los que no trabajan se puede realizar aplicando un filtro que seleccione sólo las filas en que coincidan el número de departamento en el que trabajan los empleados con el número de los departamentos.
+====
+
+.Mostrar las filas resultantes de combinar los empleados con los departamentos en los que trabaja cada uno de ellos.
+====
+[source, sql]
+include::scripts/RRHH/ProductoNaturalConWhere.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/ProductoNaturalConWhere.csv[]
+|===================================================
+
+.Mostrar las filas resultantes de combinar el departamento de Ventas con sus empleados.
+====
+[source, sql]
+include::scripts/RRHH/ProductoNaturalConWhereFiltrado.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/ProductoNaturalConWhereFiltrado.csv[]
+|===================================================
+
+.Obtener la cantidad de empleados que hay en el departamento de Ventas agrupados por el tipo de empleo.
+====
+[source, sql]
+include::scripts/RRHH/EmpleadosDeVentas.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/EmpleadosDeVentas.csv[]
+|===================================================
+
+.Obtener para las ciudades de Dallas y Chicago la cantidad de empleados y su sueldo medio.
+====
+[source, sql]
+include::scripts/RRHH/EmpleadosYSueldoMedioenDallasChicago.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/EmpleadosYSueldoMedioenDallasChicago.csv[]
+|===================================================
+
+.Obtener el sueldo medio por ciudades para aquellos casos que tengan un sueldo medio superior a 2000. 
+====
+[source, sql]
+include::scripts/RRHH/CiudadesConSueldoMedioMayorDe2000.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/CiudadesConSueldoMedioMayorDe2000.csv[]
+|===================================================
+
+=== Combinación de tablas con INNER JOIN
+
+[NOTE]
+====
+El operador ÌNNER JOIN` combina en una única operación el producto cartesiano y el filtrado de filas con el criterio indicado. La condición de filtrado pasa de la cláusula `WHERE` a la cláusula `FROM` sacando de la cláusula `WHERE` las _condiciones de join_.
+====
+
+.Usar el operador INNER JOIN para mostrar todas las columnas de empleado junto al nombre del departamento en que trabajan para aquellos empleados que trabajan en el departamento de Ventas.
+====
+[source, sql]
+include::scripts/RRHH/INNERJOIN.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/INNERJOIN.csv[]
+|===================================================
+
+=== Combinación de tablas con LEFT JOIN
+
+[NOTE]
+====
+El operador `LEFT JOIN` relaja al operador `INNER JOIN` mostrando en los resultados todas las filas de la tabla que aparece a la izquierda del `LEFT JOIN`. Si hay valores con los que combinar mostrará los valores. Si no hay valores, completará el resultado con valores `NULL`.
+====
+
+.Obtener la cantidad de empleados que tiene cada departamento.
+====
+[source, sql]
+include::scripts/RRHH/LEFTJOIN.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/LEFTJOIN.csv[]
+|===================================================
+
+[WARNING]
+====
+Si se realiza la combinación de tablas con el operador `INNER JOIN` se perdería el departamento de Operaciones.
+====
+
+.Obtener la cantidad de empleados que tiene cada departamento usando INNER JOIN
+====
+[source, sql]
+include::scripts/RRHH/LEFTvsINNERJOIN.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/LEFTvsINNERJOIN.csv[]
+|===================================================
+
+== Uso de alias para tablas
+
+[NOTE]
+====
+Es posible utilizar un nuevo nombre (o alias) para una tabla involucrada en una consulta. Un caso habitual de uso de los alias es para usar un nombre abreviado para las tablas.
+====
+
+.Obtener la cantidad de empleados por nombre de departamento
+====
+[source, sql]
+include::scripts/RRHH/ALIAS.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/ALIAS.csv[]
+|===================================================
+
+[WARNNG]
+====
+El uso de alias hace que la tabla a la que se le ha aplicado el alias pase a ser denominada con el nombre del alias. El uso del nombre anterior produciría un error.
+====
+
+== Subconsultas
+
+[NOTE]
+====
+Los resultados que devuelve una consulta pueden ser usados para evaluar las condiciones de otras consultas. Esto se consigue anidando consultas. Las consultas internas se denominan subconsultas, que son evaluadas en primer lugar ofreciendo sus valores a las consultas exteriores.
+====
+
+.Obtener nombre y sueldo de los empleados que tienen un sueldo superior al sueldo del empleado Allen.
+====
+[source, sql]
+include::scripts/RRHH/Subconsulta.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/Subconsulta.csv[]
+|===================================================
+
+.Obtener nombre y sueldo de los empleados que tienen un sueldo superior al sueldo máximo de los empleados con empleo Vendedor en la ciudad de Chicago.
+====
+[source, sql]
+include::scripts/RRHH/Subconsulta_2.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/Subconsulta_2.csv[]
+|===================================================
+
+=== Los operadores ALL y ANY
+
+[NOTE]
+====
+`ALL` se evalua como verdadero cuando se cumple para todos los valores afectados. `ANY` se evalua como verdadero cuando se cumple para alguno de los valores afectados.
+====
+
+.Obtener nombre y sueldo de los empleados que tienen un sueldo superior al sueldo de todos los empleados con empleo Vendedor en la ciudad de Chicago.
+====
+[source, sql]
+include::scripts/RRHH/ALL.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/ALL.csv[]
+|===================================================
+
+.Obtener nombre y sueldo de los empleados que tienen un sueldo superior al sueldo de alguno de los empleados con empleo Vendedor en la ciudad de Chicago.
+====
+[source, sql]
+include::scripts/RRHH/ANY.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/ANY.csv[]
+|===================================================
+
+=== Subconsultas en FROM
+
+[NOTE]
+====
+Un uso más avanzado de las subconsultas consiste en la creación de una consulta en la cláusula `FROM`. La subconsulta recibirá un nombre provisional que podrá ser utilizado en la consulta externa como si de una tabla existente se tratase.
+====
+
+.Mostrar para cada número de departamento el nombre, empleo y sueldo del empleado con mayor sueldo.
+[[app-listing]]
+====
+[source, sql]
+include::scripts/RRHH/SubconsultasEnFROM.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/SubconsultasEnFROM.csv[]
+|===================================================
+
+== Inserción, modificación y eliminación de registros
+
+=== Uso básico de INSERT (Introducción de todos los valores)
+
+[source, sql]
+----
+INSERT INTO tabla
+VALUES(valor columna 1, ..., valor columna n)
+----
+
+.Insertar tres empleados en el departamento 40. Uno de ellos es el jefe de los otros dos y no tendrá complemento.
+====
+[source, sql]
+include::scripts/RRHH/INSERT.sql[]
+====
+
+.Mostrar los registros de los empleados del departamento Operaciones para comprobar el resultado de las 3 inserciones.
+====
+[source, sql]
+include::scripts/RRHH/EmpleadosDeOperaciones.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/EmpleadosDeOperacionesTrasINSERT.csv[]
+|===================================================
+
+=== Uso de INSERT para añadir filas incompletas (No se introducen todos los valores)
+
+[source, sql]
+----
+INSERT INTO tabla(columna1, ..., columna m)
+VALUES(valor columna 1, ..., valor columna m)
+----
+
+.Insertar un empleado en el departamento 40 omitiendo la columna complemento.
+====
+[source, sql]
+include::scripts/RRHH/INSERTIncompleto.sql[]
+====
+
+.Los registros de los empleados del departamento Operaciones tras el resultado de la inserción.
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/EmpleadosDeOperacionesTrasINSERTIncompleto.csv[]
+|===================================================
+
+=== Actualización de registros con UPDATE
+
+[source, sql]
+----
+UPDATE tabla
+SET campo 1 = valor 1, ..., campo n = valor n
+WHERE condicion
+----
+
+.Actualizar a 120 el valor del complemento del empleado con numero 8003
+====
+[source, sql]
+include::scripts/RRHH/UPDATE.sql[]
+====
+
+.Empleados del departamento de Operaciones tras la actualización del complemento del empleado 8003.
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/EmpleadosDeOperacionesTrasUPDATE.csv[]
+|===================================================
+
+=== Eliminación de registros con DELETE
+
+[source, sql]
+----
+DELETE
+FROM tabla
+WHERE condicion
+----
+
+.Eliminar el empleado con número 8003
+====
+[source, sql]
+include::scripts/RRHH/DELETE.sql[]
+====
+
+.Empleados del departamento de Operaciones tras la eliminación del empleado 8003
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/EmpleadosDeOperacionesTrasDELETE.csv[]
+|===================================================
+
+.Eliminar todos los emepleados del departamento Operaciones
+====
+[source, sql]
+include::scripts/RRHH/DELETEVarios.sql[]
+====
+
+.Empleados del departamento Operaciones tras la eliminación de todos sus empleados
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/EmpleadosDeOperacionesTrasDELETEVarios.csv[]
+|===================================================
+
+== Vistas
+
+* Se definen mediante una expresión SQL que recupera su contenido.
+* Su contenido se obtiene bajo demanda evaluando la expresión SQL que las define
+* Se definen a partir de tablas u otras vistas existentes
+* Se pueden considerar tablas virtuales. No almacenan datos. 
+
+[source, sql]
+----
+CREATE VIEW AS 
+expresion SELECT
+----
+
+[NOTE]
+====
+**Uso de las vistas**
+
+* Personalización de datos
+* Mecanismo de seguridad. Se da acceso a vistas y no a las tablas base
+* Simplificación de consultas
+====
+
+.Crear una vista que combine cada departamento con los datos de sus empleados. Si no hay datos de empleados, completar con `NULL`.
+====
+[source, sql]
+include::scripts/RRHH/CREATEVIEW.sql[]
+====
+
+.Usar la vista anterior para obtener el sueldo máximo para cada departamento.
+====
+[source, sql]
+include::scripts/RRHH/UsoDeVistas.sql[]
+====
+
+[format="csv",options="header"]
+|===================================================
+include::scripts/RRHH/UsoDeVistas.csv[]
+|===================================================
+

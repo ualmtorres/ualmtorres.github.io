@@ -1,0 +1,5 @@
+numero,nombre,empleo,jefe,fechaEntrada,sueldo,complemento,numeroDepartamento
+7566,Jones,Directivo,7839,2001-04-02,2975,NULL,20
+7698,Blake,Directivo,7839,2001-05-01,2850,NULL,30
+7782,Clark,Directivo,7839,2001-06-09,2450,NULL,10
+7839,King,Director,NULL,2001-11-17,5000,NULL,10

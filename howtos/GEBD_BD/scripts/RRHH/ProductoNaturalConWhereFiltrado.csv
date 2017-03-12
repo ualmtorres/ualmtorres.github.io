@@ -1,0 +1,7 @@
+numero,nombre,empleo,jefe,fechaEntrada,sueldo,complemento,numeroDepartamento,numero,nombre,ciudad
+7499,Allen,Vendedor,7698,2001-02-20,1600,300,30,30,Ventas,Chicago
+7521,Ward,Vendedor,7698,2001-02-22,1250,500,30,30,Ventas,Chicago
+7654,Martin,Vendedor,7698,2001-09-28,1250,1400,30,30,Ventas,Chicago
+7698,Blake,Directivo,7839,2001-05-01,2850,NULL,30,30,Ventas,Chicago
+7844,Turner,Vendedor,7698,2001-09-08,1500,0,30,30,Ventas,Chicago
+7900,James,Ordenanza,7698,2001-12-03,950,NULL,30,30,Ventas,Chicago
