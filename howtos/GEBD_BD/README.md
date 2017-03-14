@@ -20,3 +20,7 @@
 * Base de datos de Sporting Goods (SG)
     * [Script de inicialización de la Base de datos SG](scripts/SG/SG.sql)
     * Diagrama ([.mwb](models/SG.mwb)/[.pdf](models/SG.pdf))
+
+* Base de datos de Pensiones (Pensiones)
+    * [Script de inicialización de la Base de datos Pensiones](scripts/Pensiones/Pensiones.sql)
+    * Diagrama ([.mwb](models/Pensiones.mwb)/[.pdf](models/Pensiones.pdf))
