@@ -1,0 +1,31 @@
+= Módulo de Bases de datos (12 horas)
+Gestión Empresarial con Big Data - Nivel I. Universidad de Almería
+:doctype: article
+:encoding: utf-8
+:lang: en
+:numbered:
+:linkattrs:
+
+http://ual.es/cursos/bigdata1/[Web oficial del curso]
+
+== Material básico
+
+* link:sql.html[Consultas, window="_blank"]
+* link:SG.html[Ingeniería inversa para obtener el diagrama de una base de datos, window="_blank"]
+
+== Bases de datos de ejemplo
+
+* Base de datos de Recursos Humanos (RRHH)
+    ** link:scripts/RRHH/RRHH.sql[Script de inicialización de la Base de datos RRHH]
+    ** link:tables/RRHH/Departamento.html[Tabla Departamento, window="_blank"]
+    ** link:tables/RRHH/Empleado.html[Tabla Empleado, window="_blank"]
+    ** https://github.com/ualmtorres/GEBD_BD/tree/master/scripts/RRHH[Código de las consultas, window="_blank"]
+    ** Diagrama (link:models/RRHH.mwb[.mwb]/link:models/RRHH.pdf[.pdf])
+
+* Base de datos de Sporting Goods (SG)
+    ** link:scripts/SG/SG.sql[Script de inicialización de la Base de datos SG]
+    ** Diagrama (link:models/SG.mwb[.mwb]/link:models/SG.pdf[.pdf])
+
+* Base de datos de Pensiones (Pensiones)
+    ** link:scripts/Pensiones/Pensiones.sql[Script de inicialización de la Base de datos Pensiones]
+    ** Diagrama (link:models/Pensiones.mwb[.mwb]/link:models/Pensiones.pdf[.pdf])
