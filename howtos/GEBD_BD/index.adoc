@@ -30,5 +30,13 @@ http://ual.es/cursos/bigdata1/[Web oficial del curso]
     ** link:scripts/Pensiones/Pensiones.sql[Script de inicialización de la Base de datos Pensiones]
     ** Diagrama (link:models/Pensiones.mwb[.mwb]/link:models/Pensiones.pdf[.pdf])
 
+* Base de datos de Tiendas (Tiendas) (_Esquema en estrella_)
+    ** link:scripts/Tienda/Tienda.sql[Script de creación de la Base de datos Tienda]
+    ** link:scripts/tables/Tienda/Cuando.csv[Datos de Fechas]
+    ** link:scripts/tables/Tienda/Donde.csv[Datos de Tiendas]
+    ** link:scripts/tables/Tienda/Que.csv[Datos de Productos]
+    ** link:scripts/tables/Tienda/Cuando.csv[Datos de Tiempo]
+
 * Imágenes
     ** link:docs/reyesmagos.jpg[Desilusión] 
+    ** link:docs/pacto.jpg[Pacto] 
