@@ -354,21 +354,25 @@ ___
 
 ### Modificación de permisos
 
-Puedes cambiar los permisos de la carpeta de publicación de Apache para no tener que crear siempre los archivos con `sudo`
+Puedes cambiar los permisos de la carpeta de publicación de Apache para no tener que crear siempre los archivos con `sudo`. 
+
+> **Atención**
+> 
+> En este tutorial se particulariza para el usuario `clouduser`. Este usuario deberá ser sustituido por el usuario concreto al que se quiere añadir al grupo `www-data` y al que ser quiere hacer propietario de la carpeta `/var/www`.
 
 ```
 sudo chgrp -R www-data /var/www
 sudo chmod -R 775 /var/www
 sudo chmod -R g+s /var/www
-sudo useradd -G www-data ubuntu
-sudo chown -R ubuntu /var/www/
+sudo useradd -G www-data clouduser
+sudo chown -R clouduser /var/www/
 ```
 
 ### Composer 
 
 Para algún proyecto PHP puede que necesites [Composer](https://getcomposer.org/), un gestor de dependencias para PHP.
 
-Antes de comenzar con la instalación de _Composer_ deber saber que el proceso de instalación utiliza la signatura SHA-384 del instalador, **la cual varía de una version a otra**. La signatura SHA-384 para la versión de Composer instalada en el momento de la creación de este documento (_Composer 1.4.1_) era la siguiente.
+Antes de comenzar con la instalación de _Composer_ deber saber que el proceso de instalación utiliza la signatura SHA-384 del instalador, **la cual varía de una version a otra**. La signatura SHA-384 para la versión de Composer instalada en el momento de la creación de este tutorial (_Composer 1.4.1_) era la siguiente.
 
 **Signatura SHA-384 de _Composer 1.4.1_** 
 
