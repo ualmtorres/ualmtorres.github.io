@@ -7,7 +7,7 @@ title: "Posts"
 En la asignatura usaremos una máquina virtual inicializada con Linux 16.04 LTS (Usaremos un Linux Desktop, preferiblemente XUbuntu). Aquí veremos cómo instalar los componentes siguientes:
 
 * [LAMP](#lamp)
-* [Git](Git)
+* [Git](#git)
 * [Redis](#redis)
 * [MongoDB](#mongodb)
 * [Neo4j](#neo4j)
@@ -314,6 +314,8 @@ Su instalación es muy sencilla. Simplemente, tenemos que descargarla y añadir 
 La descarga e instalación se realiza con los comandos siguientes
 
 ```
+cd ~
+
 wget -O - https://debian.neo4j.org/neotechnology.gpg.key | sudo apt-key add -
 echo 'deb https://debian.neo4j.org/repo stable/' | sudo tee /etc/apt/sources.list.d/neo4j.list
 sudo apt-get update
@@ -349,6 +351,9 @@ Los comandos básicos del servidor son:
 ## Otros
 ___
 
+
+### Modificación de permisos
+
 Puedes cambiar los permisos de la carpeta de publicación de Apache para no tener que crear siempre los archivos con `sudo`
 
 ```
@@ -359,13 +364,28 @@ sudo useradd -G www-data ubuntu
 sudo chown -R ubuntu /var/www/
 ```
 
+### Composer 
+
 Para algún proyecto PHP puede que necesites [Composer](https://getcomposer.org/), un gestor de dependencias para PHP.
 
-Para instalarlo, simplemente escribe estos comandos:
+Antes de comenzar con la instalación de _Composer_ deber saber que el proceso de instalación utiliza la signatura SHA-384 del instalador, **la cual varía de una version a otra**. La signatura SHA-384 para la versión de Composer instalada en el momento de la creación de este documento (_Composer 1.4.1_) era la siguiente.
+
+**Signatura SHA-384 de _Composer 1.4.1_** 
 
 ```
-curl -sS https://getcomposer.org/installer | php
-sudo mv composer.phar /usr/local/bin/composer
+669656bab3166a7aff8a7506b8cb2d1c292f042046c5a994c43155c0be6190fa0355160742ab2e1c88d40d5be660b410
 ```
 
-    
+Para instalar _Composer_, simplemente escribe estos comandos cambiando la signatura SHA-384 por la signatura correspondiente. 
+
+```
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php -r "if (hash_file('SHA384', 'composer-setup.php') === '669656bab3166a7aff8a7506b8cb2d1c292f042046c5a994c43155c0be6190fa0355160742ab2e1c88d40d5be660b410') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+php composer-setup.php
+php -r "unlink('composer-setup.php');"
+```
+
+> **Información**
+> 
+> * [Signatura SHA-864](https://composer.github.io/pubkeys.html) para la versión actual de _Composer_.
+> * [Pasos de instalación](https://getcomposer.org/download/) para la versión actual de _Composer_    
