@@ -11,7 +11,8 @@ En nuestro ejemplo interactuaremos con Redis mediante el cliente Node.js denomin
 # Contenidos
 
 * [Configuración del entorno](#configuración-del-entorno)
-* [Desarrollo de una API REST para Redis con Express y Node.js](#desarrollo-de-una-api-rest-para-redis-con-express-y-node.js)
+* [Uso básico de node_redis](#uso-basico_de-node_redis)
+* [Desarrollo de una API REST para Redis con Express y Node.js](#desarrollo-de-una-api-rest-para-redis-con-express-y-node)
 
 ___
 
@@ -375,6 +376,6 @@ client.get('b', function(err, reply) {
 client.del('a', 'b');
 ```
 
-## Desarrollo de una API REST para Redis con Express y Node.js
+## Desarrollo de una API REST para Redis con Express y Node
 
 TO DO
