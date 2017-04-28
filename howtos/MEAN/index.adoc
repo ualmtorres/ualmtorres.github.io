@@ -1,0 +1,1295 @@
+////
+NO CAMBIAR!!
+Codificación, idioma, tabla de contenidos, tipo de documento
+////
+:encoding: utf-8
+:lang: es
+:toc: right
+:toc-title: Tabla de contenidos
+:doctype: book
+:imagesdir: ./images
+
+
+
+
+////
+Nombre y título del trabajo
+////
+# Tutorial básico de la pila MEAN (incompleto)
+Gestión de Grandes Volúmenes de datos - Máster en Ingeniería Informática
+Manuel Torres <mtorres@ual.es>
+
+
+// NO CAMBIAR!! (Entrar en modo no numerado de apartados)
+:numbered!: 
+
+
+[abstract]
+== Resumen
+////
+COLOCA A CONTINUACION EL RESUMEN
+////
+
+////
+COLOCA A CONTINUACION LOS OBJETIVOS
+////
+.Objetivos
+* Aprender a crear una aplicación básica en Node.js.
+* Utilizar `npm` para la gestión de dependencias en Node.js y conocer las propiedades básicas del archivo `package.json`.
+* Conocer el bucle de eventos de Node.js
+* Crear _funciones callback_ para la respuesta asíncrona a eventos.
+* Planificar la ejecución diferida de funciones.
+
+// Entrar en modo numerado de apartados
+:numbered:
+
+
+== Node.js
+
+Actualmente, la mayoría de las aplicaciones web usan bases de datos, lo que supone muchas operaciones de entrada salida y un gran porcentaje de inactividad de la CPU en cada tarea. Esa inactividad de la CPU puede ser aprovechada para atender a más clientes. Node.js usa un modelo dirigido por eventos y con entrada/salida no bloqueante, lo que lo hace muy ligero y eficiente, y es una opción muy adecuada para el desarrollo de aplicaciones web que impliquen muchas operaciones de entrada/salida. 
+
+Node.js es una plataforma _open source_ del lado del servidor construida sobre el motor Javascript de Google Chrome (motor V8). Las aplicaciones Node.js se desarrollan en Javascript.
+
+Además, Node.js proporciona una extenso conjunto de librerías Javascript que simplifican el desarrollo de aplicaciones web.
+
+En esta sección haremos una presentación básica de Node.js
+
+
+=== Instalación
+
+http://nodejs.org/download/[Descarga la última versión del instalable de Node.js] de la sección Downloads de la web de Node.js y sigue las instrucciones de la web.
+
+
+En este tutorial veremos cómo realizar la instalación en Linux. En el momento de la creación de este tutorial la última versión estable de Node.js es la 4.4.1.
+
+Tras la descarga (en el carpeta `~/Downloads`) moveremos el contenido el contenido descargado a `/usr/local/nodejs` y añadiremos `/usr/local/nodejs/bin` al `PATH`.
+
+```
+wget https://nodejs.org/dist/v4.4.1/node-v4.4.1-linux-x64.tar.xz <1>
+tar xvf node-v4.4.1-linux-x64.tar.xz 
+
+sudo mkdir -p /usr/local/nodejs <2>
+sudo mv ~/Downloads/node-v4.4.1-linux-x64/* /usr/local/nodejs/
+
+export PATH=$PATH:/usr/local/nodejs/bin <3>
+```
+
+<1> Obtener y descomprimir Node.js
+<2> Mover la descarga a `/usr/local/nodejs`
+<3> Añadir `/usr/local/nodejs/bin` al `PATH`
+
+[NOTE]
+====
+Para que los cambios del `PATH` sean definitivos añade `export PATH=$PATH:/usr/local/nodejs/bin` al final del archivo `~/.profile`.
+====
+A continuación comprobaremos la instalación creando un pequeño ejemplo `hello.js`. Crearemos una carpeta de ejemplo para todos nuestros ejemplos (`~/nodeExamples`).
+
+```
+/*
+* hello.js
+*/
+console.log("Hello World!!");
+```
+
+A continuación ejecuta en la consola:
+
+[source]
+----
+$ node hello.js
+----
+
+Si la instalación de Node.js ha sido correcta tendrás el saludo en tu consola.
+
+=== npm
+
+Node.js incorpora `npm` (Node Package Manager), un gestor de paquetes que nos permite especificar las dependencias de una aplicación. `npm` proporciona:
+
+* Repositorios online de paquetes y módulos.
+* Una línea de comandos para instalar paquetes Node.js y gestionar dependencias. Para comprobar nuestra versión de `npm` escribiremos en la consola:
+
+[source]
+----
+$ npm --version
+2.14.20
+----
+
+==== Instalación de módulos mediante `npm`
+
+Los módulos Node.js se instalan siguiendo esta sintaxis:
+
+[source]
+----
+$ npm install <nombreModulo>
+
+----
+
+Por ejemplo, para instalar `express`, el popular framework web Node.js escribiremos
+
+[source]
+----
+$ npm install express
+----
+
+Una vez descargado, se habrá creado una carpeta `node_modules` en la carpeta de nuestra aplicación. En la consola se nos informa de los paquetes instalados y su ruta de instalación. En nuestro ejemplo se ha descargado la versión 4.13.4 de _express_ y se ha descargado en la carpeta `node_modules/express`, como muestra el listado siguiente.
+
+[source]
+----
+express@4.13.4 node_modules/express
+|__ escape-html@1.0.3
+|__ array-flatten@1.1.1
+|__ utils-merge@1.0.0
+|__ cookie-signature@1.0.6
+|__ merge-descriptors@1.0.1
+|__ methods@1.1.2
+|__ content-type@1.0.1
+|__ vary@1.0.1
+|__ fresh@0.3.0
+|__ etag@1.7.0
+|__ range-parser@1.0.3
+|__ parseurl@1.3.1
+|__ path-to-regexp@0.1.7
+|__ content-disposition@0.5.1
+|__ serve-static@1.10.2
+|__ cookie@0.1.5
+|__ depd@1.1.0
+|__ qs@4.0.0
+|__ finalhandler@0.4.1 (unpipe@1.0.0)
+|__ on-finished@2.3.0 (ee-first@1.1.1)
+|__ debug@2.2.0 (ms@0.7.1)
+|__ proxy-addr@1.0.10 (forwarded@0.1.0, ipaddr.js@1.0.5)
+|__ send@0.13.1 (destroy@1.0.4, statuses@1.2.1, ms@0.7.1, mime@1.3.4, http-errors@1.3.1)
+|__ accepts@1.2.13 (negotiator@0.5.3, mime-types@2.1.10)
+|__ type-is@1.6.12 (media-typer@0.3.0, mime-types@2.1.10)
+----
+
+[NOTE]
+====
+Cada proyecto tiene su propia carpeta `node_modules` donde `npm` instala los paquetes.
+====
+
+Ahora ya podremos utilizar este módulo en nuestro Javascript escribiendo esto:
+
+[source]
+----
+var express = require('express');
+----
+
+==== El archivo `package.json`
+
+Al crear una aplicación Node.js, crearemos un archivo `package.json`. Este archivo contiene metadatos de la aplicación, como por ejemplo el nombre de la aplicación, versión, autor y los paquetes `npm` de los que depende.
+
+A continuación se muestra un ejemplo de `package.json` básico con una dependencia del framework `express`.
+
+[source]
+----
+{
+	"name": "ejemplo-express", <1>
+	"version": "0.1.1", <2>
+	"author": "Manuel Torres <mtorres@ual.es>",
+	"dependencies": { <3>
+		"express": "4.13.14"
+	}
+}
+----
+
+<1> El nombre no puede contener espacios en blanco y por convenio debe incluir sólo minúsculas.
+<2> Número de versión con la sintaxis `major.minor.patch`.
+<3> Lista de dependencias. `npm` instalará dentro de la carpeta `node_modules` de nuestro proyecto las dependencias que aparezcan aquí.
+
+Una vez creado el archivo `package.json` instalaremos las dependencias de nuestra aplicación ejecutando el comando siguiente:
+
+[source]
+----
+npm install
+----
+
+Las dependencias del proyecto serán instaladas en la carpeta `node_modules` del proyecto.
+
+[NOTE]
+====
+Para una información más detallada de las propiedades que se pueden definir en el archivo `package.json` consulta http://browsenpm.org/package.json[http://browsenpm.org/package.json].
+====
+
+==== Desinstalación y actualización de módulos
+
+Para desinstalar un paquete de una aplicación escribiremos
+
+[source]
+----
+$ npm uninstall express
+----
+
+Para conocer los paquetes que tenemos instalados escribiremos:
+
+[source]
+----
+$ npm ls
+
+----
+
+Para actualizar los paquetes que tenemos instalados actualizaremos el archivo `package.json` cambiando la versión de la dependencia a actualizar y ejecutaremos este comando:
+
+[source]
+----
+$ npm update
+
+----
+
+=== El bucle de eventos de Node.js
+
+Las aplicaciones Node.js son _single threaded_, pero soportan concurrencia mediante el uso de eventos y _callbacks_.
+
+Node mantiene un bucle de eventos, y siempre que finaliza una tarea se dispara el evento correspondiente, que avisa a la función asociada para que comience a ejecutarse.
+
+Cuando Node se inicia, su servidor espera a que se produzcan eventos. A medida que se producen los eventos se llama a su _función callback_ asociada.  
+
+
+[NOTE]
+====
+La _función callback_ es llamada cuando la función asíncrona devuelve su resultado. La gestión de eventos sigue el patrón de diseño _Observer_. Las funciones que escuchan a los eventos actúan como _Observers_. Cuando se dispara el evento, su función _listener_ comienza a ejecutarse.
+====
+
+image::http://i.stack.imgur.com/02udF.jpg[title = "El bucle de eventos de Node.js. Fuente: http://i.stack.imgur.com/02udF.jpg"]
+
+[IMPORTANT]
+====
+En una aplicación Node, 
+
+* Las funciones asíncronas aceptan una _función callback_ como último parámetro.
+* Las _funciones callback_ aceptan un error como su primer parámetro.
+====
+
+El ejemplo siguiente muestra el funcionamiento asíncrono y cómo utiliza Node el bucle de eventos y la llamada a las _funciones callback_. Para ello, crearemos un archivo de ejemplo `input.txt` con un texto de ejemplo
+
+[source]
+----
+$ echo "Estoy aprendiendo Node.js" > input.txt
+----
+
+A continuación crearemos un archivo `main.js` que básicamente tiene dos propósitos:
+
+* Mostrar por consola el contenido del archivo `input.txt`.
+* Mostrar por consola que el programa ha finalizado.
+
+[source]
+----
+var fs = require("fs");
+
+fs.readFile('input.txt', function (err, data) { <1> 
+   if (err){ <2>
+      console.log(err.stack);
+      return;
+   }
+   console.log(data.toString()); <3>
+});
+
+console.log("Programa finalizado"); <4>
+----
+
+<1> Función asíncrona para lectura de un archivo. La función `readFile` utiliza dos parámetros: el nombre del archivo y la _función callback_ asociada.
+<2> Tratamiento del error en la _función callback_ (p.e. no se encuentra el archivo).
+<3> Mostrar el contenido del archivo una vez finalizada la lectura.
+<4> Mostrar por consola que el programa ha finalizado.
+
+
+Al ejecutar el ejemplo, debido a la lectura asíncrona del archivo el programa muestra que ha acabado antes de que realmente haya finalizado la lectura, poniéndose de manifiesto el funcionamiento asíncrono del ejemplo.
+
+[source]
+----
+$ node main.js 
+Programa finalizado
+Estoy aprendiendo Node.js
+----
+
+=== Ejecución programada
+
+Las funciones `setTimeout()`, `clearTimeout()` y `setInterval()` nos permite, respectivamente, planificar la ejecución de una función, anular su ejecución programa o ejecutarla periódicamente.
+
+El fragmento siguiente ilustra un ejemplo que planifica la ejecución de una función 2 segundos (2000 ms) después de su llamada.
+
+[source]
+----
+function greeting() {
+	console.log("Hello world ejecutada 2000 ms tras su llamada !!");
+}
+
+setTimeout(greeting, 2000); <1>
+----
+
+<1> Con `setTimeout()` planificamos la ejecución diferida de una función.
+
+El fragmento siguiente ilustra un ejemplo que planifica la ejecución repetida de una función cada 2 segundos (2000 ms).
+
+[source]
+----
+function greeting() {
+	console.log("Hello world ejecutada cada 2000 ms!!");
+}
+
+setInterval(greeting, 2000); <1>
+----
+
+<1> Con `setInterval()` planificamos la ejecución diferida *y repetida* de una función.
+
+El fragmento siguiente ilustra un ejemplo que cancela la ejecución de una función planificada previamente.
+
+[source]
+----
+function greeting() {
+	console.log("Hello world que no llega a ejecutarse!!");
+}
+
+var t = setTimeout(greeting, 2000); <1> 
+clearTimeout(t); <2>
+----
+
+<1> Definir un _timer_ para la ejecución programada de la función.
+<2> Detener el _timer_ asociado a la función.
+
+=== Uso de `require()`
+
+La función `require()` nos permite dividir proyectos en proyectos más pequeños. Esta función permite incluir funciones de otros módulos externos de una forma sencilla.
+
+Ya hemos usado anteriormente la función `require()` cuando hablábamos del bucle de eventos de Node.js. A continuación veremos cómo incluir nuestro propio código usando la función `require()`.
+
+En Node.js cualquier variable o función declarada en un archivo no es accesible de forma predeterminada fuera de ese archivo. La utilización de objetos globales no es la solución. En su lugar, se recomienda el uso de la función `require()`. 
+
+Cuando queramos que una función pueda ser usada desde otro archivo diferente en el que está creada basta que la asignemos a una variable con el nombre que le queramos dar a la función, precediendo dicho nombre de `module.exports`. 
+
+El ejemplo siguiente corresponde a un archivo denominado `mylib.js` que declara dos funciones (`f1` y `f2`). Gracias a la forma en la que las hemos definido en `mylib.js` van a poder ser utilizadas por otros programas Node.js.
+
+[source]
+----
+// mylib.js
+
+module.exports.f1 = function() {
+	console.log("Escrito desde función 1");
+}
+
+module.exports.f2 = function() {
+	console.log("Escrito desde función 2");
+}
+----
+
+Para usar las funciones de `mylib.js` en primer lugar utilizaremos `require()` para incluir dicho archivo en nuestro programa. Asignaremos el `require()` a una variable para poder manejarlo a modo de espacio de nombres. Finalmente, sólo tendremos que añadir el nombre de la función exportada para poder usarla.
+
+[NOTE]
+====
+Otra forma de definir módulos con funciones para exportar es creando una lista de pares clave-valor donde la clave es el nombre de la función y el valor es el código de la función.
+
+El ejemplo siguiente ilustra la definición de funciones de `mylib.js` como lista de pares clave-valor.
+
+[source]
+----
+module.exports = {
+	f1: function() {
+	    console.log("Escrito desde función 1");
+	},
+
+	f2: function() {
+	    console.log("Escrito desde función 2");
+	}
+}
+----
+====
+
+El ejemplo siguiente muestra cómo llamar a las funciones `f1` y `f2` exportadas en `mylib.js`.
+
+[source]
+----
+mylib = require('./mylib.js');
+
+mylib.f1();
+mylib.f2();
+----
+
+Si ahora ejecutamos `index.js` obtendremos el resultado de la ejecución de las dos funciones.
+
+[source]
+----
+$ node index.js 
+Escrito desde función 1
+Escrito desde función 2
+----
+
+=== Interacción con MongoDB usando Node.js
+
+A pesar de que más adelante utilizaremos http://mongoosejs.com/[Mongoose], un ODM (Object Data Mapper) para interactuar con MongoDB, Mongoose es una capa situada sobre el driver Node.js para MongoDB, por lo que es conveniente comenzar viendo la interacción directa con MongoDB mediante el driver Node.js para pasar más adelante a interactuar con MongoDB mediante Mongoose.
+
+En https://www.npmjs.com/package/mongodb[https://www.npmjs.com/package/mongodb] puedes encontrar información sobre el driver que permite conectarnos a MongoDB usado Node.js.
+
+A continuación veremos cómo realizar las operaciones CRUD.
+
+==== Creación del archivo `package.json`
+
+Crearemos el archivo `package.json` en el directorio de nuestro proyecto de ejemplo para MongoDB (p.e. `nodeExamples/04-conexionMongoDB` incluyendo la dependencia a MongoDB:
+
+[source]
+----
+"dependencies": {
+    "mongodb": "2.1.11"
+}
+
+----
+
+A continuación instalaremos el driver con el comando:
+
+[source]
+----
+$ npm install
+----
+
+==== Conexión a MongoDB
+
+El ejemplo siguiente ilustra cómo conectarnos a MongoDB.
+
+[source]
+----
+var mongodb = require('mongodb');
+
+ 
+//  connection URL
+var url = 'mongodb://localhost:27017/nodeExample';
+
+// Connect to the MongoDB server <1> 
+mongodb.MongoClient.connect(url, function(err, db) {
+	if (err) {
+		console.log(err);
+		process.exit(1);
+	}
+
+	console.log("Conectado a MongoDB");
+	db.close();
+});
+----
+
+<1> Realizar la conexión con `MongoClient.connect()`. Esta función toma una _función callback_. La _función callback_ será llamada cuando se produzca un error o se establezca la conexión correctamente.
+
+==== Inserción de un documento
+
+El ejemplo siguiente ilustra cómo insertar un documento en MongoDB.
+
+[source]
+----
+var mongodb = require('mongodb');
+
+ 
+//  connection URL
+var url = 'mongodb://localhost:27017/nodeExample';
+
+// Connect to the MongoDB server
+mongodb.MongoClient.connect(url, function(err, db) {
+	if (err) {
+		console.log(err);
+		process.exit(1);
+	}
+
+	// Insert a document in myCollection <1>
+	db.collection('myCollection').insert({x: 1}, function(err, result) {
+		if (err) {
+			console.log(err);
+			process.exit(1);
+		}
+
+		console.log("Documento insertado");
+
+		db.close();
+	})
+});
+----
+
+<1> Realizar la inserción en la colección `myCollection` con `insert()`.
+
+==== Actualización de documentos
+
+El ejemplo siguiente ilustra cómo actualizar documentos en MongoDB.
+
+[source]
+----
+var mongodb = require('mongodb');
+
+ 
+//  connection URL
+var url = 'mongodb://localhost:27017/nodeExample';
+
+// Connect to the MongoDB server
+mongodb.MongoClient.connect(url, function(err, db) {
+	if (err) {
+		console.log(err);
+		process.exit(1);
+	}
+
+	// Update a document in myCollection <1>
+	db.collection('myCollection').update({x: 1}, {$set: {y: 2}}, function(err, result) {
+		if (err) {
+			console.log(err);
+			process.exit(1);
+		}
+
+		console.log("Documento actualizado");
+
+		db.close();
+	})
+});
+----
+
+<1> Actualización de documentos con `update()`.
+
+==== Búsqueda de documentos
+
+El ejemplo siguiente ilustra cómo recuperar documentos de MongoDB.
+
+[source]
+----
+var mongodb = require('mongodb');
+
+//  connection URL
+var url = 'mongodb://localhost:27017/nodeExample';
+
+// Connect to the MongoDB server
+mongodb.MongoClient.connect(url, function(err, db) {
+	if (err) {
+		console.log(err);
+		process.exit(1);
+	}
+
+	// Find documents in myCollection <1>
+	db.collection('myCollection').find({x: 1}).toArray(function(err, docs) {
+		if (err) {
+			console.log(err);
+			process.exit(1);
+		}
+
+		console.log(docs);
+
+		db.close();
+	})
+});
+----
+
+<1> Búsqueda de documentos con `find()`.
+
+==== Eliminación de documentos
+
+El ejemplo siguiente ilustra cómo eliminar documentos en MongoDB.
+
+[source]
+----
+var mongodb = require('mongodb');
+
+//  connection URL
+var url = 'mongodb://localhost:27017/nodeExample';
+
+// Connect to the MongoDB server
+mongodb.MongoClient.connect(url, function(err, db) {
+	if (err) {
+		console.log(err);
+		process.exit(1);
+	}
+
+	// Remove documents in myCollection <1>
+	db.collection('myCollection').remove({x: 1}, function(err, result) {
+		if (err) {
+			console.log(err);
+			process.exit(1);
+		}
+
+		console.log("Documento eliminado");
+
+		db.close();
+	})
+});
+----
+
+<1> Eliminación de documentos con `remove()`.
+
+////
+Apartado 2. Mongoose
+////
+
+== Mongoose
+
+Mongoose es el ODM (Object Document Mapper) más popular para MongoDB y Node.js. Mongoose ofrece una solución basada en esquemas que pemite modelar los datos de una aplicación a partir de la funcionalidad ofrecida por el driver Node.js para MongoDB. Entre las ventajas que ofrece Mongoose cabe destacar la validación de esquemas, construcción de consultas y pseudojoins.
+
+La API de Mongoose nos ofrece cuatro tipos de datos primarios: `Schema`, `Connection`, `Model` y `Document`. 
+
+* Los esquemas definen los campos que puede tener un documento y las propiedades que tiene que tener un documento para ser válido.
+* Las conexiones, como su nombre indican, son objetos que representan conexiones entre las aplicaciones y MongoDB.
+* Los modelos son una combinación de un esquema y una conexión, y están asociados a colecciones MongoDB.
+* Los documentos son instancias de un modelo y se correponden con un objeto de una colección. Podemos aplicarle un método `save()` para hacer que su almacenamiento sea persistente en la base de datos.
+
+=== Dependencias en `package.json`
+
+Para nuestro proyecto añadiremos `mongoose` a la lista de dependencias del archivo `package.json`.
+
+[source]
+----
+{
+	"name": "ejemplo-mongoose",
+	"version": "0.1.0",
+	"author": "Manuel Torres <mtorres@ual.es>",
+	"dependencies": {
+		"mongoose": "4.4.10"
+	}
+}
+----
+
+=== Creación de una conexión a MongoDB
+
+La conexión a MongoDB se realiza mediante el método `mongoose.connect()`.
+
+El ejemplo siguiente ilustra la conexión a un MongoDB en local usando los valores predeterminados. Al realizarse la conexión se selecciona una base de datos que a modo de ejemplo hemos denominado `mongoose`.
+
+[source]
+----
+var mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost:27017/mongoose'); <1>
+----
+
+<1> Conexión a MongoDB seleccionando una base de datos denominada `mongoose`.
+
+[NOTE]
+====
+Si la conexión se ha establecido correctamente, la conexión estará disponible en cualquier punto de la aplicación que haga `require('mongoose')`.
+
+La conexión se establecerá al iniciar la aplicación y se mantendrá abierta hasta cerrar la aplicación.
+====
+
+=== Cierre de la conexión
+
+Cada conexión Mongoose tiene un método `close()` que toma opcionalmente un _función callback_ como argumento.
+
+[source]
+----
+mongoose.connection.close(function () {
+	console.log('Conexión cerrada');
+});
+----
+
+[TIP]
+====
+Si quieremos que la conexión Mongoose se cierre al terminar la aplicación Node incluiremos el método `close()` en la _función callback_ de `process.on('SIGINT')`.
+
+[source]
+----
+process.on('SIGINT', function() {
+  mongoose.connection.close(function () {
+    console.log('Mongoose disconnected through app termination');
+    process.exit(0);
+  });
+});
+----
+====
+
+=== Conexión del proyecto a la base de datos
+
+Para tener el código organizado, crearemos una carpeta `model` en la carpeta del proyecto. Esta carpeta contendrá:
+
+* Un archivo `db.js`, que contiene el código para gestionar la conexión.
+* Los modelos, que definiremos más adelante.
+
+==== El archivo `model\db.js`
+
+El archivo `db.js` se encargará de realizar la conexión con la base de datos y de interceptar eventos relacionados con la conexión (conexión, error en la conexión, desconexión, finalización de la aplicación Node).
+
+El proyecto sólo necesitará abrir este archivo y la conexión a la base de datos se realizará automáticamente.
+
+[source]
+----
+// Bring Mongoose into the project
+var mongoose = require( 'mongoose' );
+
+// Build the connection string
+var dbURI = 'mongodb://localhost/mongoose';
+
+// Create the database connection
+mongoose.connect(dbURI);
+
+// Catch connection event
+mongoose.connection.on('connected', function () {
+  console.log('Mongoose connected to ' + dbURI);
+});
+
+// Catch connection error event
+mongoose.connection.on('error',function (err) {
+  console.log('Mongoose connection error: ' + err);
+});
+
+// Catch disconnection event
+mongoose.connection.on('disconnected', function () {
+  console.log('Mongoose disconnected');
+});
+
+// Catch end Node application event
+process.on('SIGINT', function() {
+  mongoose.connection.close(function () {
+    console.log('Mongoose disconnected through app termination');
+    process.exit(0);
+  });
+});
+
+----
+
+==== Abrir la conexión al iniciar la aplicación
+
+Nuestro proyecto incluirá un archivo `app.js` que incluirá un `require('./model/db')`. Esto bastará para que se cree la conexión a la base de datos.
+
+[source]
+----
+var db = require('./model/db');
+----
+
+Y la consola mostraría esto:
+
+[source]
+----
+node app.js 
+Mongoose connected to mongodb://localhost/mongoose
+^C <1>
+Mongoose disconnected
+Mongoose disconnected through app termination
+----
+
+<1> Tras detener la aplicación Node (`CTRL+C`), se cerrará la conexión Mongoose
+
+
+=== Creación del esquema 
+
+Cualquier cosa en Mongoose comienza con un esquema. Cada esquema se corresponde con el concepto de colección de MongoDB y define la estructura de los documentos de esa colección.
+
+Mongoose permite estos tipos de datos: `String`, `Number`, `Date`, `Buffer` (para datos bianrios -p.e. una imagen), `Boolean`, `ObjectId` (realmente el tipo que se usa es `mongoose.Schema.Types.ObjectId`), `Mixed` (puede contener cualquier cosa),  y `Array`.
+
+[NOTE]
+====
+En la mayoría de los escenarios tendremos un esquema por cada colección de la base de datos.
+====
+
+El fragmento siguiente corresponde a un archivo denominado `model/userSchema.js`. El ejemplo
+
+* Define un esquema para usuarios, que estarán formados por tres propiedades (`name`, `email` y `age`). El ejemplo muestra la especificación de datos no nulos, transformación a minúsculas, valores predeterminados y tipos de datos. 
+* Construye un modelo para el esquema de usuarios (ver apartado siguiente sobre construcción de modelos).
+
+[source]
+----
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+
+var userSchema = new Schema({ <1>
+	name: {
+		type: String, <2> 
+		required: true <3>
+	},
+	email: {
+		type: String,
+		required: true,
+		lowercase: true <4>
+	},
+	age: {
+		type: Number,
+		default: 18 <5>
+	}
+});
+
+// Build the User model
+mongoose.model('User', userSchema); <6>
+----
+ 
+<1> Crearemos un esquema para cada tipo de documento. Los esquemas normalmente se definirán en archivos independientes.
+<2> Especificación de tipo de datos.
+<3> Especificación de campo no nulo.
+<4> Mongoose convertirá a minúsculas cada email antes de almacenarlo.
+<5> Especificación de valores predeterminados.
+<6> Construcción del esquema de los usuarios.
+
+[NOTE]
+====
+Si no especificamos el `_id`, Mongoose lo creará.
+====
+
+Este esquema no es algo rígido. Si más adelante es necesario modificar este esquema, por ejemplo añadiendo más campos, basta con editar el esquema para que se adapte a las nuevas necesidades. Ni MongoDB ni Mongoose pondrán ninguna objección al cambio, de forma que los nuevos documentos obedecerán a la nueva estructura sin afectar a los anteriores.
+
+[NOTE]
+====
+No es necesario tener una conexión abierta para definir un esquema. Sin embargo, hasta que no esté disponible la conexión no habrá ningún efecto sobre la base de datos.
+====
+
+El archivo `userSchema.js` creado deberá ser incluído en el archivo `db.js` de inicialización de la base de datos. Esto hará que el modelo construído en la última línea del esquema esté disponible donde se haga el `require('db.js')`.
+
+A continuación se muestra el archivo `db.js` actualizado para incluir el registro del modelo definido en `userSchema.js`.
+
+[source]
+----
+// Bring Mongoose into the project
+var mongoose = require( 'mongoose' );
+
+// Build the connection string
+var dbURI = 'mongodb://localhost/mongoose';
+
+// Create the database connection
+mongoose.connect(dbURI);
+
+// Catch connection event
+mongoose.connection.on('connected', function () {
+  console.log('Mongoose connected to ' + dbURI);
+});
+
+// Catch connection error event
+mongoose.connection.on('error',function (err) {
+  console.log('Mongoose connection error: ' + err);
+});
+
+// Catch disconnection event
+mongoose.connection.on('disconnected', function () {
+  console.log('Mongoose disconnected');
+});
+
+// Catch end Node application event
+process.on('SIGINT', function() {
+  mongoose.connection.close(function () {
+    console.log('Mongoose disconnected through app termination');
+    process.exit(0);
+  });
+});
+
+// Register the user model <1> 
+require('./userSchema');
+----
+<1> El archivo `db.js` incluirá cada uno de los modelos definidos en el proyecto.
+
+[WARNING]
+====
+No olvides añadir la línea `require('./userSchema');` al archivo `db.js`.
+====
+
+=== Creación de un modelo
+
+Un modelo es una versión compilada de un esquema. Una instancia del modelo se corresponderá con un documento de la base de datos. El modelo es el que se encarga de leer, crear, modificar y eliminar documentos.
+
+Para crear un modelo utilizaremos el método `mongoose.model()`. A este método le pasaremos el nombre del modelo y el esquema a compilar. A partir de esto, si no indicamos los contrario, Mongoose utilizará como nombre de colección el nombre en plural y en mínúsculas del modelo (en nuestro ejemplo para el modelo `User` crearía la colección `users`).
+
+=== Operaciones CRUD
+
+Los modelos ofrecen métodos estáticos que nos permiten realizar las operaciones básicas CRUD.
+
+==== Creación de un documento
+
+Los documentos son instancias de un modelo. Podemos crear documentos de dos formas:
+
+* Crear el objeto a partir del modelo y aplicarle el método `save()` para hacerlo persistente.
+* Aplicar el método estático `create()` al modelo.
+
+El ejemplo siguiente muestra el código del archivo `createUser.js` usando las dos formas descritas para crear dos documentos diferentes.
+
+[source]
+----
+var mongoose = require('mongoose');
+var db = require('./model/db'); <1>
+var User = mongoose.model('User'); <2>
+
+// First way of creating documents: create an instance and save it later
+var myUser = new User({ <3>
+	name: 'Mary Thompson',
+	email: 'marythompson@mongoose.com'
+})
+
+myUser.save(function (err) { <4>
+	if (err) {
+		console.log(err);
+		process.exit(1);
+	}
+	console.log('User created');
+});
+
+// Second way of creating documents: apply the static method create() to the model
+User.create({ <5>
+	name: 'John Smith',
+	email: 'johnsmith@mongoose.com'
+}, function(err, user) {
+	if (err) {
+		console.log(err);
+		process.exit(1);
+	}
+	console.log('User created');
+});
+----
+<1> Incluir el arvhivo `model/db.js`.
+<2> Utilizar el modelo `User`.
+<3> Crear el objeto instanciando el modelo.
+<4> El método `save()` hace persistente de forma asíncrona una instancia del modelo.
+<5> Crear el documento directamente aplicando el método estático `create()` al modelo `User`.
+
+==== Búsqueda de documentos
+
+La búsqueda de documentos con Mongoose es sencilla ya que permite la sintaxis de MongoDB. Los documentos se pueden recuperar con los siguientes métodos estáticos de los modelos: `find()`, `findOne()`, `findById()` o `where()`.
+
+El ejemplo siguiente ilustra la recuperación de usuarios a partir de su email.
+
+[source]
+----
+var mongoose = require('mongoose');
+var db = require('./model/db');
+var User = mongoose.model('User');
+
+User.find({email: 'johnsmith@mongoose.com'}, function(err, docs) {
+	if (err) {
+		console.log(err);
+		process.exit(1);
+	}
+	console.log(docs);
+});
+----
+
+En la consola se mostaría los documentos recuperados.
+
+[source]
+----
+[ { age: 18,
+    __v: 0,
+    email: 'johnsmith@mongoose.com',
+    name: 'John Smith',
+    _id: 56fab46d629da23b3af7a3f1 } 
+]
+----
+
+[NOTE]
+====
+El campo `__v` es introducido por Mongoose en cada colección y lo usa para el control de versiones en operaciones que modifiquen campos cuyo tipo de datos sean arrays.
+====
+
+==== Modificación de documentos
+
+Los documentos pueden ser modificados siguiendo estos dos procesos:
+
+* Recuperarlos (con métodos `findOne()`, `findById()`), editar sus propiedades y guardarlos con `save()`.
+* Usar el método estático `update()` de los modelos.
+
+[WARNING]
+====
+No podremos aplicar el método `save()` directamente si hemos recuperado los documentos con `find()`. Esto se debe a que no estaríamos editando los documentos, sino el array de documentos, y al array no le podemos aplicar los métodos estáticos de los modelos como `save()`.
+====
+
+A continuación veremos cómo actualizar documentos siguiendo estas dos técnicas. 
+
+[source]
+----
+var mongoose = require('mongoose');
+var db = require('./model/db');
+var User = mongoose.model('User');
+
+// User modified in two steps: findOne() + save()
+User.findOne({email: 'johnsmith@mongoose.com'}, function(err, doc) { <1>
+	if (err) {
+		console.log(err);
+		process.exit(1);
+	}
+
+	doc.age = 25; <2>
+
+	doc.save(function (err) { <3>
+		if (err) {
+			console.log(err);
+			process.exit(1);
+		}
+	});
+
+	console.log('User modified');
+})
+
+
+User.update({email: 'marythompson@mongoose.com'}, {$set: {age: 31}}, function(err, docs) { <4>
+	if (err) {
+		console.log(err);
+		process.exit(1);
+	}
+	console.log("User modified");
+});
+
+----
+<1> Obtener el documento a recuperar
+<2> Edición de las propiedades del documento recuperado.
+<3> Haciendo los cambios persistentes.
+<4> Actualización directa
+El ejemplo siguiente ilustra la modificación del documento con el método estático `update()` de los modelos.
+
+==== Eliminación de documentos
+
+Los modelos tienen el método estático `remove()` que permite la eliminación de documentos.
+
+El ejemplo siguiente ilustra la eliminación de usuarios a partir de su email.
+
+[source]
+----
+var mongoose = require('mongoose');
+var db = require('./model/db');
+var User = mongoose.model('User');
+
+User.remove({email: 'johnsmith@mongoose.com'}, function(err, docs) {
+	if (err) {
+		console.log(err);
+		process.exit(1);
+	}
+	console.log("User removed");
+});
+----
+
+=== Consultas usando el tipo `Query`
+
+Los modelos permiten la creación de consultas encandenando operaciones en lugar de especificar el objeto JSON. 
+
+[source]
+----
+
+// Using query builder
+Person.
+  find({ occupation: /host/ }).
+  where('name.last').equals('Ghost'). <1>
+  where('age').gt(17).lt(66).
+  where('likes').in(['vaporizing', 'talking']).
+  limit(10). <2>
+  sort('-occupation').
+  select('name occupation').
+  exec(callback); <3>
+
+// With a JSON doc
+Person.
+  find({ <4>
+    occupation: /host/,
+    'name.last': 'Ghost',
+    age: { $gt: 17, $lt: 66 },
+    likes: { $in: ['vaporizing', 'talking'] }
+  }).
+  limit(10).
+  sort({ occupation: -1 }).
+  select({ name: 1, occupation: 1 }).
+  exec(callback);
+----
+<1> Las condiciones de la consulta se van encadenando una detrás de otra.
+<2> Tras los criterios seguimos encandenando métodos para limitar el número de documentos recuperados, ordenación, proyección, etc.
+<3> La consulta se ejecuta con el método estático `exec()` al que se le pasa una _función callback_.
+<4> Especificación de criterios de la consulta en el documento JSON.
+
+[NOTE]
+====
+La posibilidad de ir encadenando condiciones en las consultas se debe a que los métodos estáticos aplicados a las modelos devuelven un objeto de tipo `Query`, que proporciona una interfaz para construir consultas.
+====
+
+=== Esquemas complejos en Mongoose
+
+MongoDB no soporta _joins_ como ocurre en las bases de datos relacionales. Aquí veremos cómo solucionar este problema con Mongoose:
+
+* Mediante _población (population)_, que consiste en referenciar otras colecciones.
+* Mediante _subdocumentos_, embembiendo documentos dentro de otros documentos.
+
+
+==== Población
+
+En relaciones 1:M o M:N de cardinalidad reducida (de uno a pocos, o de muchos a pocos) podemos incluir el elemento de poca cardinalidad en el otro elemento. Esta situación se da por ejemplo en un escenario donde queremos almacenar datos de proyectos y de usuarios con dos relaciones entre sí: 
+
+* El usuario que creó el proyecto (_createdBy_).
+* Los usuarios que contribuyen a un proyecto (_contributors_).
+
+La relación _createdBy_ la consideramos 1:M (uno a muchos) porque en principio la lista de proyectos creados por un usuario puede ser muy elevada. En esta situación incluiremos un atributo `createdBy` en los proyectos (la parte M) que incluya una referencia al usuario (la parte 1, que es el extremo de cardinalidad reducida) que lo creó. Este criterio de diseño recuerda a la transformación de una relación 1:M de una base de datos relacional.
+
+La relación _contributors_ la consideramos M:N (muchos a pocos) porque la lista de proyectos en los que puede constribuir un usuario puede ser indefinida (muchos). Sin embargo, consideremos que el número de contribuidores de un proyecto es un número reducido (pocos -el extremo de cardinalidad reducida). En esta situacin como esta (relación uno a pocos) incluiremos un atributo `contributors` en los proyectos (la parte M) que incluya una *lista de referencias* a los usuarios (la parte pocos) que contribuyen al proyecto.
+
+Las referencias se establecen siguiendo dos pasos:
+
+* Especificando `ObjectId` como tipo: `type: mongoose.Schema.Types.ObjectId`
+* Incluyendo una referencia al modelo referenciado (p.e. al de usuario): `ref:'User'`
+
+[TIP]
+====
+En relaciones M:N del tipo muchos a pocos representaremos la relación incluyendo en el extremo muchos un nuevo atributo con una lista de referencias a la parte pocos.
+
+De forma similar, en relaciones 1:M del tipo uno a pocos representaremos la relación incluyendo en el extremo uno un nuevo atributo con una lista de referencias a la parte pocos.
+====
+
+El ejemplo siguiente ilustra la definición del esquema para los proyectos.
+[source]
+----
+var mongoose = require('mongoose');
+
+// User model is included because it is referenced
+var User = mongoose.model('User'); <1>
+
+var projectSchema = new mongoose.Schema({
+	name: {
+		type: String,
+		required: true
+	},
+	description: {
+		type: String
+	},
+	createdBy: { <2>
+		type: mongoose.Schema.Types.ObjectId, <3>
+		ref:'User' <4>
+	},
+	contributors: [{ <5>
+		type: mongoose.Schema.Types.ObjectId,
+		ref:'User'
+	}]
+});
+
+// Build the Project model
+mongoose.model('Project', projectSchema);
+----
+<1> Hay que incluir el modelo referenciado.
+<2> `createdBy` representa la relación M:1 entre los proyectos y su usuario creador.
+<3> `createdBy` tiene que ser tipo `ObjectId`.
+<4> El atributo `ref` toma como valor el modelo referenciado.
+<5> `contributors` representa la relación M:N (muchos a pocos) entre los proyectos y los usuarios que contribuyen.
+
+El ejemplo muestra cómo crear un usuario e inicializarlo con un proyecto. Crearemos el usuario, y crearemos el proyecto asignándole el usuario creado.
+
+[source]
+----
+var mongoose = require('mongoose');
+var db = require('./model/db');
+
+var User = mongoose.model ('User'); <1>
+var Project = mongoose.model('Project');
+
+var john = new User({ <2> 
+	email: 'johndoe@mongoose.com',
+	name: 'John Doe'
+});
+
+var pamela = new User({ <3>
+	email: 'pamelasmith@mongoose.com',
+	name: 'Pamela Smith'
+});
+
+//Project is created by John Doe 
+//Project contributors are John Doe and Pamela Smith
+var myProject = new Project ({ <4>
+	name:'Project 1',
+	description:'Project 1 Description',
+	createdBy: john, <5>
+	contributors: [john, pamela] <6>
+});
+
+john.save();
+pamela.save();
+myProject.save();
+----
+
+<1> Incluir los modelos a utilizar
+<2> Crear al usuario John Doe
+<3> Crear al usuario Pamela Smith
+<4> Crear el proyecto
+<5> El proyecto ha sido creado por John Doe
+<6> Al proyecto contribuyen John Doe y Pamela Smith  
+
+El ejemplo siguiente muestra cómo al obtener un documento podemos recuperar (poblar) los campos que incluyen referencias a otros documentos. El ejemplo poblará los campos `createdBy` y `contributors` del proyecto con el usuario que lo creó y sus contribuidores, respectivamente. 
+
+[source]
+----
+var mongoose = require('mongoose');
+var db = require('./model/db');
+
+var User = mongoose.model ('User'); <1>
+var Project = mongoose.model('Project');
+
+Project.findOne({name:'Project 1'}) <2>
+	.populate('createdBy') <3>
+	.populate('contributors', 'name email -_id') <4>
+	.exec(function(err, result) {
+	if (err) {
+		console.log(err);
+		process.exit(1);
+	}
+	console.log(result);
+});
+----
+
+<1> Incluir los modelos a utilizar
+<2> Recuperar el proyecto
+<3> Poblar el campo `createdBy` con todos los campos del creador
+<4> Poblar la lista de contribuidores pero mostrando sólo el nombre y email del usuario creados y excluyendo su identificador.
+
+[TIP]
+====
+A `populate()` le pasaremos como argumento el campo que queremos poblar. Opcionalmente se le puede proporcionar la lista de campos del documento referenciado que queremos incluir y/o excluir.
+====
+
+Este sería el resultado de lo que devolvería el ejemplo anterior.
+
+[source, json]
+----
+{ contributors: <1>
+   [ { name: 'John Doe', email: 'johndoe@mongoose.com' },
+     { name: 'Pamela Smith', email: 'pamelasmith@mongoose.com' } ],
+  __v: 0,
+  createdBy: <2>
+   { age: 18,
+     __v: 0,
+     name: 'John Doe',
+     email: 'johndoe@mongoose.com',
+     _id: 5700b3004aa13cfe5419adc0 },
+  description: 'Project 1 Description',
+  name: 'Project 1',
+  _id: 5700b3004aa13cfe5419adc2 }
+----
+<1> Lista de contribuidores mostrando sólo `name` y `email`, y ocultando el `_id`
+<2> Creador del proyecto mostrando todos sus campos
+
+==== Subdocumentos
+
+Con los subdocumentos los documentos se almacenan en el propio documento padre.
+
+Ampliaremos el ejemplo anterior incluyendo a cada proyecto una lista de tareas. Cada tarea incluirá un nombre de tarea y una descripción. A continuación se muestra el esquema.
+
+
+//// 
+Apartado 3. Express
+////
+
+== Express
+
+Express es un framework que facilita el desarrollo rápido de aplicaciones web basadas en Node.js. 
+
+En este apartado realizaremos una introducción básica a Express.
+
+[NOTE]
+====
+Las aplicaciones serán desarrolladas siguiendo el patrón MVC. Se creará estructura de carpetas que separe los modelos, las vistas y los controladores. Además, se creará una carpeta para las rutas. Esto produce una esctructura de carpetas como la siguiente:
+
+* `controllers`
+* `models`. Normalmente contiene un archivo para cada colección.
+* `routes`. Mappings de las rutas de la API. Normalmente contiene una archivo para cada colección.
+* `views`
+====
+
+[NOTE]
+====
+En REST una URL representa un recurso. Se puede acceder o modificar el recurso mediante los métodos del protocolo HTTP (`GET`, `POST`, `PUT`, `DELETE`).
+
+http://myapp.com/product
+
+* `GET` devuelve todos los productos.
+* `POST` crea un producto nuevo.
+
+http://myapp.com/product/1111
+
+* `GET` devuelve el producto 1111.
+* `PUT` actualiza el producto 1111.
+* `DELETE` borra el prodcuto 1111.
+
+====
+
+TO DO
+
+
+// NO CAMBIAR!! (Entrar en modo no numerado de apartados)
+:numbered!:
+
+
+
+
+[bibliography]
+== Referencias
+
+[bibliography]
+- [[[holmes]]] Simon Holmes. 'Mongoose for Application Development'. Packt Publishing. 2013. ISBN 978-1-78216-819-5
+
