@@ -126,35 +126,61 @@ Debido a una discrepancia entre la configuración de red de la versión anterior
 
 === Ajuste de MTU en instancias Ubuntu
 
-1. Iniciar sesión ssh
-2. Activa sesión superusuario
+. Iniciar sesión ssh
+. Activa sesión superusuario
 
++
 `sudo su -`
 
-3. Modificar el tamaño MTU actual 
-    
-`ifconfig eth0 mtu 1450`
-    
-4. Modificar el archivo `/etc/network/interfaces.d/eth0.cfg`
+. Mostrar la configuración de red para conocer qué interfaz de red hay que modificar
 
++
+`ifconfig`
+
++
+La figura siguiente ilustra que la interfaz que hay definida en la instancia es `eth0` y que su MTU es `1454`, cuando su valor adecuado debe ser 1400.
+
+image::mtu.png[Ajuste de MTU]
+
++
+[NOTE]
+====
+Otras instancias con otras configuraciones pueden devolver otros nombres de interfaces de red (p.e. `ens3`)
+====
+
+. Modificar el tamaño actual de MTU en la interfaz de red obtenida en el paso anterior (p.e. `eth0`)
+
++
+[source]
+----
+ifconfig eth0 mtu 1450 <1>
+----
+<1> Cambia el nombre de la interfaz de red (`eth0`) según corresponda (p.e. `ens3`, ...)
+
+. Modificar el archivo `/etc/network/interfaces.d/eth0.cfg`
+
++
 [source]
 ----
 # The primary network interface
-auto eth0
+auto eth0 <1>
 iface eth0 inet dhcp
-    post-up /sbin/ifconfig eth0 mtu 1450 <1>
+    post-up /sbin/ifconfig eth0 mtu 1450 <2>
 ----
-<1> Añadir esta línea para configurar la MTU tras el arranque
+<1> Aquí aparecerá el nombre de la interfaz de red a modificar
+<2> Línea para configurar la MTU tras el arranque (usar el nombre de interfaz de red adecuado -`eth0`, `ens3` ...)
 
-5. Reiniciar la máquina virtual
+. Reiniciar la máquina virtual
+
 
 ### Ajuste de MTU en instancias Windows
 
-Usar el Planficador de tareas para crear la tarea siguiente y que se ejecute al inicio de la sesión (no al iniciar la máquina virtual)
+Usar el Planficador de tareas para crear la tarea siguiente y que se ejecute al inicio de la sesión (no al iniciar la máquina virtual).
 
 ```
-netsh interface ipv4 set subinterface "Ethernet" mtu=1450 store=persistent
+netsh interface ipv4 set subinterface "Ethernet" mtu=1450 store=persistent <1>
 ```
+<1> `Ethernet` es el nombre de interfaz de red en este ejemplo. En otros casos puede tener un nombre diferente. Usa `ipconfig` para conocer el nombre la interfaz de red que tienes que modificar.
 
 ___
 
