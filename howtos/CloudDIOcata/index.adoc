@@ -1,0 +1,163 @@
+////
+NO CAMBIAR!!
+Codificación, idioma, tabla de contenidos, tipo de documento
+////
+:encoding: utf-8
+:lang: es
+:toc: right
+:toc-title: Tabla de contenidos
+:doctype: book
+:imagesdir: ./images
+
+
+
+
+////
+Nombre y título del trabajo
+////
+# Acceso a Openstack-DI (versión Ocata)
+Cloud-DI
+Cloud-DI Team <clouddi@ual.es>
+
+
+// NO CAMBIAR!! (Entrar en modo no numerado de apartados)
+:numbered!: 
+
+
+[abstract]
+== Resumen
+
+
+Desde septiembre de 2017 está disponible la versión Ocata (febrero de 2017) de Openstack, el software vitualización que soporta los servicios de virtualización de Cloud-DI.
+
+En esta breve guía se muestran las principales novedades básicas para el acceso, así como los pasos a seguir para recuperar una instancia de la versión anterior de OpenStack-DI.
+
+[IMPORTANT]
+====
+El acceso a OpenStack-DI y a otros recursos más de Cloud-DI lo puedes hacer directamente desde http://openstack.di.ual.es[http://openstack.di.ual.es] o desde la web de servicios de Cloud-DI http://cloud.di.ual.es[http://cloud.di.ual.es]. Allí podrás encontrar además una lista de respuestas a preguntas frecuentes, y los **Términos de servicio de Cloud-DI**.
+====
+
+En http://moodle.di.ual.es[http://moodle.di.ual.es] se encuentran disponibles una serie de videos ilustrativos sobre los sevicios ofrecidos por Cloud-DI y sobre las operaciones básicas para el uso de OpenStack-DI.
+
+En cuanto a las cuestiones necesarias para poder realizar la adaptación a esta nueva versión de OpenStack-DI, deberás prestar atención a los siguientes apartados.
+
+
+// Entrar en modo numerado de apartados
+:numbered:
+
+
+//// 
+COLOCA A CONTINUACION EL TITULO DEL APARTADO
+////
+
+== Dominio
+
+A diferencia de la versión anterior que usábamos de Openstack, Ocata utiliza dominios. El dominio que utilizamos de forma predeterminada en Openstack-DI es `default`.
+
+image:domain.jpg[Dominio OpenStack-DI]
+
+== Acceso a las cuentas de usuario
+
+* El login de acceso es el mismo que el de Campus virtual. 
+* Openstack-DI cuenta con su propio sistemas de autenticación y no se accederá con las credenciales de Campus Virtual, ni con las de LDAP-DI. Cloud-DI Team facilitará a cada usuario su contraseña inicial de acceso. Por motivos de seguridad, dicha contraseña se deberá cambiar tras iniciar la sesión por primera vez.
+
+El cambio de contraseña se realiza a través del desplegable del nombre de usuario de la parte superior derecha, opción *Settings*. A continuación, en la barra lateral izquierda se activará la opción para el cambio de contraseña *Change Password*.
+
+image:changePassword.jpg[Dominio OpenStack-DI]
+
+== Configuración inicial de las cuentas de usuario
+
+De forma prederminada, Cloud-DI Team crea una cuenta de usuario y un proyecto OpenStack para cada cuenta de usuario. Cada proyecto ofrece un conjunto de recursos virtuales (máquinas virtuales, redes virtuales, volúmenes, ...).
+
+El proyecto creado por Cloud-DI Team para cada usuario ya tiene la red configurada (red, router e interfaces de red). Sin embargo, no están configuradas ni la clave pública que se inyectará a las máquinas virtuales creadas para su acceso vía ssh, ni las reglas de seguridad.
+
+=== Configuración de las Claves de acceso
+
+En la barra lateral izquierda, selecciona `Project | Compute | Key Pairs`. Para importar una nueva clave, pulsa el botón **Import Key Pair**. 
+
+image:sshkey.jpg[Claves de acceso]
+
+En el formulario: 
+
+* Introduce un nombre descriptivo para la clave en *Key Pair Name*.
+* Pega tu clave pública en *Public Key* 
+
+Las nuevas instancias que crees desde una imagen limpia, se crearán con esta nueva clave de acceso. Sin embargo, las instancias que crees desde un *snapshot*, conservarán la clave pública con la que fueron creadas inicialmente la instancia a partir de la que se creó el snapshot. 
+
+[IMPORTANT]
+====
+Las instancias existentes en el OpenStack anterior se han migrado a la nueva versión mediante *snapshots*. Por tanto, tendrás que acceder a las nuevas instancias creadas a partir de dichos *snapshots* con las claves SSH con las que fueron creadas originalmente las instancias.
+====
+
+=== Configuración de las Reglas de seguridad
+
+En OpenStack, cada proyecto tiene sus propias reglas de seguridad que funciona a modo de cortafuegos sobre las instancias definidas en el proyecto. 
+
+De forma predeterminada, las instancias creadas no se pueden comunicar con el exterior. Configura las reglas de seguridad (p.e. abriendo los puertos SSH, RDP para escritorio remoto de Windows, HTTP para servidores web, ...) de tu proyecto para que se pueda acceder de forma adecuada a las instancias.
+
+La configuración básica de las reglas de seguridad se puede realizar en el menú `Project | Network | Security Groups`.  Desde ahí podrás configurar las reglas predeterminadas (`default`) para todas las máquinas virtuales de un proyecto o crear nuevos grupos de seguridad con reglas específicas.
+
+image:securityGroup.jpg[Grupos de seguridad]
+
+== Creación de una máquina virtual
+
+Puedes crear una máquina virtual seleccionando `Project | Compute | Instances` y pulsando el botón **Launch instance**
+
+En el asistente deberás proporcionar:
+
+* Paso 1: Nombre de la instancia y cantidad de instancias a crear. La zona de disponibilidad siempre es `nova`.
+* Paso 2: En la fuente, selecciona *Image* o *Image snapshot* dependiendo de si quieres crear una instancia a partir de una imagen limpia o de un snapshot, respectivamente. La selección de la imagen base para la instancia se realizará a partir del cuadro inferior, el cual se podrá filtrar introduciendo en el cuadro de búsqueda alguno de los caracteres del nombre de la imagen.
+
+image:selectImage.jpg[Selección de una imagen base para la instancia]
+
+[IMPORTANT]
+====
+Desactiva la creación de un nuevo volumen asociado a la instancia. 
+Si más adelante necesitas crear uno o más volúmenes para tu instancia, podrás crearlos desde el menú de volúmenes (`Project | Compute | Volumes`).
+====
+
+image:disableVolume.jpg[Desactivación de la creción de un volumen para la instancia](
+
+El resto de pasos son similares a las versiones anteriores de OpenStack y resultarán familiares a los usuarios habituales. Para más información, consulta los videos disponibles en el curso online sobre uso básico de el OpenStack de Cloud-DI disponible en [http://moodle.di.ual.es](http://moodle.di.ual.es).
+
+== Recuperación de snapshots del anterior OpenStack-DI
+
+Debido a una discrepancia entre la configuración de red de la versión anterior y la actual de OpenStack-DI es necesario realizar unos ajustes en las instancias que se creeen a partir de snapshots del anterior OpenStack-DI. **No realizar los cambios descritos en esta sección podrán impedir el correcto funcionamiento de las máquinas virtuales recuperadas.**
+
+=== Ajuste de MTU en instancias Ubuntu
+
+1. Iniciar sesión ssh
+2. Activa sesión superusuario
+
+`sudo su -`
+
+3. Modificar el tamaño MTU actual 
+    
+`ifconfig eth0 mtu 1450`
+    
+4. Modificar el archivo `/etc/network/interfaces.d/eth0.cfg`
+
+[source]
+----
+# The primary network interface
+auto eth0
+iface eth0 inet dhcp
+    post-up /sbin/ifconfig eth0 mtu 1450 <1>
+----
+<1> Añadir esta línea para configurar la MTU tras el arranque
+
+5. Reiniciar la máquina virtual
+
+### Ajuste de MTU en instancias Windows
+
+Usar el Planficador de tareas para crear la tarea siguiente y que se ejecute al inicio de la sesión (no al iniciar la máquina virtual)
+
+```
+netsh interface ipv4 set subinterface "Ethernet" mtu=1450 store=persistent
+```
+
+___
+
+Cloud-DI Team, 2017
+
+
