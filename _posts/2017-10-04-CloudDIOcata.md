@@ -4,7 +4,7 @@ title: Acceso a Openstack-DI (versión Ocata)
 category: posts
 ---
 
-Disponible la [guía básica de adaptación de OpenStak a versión Ocata](http://ualmtorres.github.io/howtos/Cloud-DI-Ocata/). La guía nos muestra:
+Disponible la [guía básica de adaptación de OpenStak a versión Ocata](http://ualmtorres.github.io/howtos/CloudDIOcata/). La guía nos muestra:
 
 * Dominio
 * Acceso a las cuentas de usuario
