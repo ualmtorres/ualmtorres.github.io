@@ -637,55 +637,107 @@ Si más adelante necesitas crear uno o más volúmenes para tu instancia, podrá
 </li>
 <li>
 <p>Activa sesión superusuario</p>
-</li>
-</ol>
-</div>
 <div class="paragraph">
 <p><code>sudo su -</code></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Modificar el tamaño MTU actual</p>
 </li>
-</ol>
+<li>
+<p>Mostrar la configuración de red para conocer qué interfaz de red hay que modificar</p>
+<div class="paragraph">
+<p><code>ifconfig</code></p>
 </div>
 <div class="paragraph">
-<p><code>ifconfig eth0 mtu 1450</code></p>
+<p>La figura siguiente ilustra que la interfaz que hay definida en la instancia es <code>eth0</code> y que su MTU es <code>1454</code>, cuando su valor adecuado debe ser 1400.</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/mtu.png" alt="Ajuste de MTU">
+</div>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Otras instancias con otras configuraciones pueden devolver otros nombres de interfaces de red (p.e. <code>ens3</code>)</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Modificar el archivo <code>/etc/network/interfaces.d/eth0.cfg</code></p>
-</li>
-</ol>
-</div>
+<p>Modificar el tamaño actual de MTU en la interfaz de red obtenida en el paso anterior (p.e. <code>eth0</code>)</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code># The primary network interface
-auto eth0
-iface eth0 inet dhcp
-    post-up /sbin/ifconfig eth0 mtu 1450 <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+<pre class="highlightjs highlight"><code>ifconfig eth0 mtu 1450 <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Añadir esta línea para configurar la MTU tras el arranque</td>
+<td>Cambia el nombre de la interfaz de red (<code>eth0</code>) según corresponda (p.e. <code>ens3</code>, &#8230;&#8203;)</td>
 </tr>
 </table>
+</div>
+</li>
+<li>
+<p>Modificar el archivo <code>/etc/network/interfaces.d/eth0.cfg</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code># The primary network interface
+auto eth0 <i class="conum" data-value="1"></i><b>(1)</b>
+iface eth0 inet dhcp
+    post-up /sbin/ifconfig eth0 mtu 1450 <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Aquí aparecerá el nombre de la interfaz de red a modificar</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Línea para configurar la MTU tras el arranque (usar el nombre de interfaz de red adecuado -<code>eth0</code>, <code>ens3</code> &#8230;&#8203;)</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Reiniciar la máquina virtual</p>
+</li>
+</ol>
 </div>
 </div>
 <div class="sect2">
 <h3 id="trueajuste-de-mtu-en-instancias-windows"><a class="anchor" href="#trueajuste-de-mtu-en-instancias-windows"></a>5.2. Ajuste de MTU en instancias Windows</h3>
 <div class="paragraph">
-<p>Usar el Planficador de tareas para crear la tarea siguiente y que se ejecute al inicio de la sesión (no al iniciar la máquina virtual)</p>
+<p>Usar el Planficador de tareas para crear la tarea siguiente y que se ejecute al inicio de la sesión (no al iniciar la máquina virtual).</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>netsh interface ipv4 set subinterface "Ethernet" mtu=1450 store=persistent</code></pre>
+<pre class="highlightjs highlight"><code>netsh interface ipv4 set subinterface "Ethernet" mtu=1450 store=persistent <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>Ethernet</code> es el nombre de interfaz de red en este ejemplo. En otros casos puede tener un nombre diferente. Usa <code>ipconfig</code> para conocer el nombre la interfaz de red que tienes que modificar.</td>
+</tr>
+</table>
 </div>
 <hr>
 <div class="paragraph">
@@ -697,7 +749,7 @@ iface eth0 inet dhcp
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-10-04 00:21:37 CEST
+Last updated 2017-10-05 12:29:33 CEST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
