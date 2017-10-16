@@ -153,7 +153,7 @@ Otras instancias con otras configuraciones pueden devolver otros nombres de inte
 +
 [source]
 ----
-ifconfig eth0 mtu 1450 <1>
+ifconfig eth0 mtu 1400 <1>
 ----
 <1> Cambia el nombre de la interfaz de red (`eth0`) según corresponda (p.e. `ens3`, ...)
 
@@ -165,7 +165,7 @@ ifconfig eth0 mtu 1450 <1>
 # The primary network interface
 auto eth0 <1>
 iface eth0 inet dhcp
-    post-up /sbin/ifconfig eth0 mtu 1450 <2>
+    post-up /sbin/ifconfig eth0 mtu 1400 <2>
 ----
 <1> Aquí aparecerá el nombre de la interfaz de red a modificar
 <2> Línea para configurar la MTU tras el arranque (usar el nombre de interfaz de red adecuado -`eth0`, `ens3` ...)
@@ -178,7 +178,7 @@ iface eth0 inet dhcp
 Usar el Planficador de tareas para crear la tarea siguiente y que se ejecute al inicio de la sesión (no al iniciar la máquina virtual).
 
 ```
-netsh interface ipv4 set subinterface "Ethernet" mtu=1450 store=persistent <1>
+netsh interface ipv4 set subinterface "Ethernet" mtu=1400 store=persistent <1>
 ```
 <1> `Ethernet` es el nombre de interfaz de red en este ejemplo. En otros casos puede tener un nombre diferente. Usa `ipconfig` para conocer el nombre la interfaz de red que tienes que modificar.
 
