@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Scripts de post-intsalación en instancias OpenStack
+title: Scripts de post-instalación en instancias OpenStack
 category: posts
 ---
 
