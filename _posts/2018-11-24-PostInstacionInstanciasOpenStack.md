@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Scripts de post-intsalación en instancias OpenStackr
+title: Scripts de post-intsalación en instancias OpenStack
 category: posts
 ---
 
