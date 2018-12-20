@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Curso de iniciación a Git para el STIC de la UAL
+title: Creación de clusters Kubernetes con Rancher usando OpenStack como proveedor de infraestructura
 category: posts
 ---
 
