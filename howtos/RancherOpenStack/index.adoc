@@ -19,6 +19,7 @@ Nombre y título del trabajo
 Cloud-DI
 Cloud-DI Team <clouddi@ual.es>
 
+image::di.png[]
 
 // NO CAMBIAR!! (Entrar en modo no numerado de apartados)
 :numbered!: 
@@ -28,7 +29,7 @@ Cloud-DI Team <clouddi@ual.es>
 == Resumen
 
 
-Rancher es un proyecto open-source que nos permite ofrecer Kubernetes como servicio. Su gran ventaja es que permite gestionar desde un único lugar clusters Kubernetes alojados bien en alguno de los proveedores de Kubernetes más populares, como Google Container Engine, Amazon EKS o Azure Kubernetes Service, o bien en proveedores de infraestructura, como Amazon EC2, Microsoft Azure, Digital Ocean, RackSpace, OpenStack, SoftLayer, entre otros.
+https://rancher.com/[Rancher] es un proyecto open-source que nos permite ofrecer https://kubernetes.io/[Kubernetes] como servicio. Su gran ventaja es que permite gestionar desde un único lugar clusters Kubernetes alojados bien en alguno de los proveedores de Kubernetes más populares, como Google Container Engine, Amazon EKS o Azure Kubernetes Service, o bien en proveedores de infraestructura, como Amazon EC2, Microsoft Azure, Digital Ocean, RackSpace, OpenStack, SoftLayer, entre otros.
 
 En este tutorial veremos cómo crear un cluster Kubernetes usando OpenStack como proveedor de infaestructura.
 
@@ -42,12 +43,12 @@ COLOCA A CONTINUACION EL TITULO DEL APARTADO
 
 == Activación de OpenStack como proveedor de infraestructura para Rancher
 
-De forma predeterminada, Rancher ofrece para crear un cluster los siguientes proveedores:
+De forma predeterminada, Rancher ofrece los siguientes proveedores para la creación de clusters Kubernetes:
 
 * Proveedores de Kubernetes: Google Container Engine, Amazon EKS y Azure Kubernetes Service
 * Proveedores de infraestructura: Amazon EC2, Microsoft Azure, Digital Ocean, y vSphere.
 
-Sin embargo, otros proveedores de infraestructura como RackSpace, OpenStack, SoftLayer, entre otros, no están disponibles de forma predeterminada.
+Sin embargo, otros proveedores de infraestructura como RackSpace, https://www.openstack.org/[OpenStack], SoftLayer, entre otros, no están disponibles de forma predeterminada.
 
 Para activar OpenStack como nuevo proveedor de infraestructura (esto es aplicable a cualquier otro proveedor, p.e. RackSpace), seleccionaremos *Global* como cluster y a continuación *Node Drivers* en la barra de menú. Esta acción muestra todos los proveedores que podemos añadir para la creación de los nodos de los clusters Kubernetes que creemos.
 
@@ -55,15 +56,15 @@ La figura siguiente ilustra la lista de proveedores y cómo se activa OpenStack 
 
 image::./node-drivers.png[]
 
-Al pulsar *Activqte* sobre OpenStack, quedará activado OpenStack como proveedor de infraestructura, tal y como ilustra la figura siguiente:
+Al pulsar *Activate* sobre OpenStack, quedará activado OpenStack como proveedor de infraestructura, tal y como ilustra la figura siguiente:
 
 image::./openstack-active.png[]
 
-Sin embago, esto no es suficiente. A continuación, hay que definir la plantilla con la que se crearán los nodos del cluster Kubernetes
+Sin embago, esto no es suficiente. A continuación, hay que definir la plantilla con la que se crearán en OpenStack los nodos del cluster Kubernetes
 
 ## Creación de la plantilla para nodos
 
-Google Container Engine, Amazon EKS y demás, tienen establecida su URL, los nombres de las zonas de disponibilidad, los nombres de las imágenes para la creación de nodos, y demás. Sin embargo, dado que no existe un único proveedor OpenStack, los parámetros citados anteriormente como URL, nombres de zonas de disponibilidad, nombres de imagen, y demás, pueden variar (y seguro que lo hacen) de un proveedor OpenStack a otro.
+Google Container Engine, Amazon EKS y demás, son productos comerciales que ya tienen establecida su URL, los nombres de las zonas de disponibilidad, los nombres de las imágenes para la creación de nodos, y demás. Sin embargo, dado que no existe un único proveedor OpenStack, los parámetros citados anteriormente como URL, nombres de zonas de disponibilidad, nombres de imagen, y demás, pueden variar (y seguro que lo hacen) de un proveedor OpenStack a otro.
 
 Cada usuario de Rancher tendrá que configurar sus propias plantillas para especificar los distintos proveedores OpenStack a los que tenga acceso y las distintas configuraciones de instancia en OpenStack que quiere usar en función del tipo de nodo Kubernetes que vaya a crear.
 
@@ -77,59 +78,61 @@ image::./node-template-dialog-box.png[]
 
 A continuación se muestran los parámetros a introducir en este cuadro de diálogo
 
-* *activeTimeout*: Dejar el valor predeterminado de 200, que será el timeout que permitimos a OpenStack para la creación de nodos.
-* *authURL*: Endpoint público de Keystone que proporciona la auntenticación. En nuestro caso: http://openstack.di.ual.es:5000/v3. Esta información la puede encontrar el administrador de OpenStack abriendo la consola de Horizon y consultando los servicios en el menu Admin | System Information. También se puede obtener la URL mediante el CLI de OpenStack con:
+* `activeTimeout`: Dejar el valor predeterminado de 200, que será el timeout que permitimos a OpenStack para la creación de nodos.
+* `authURL`: Endpoint público de Keystone que proporciona la auntenticación. En nuestro caso http://openstack.di.ual.es:5000/v3 (sólo accesible desde la VPN de la UAL). Esta información la puede encontrar el administrador de OpenStack abriendo la consola de Horizon y consultando los servicios en el menu `Admin | System Information`. También se puede obtener la URL mediante el CLI de OpenStack con:
 
 [source, bash]
 ----
 openstack endpoint list
 ----
 
-* *availabilityZone*: Zona de disponibilidad donde se crearán las instancias para los nodos Kubernetes que se creen con esta plantilla. En nuestro caso introduciremos la única zona de disponibilidad que tenemos, denominada *nova*.
-* *domainName*: Nombre del dominio al que pertenece el usuario que proporciona los recursos OpenStack a esta plantilla. En nuestro caso introduciremos *default*. También se podría haber introducido el *domainId*, pero esto es un valor mucho más difícil de obtener.
-* *endPointType*: Tipo de endpoint que usaremos para interactuar con Kestone para la autenticación. Nosotros dejaremos *publicURL*, ya que Rancher no tiene acceso a las red interna ni de administración de OpenStack.
-* *flavorName*: Nombre completo del flavor con el que se crearán los nodos que se creen con esta plantilla. En este ejemplo usaremos *medium*, aunque podemos elegir entre cualquiera de los disponibles (tiny, small, large, xlarge, y demás).
-* *floatingipPool*: Nombre de la red externa que proporciona las IP flotantes a las instancias creadas. En nuestro caso introduciremos *ext-net*.
-* *imageName*: Nombre completo de la imagen a usar para crear las instancias. En nuestro caso usaremos *Ubuntu 16.04 LTS*, aunque podríamos haber usado cualquiera de las disponibles en OpenStack-DI (CentOS 7, Fedora 27, ...)
-* *ipVersion*: Dejamos 4 ya que las direcciones que usamos son IPv4.
-* *keypairName*: Nombre del archivo de clave pública que se inyectará a la instancia en la creación, y que por tanto, *deberá estar disponible con ese nombre en el proyecto OpenStack en el que se van a crear las instancias que se creen usando esta plantilla*).
-* *netName*: Nombre de la red a la que se conectarán las instancias que se creen de acuerdo con esta plantilla. Revisa las redes de tu proyecto OpenStack e identifica el nombre de la red donde se sitúarán las instancias a crear.
-* *password*: Contraseña del usuario OpenStack para poder dar acceso a que Rancher cree las instancias.
-* *privateKeyFile*: Nombre completo incluyendo la ruta del archivo de clave privada que usará Rancher para aprovisionar las instancias *y que será la pareja de la clabe pública que está en el proyecto en el que se crearán las instancias*.
-* *region*: Nombre de la región. En nuestro caso es *RegionOne*
-* *secGroups*: Lista de grupos de seguridad separadas por comas aplicables a las instancias creadas con esta plantilla
-* *sshPort*: Puerto de acceso a las instancias. Dejamos el valor 22.
-* *sshUser*: Nombre de usuario de la instancia que se va a crear y que dependerá del tipo e imagen usada para crear la instancia. Para las imágenes Ubuntu el usuario es `ubuntu`, para las Rancher es `rancher`, para las Fedora es `fedora`.
-* *tenantName*: Nombre del proyecto OpenStack en el que se creen estas instancias.
-* *userName*: Nombre de usuario OpenStack.
+* `availabilityZone`: Zona de disponibilidad donde se crearán las instancias para los nodos Kubernetes que se creen con esta plantilla. En nuestro caso introduciremos la única zona de disponibilidad que tenemos, denominada `nova`.
+* `domainName`: Nombre del dominio al que pertenece el usuario que proporciona los recursos OpenStack a esta plantilla. En nuestro caso introduciremos `default`. También se podría haber introducido el `domainId`, pero esto es un valor más difícil de obtener.
+* `endPointType`: Tipo de endpoint que usaremos para interactuar con el componente *Keystone* de OpenStack para la autenticación. Nosotros dejaremos `publicURL`, ya que Rancher no tiene acceso a las red interna ni a la de administración de OpenStack.
+* `flavorName`: Nombre completo del sabor con el que se crearán los nodos que se creen con esta plantilla. En este ejemplo usaremos `medium`, aunque podemos elegir cualquier otro entre los disponibles en el OpenStack al que estemos accediendo (p.e. `tiny, small, large, xlarge`, y demás).
+* `floatingipPool`: Nombre de la red externa que proporciona las IP flotantes a las instancias creadas. En nuestro caso introduciremos `ext-net`.
+* *imageName*: Nombre completo de la imagen a usar para crear las instancias. En nuestro caso usaremos `Ubuntu 16.04 LTS`, aunque podríamos haber usado cualquiera de las disponibles en OpenStack-DI (`CentOS 7`, `Fedora 27`, ...)
+* `ipVersion`: Dejamos `4`, ya que las direcciones que usamos son IPv4.
+* `keypairName`: Nombre del archivo de clave pública que se inyectará a la instancia en la creación, y que por tanto, *deberá estar disponible con ese nombre en el proyecto OpenStack en el que se van a crear las instancias que se creen usando esta plantilla*.
+* `netName`: Nombre de la red a la que se conectarán las instancias que se creen de acuerdo con esta plantilla. Revisa las redes de tu proyecto OpenStack e identifica el nombre de la red donde se sitúarán las instancias a crear.
+* `password`: Contraseña del usuario en OpenStack para poder dar acceso a Rancher para que cree las instancias.
+* `privateKeyFile`: Nombre completo incluyendo la ruta del archivo de clave privada que usará Rancher para aprovisionar las instancias *y que será la pareja de la clave pública que está en el proyecto en el que se crearán las instancias*.
+* `region`: Nombre de la región. En nuestro caso es `RegionOne`
+* `secGroups`: Lista de grupos de seguridad del proyecto OpenStack separadas por comas aplicables a las instancias creadas con esta plantilla (p.e. `default`)
+* `sshPort`: Puerto de acceso a las instancias. Dejamos el valor `22`.
+* `sshUser`: Nombre de usuario de la instancia que se va a crear y que dependerá del tipo e imagen usada para crear la instancia. Para las imágenes Ubuntu el usuario es `ubuntu`, para las Rancher es `rancher`, para las Fedora es `fedora`.
+* `tenantName`: Nombre del proyecto OpenStack en el que se creen estas instancias.
+* `userName`: Nombre de usuario OpenStack.
 
-Finalmnente, asignamos un nombre a esta plantilla (p.e. `produccion-ubuntu14-medium`)
+Finalmente, asignamos un nombre a esta plantilla (p.e. `produccion-ubuntu14-medium`)
 
 A partir de este momento ya tenemos una plantilla con la que podremos crear los nodos de nuestro cluster Kubernetes.
 
 image::node-templates-list.png[]
 
-[TIP]
-====
-Se pueden definir plantillas diferentes con sabores diferentes con mayor o menor cantidad de recursos para ajustar mejor la necesidad de cada tipo de nodo a crear.
+.Creacion de varias plantillas
+****
+Para ajustar mejor la necesidad de cada tipo de nodo a crear, se pueden definir plantillas diferentes con sabores diferentes con mayor o menor cantidad de recursos.
 
-Podemos clonar esta plantilla (con la opción `clone` que ofrece Rancher y hacerle unos ajustes para apliar por ejemplo el _flavor_ de los nodos que tengan la función _worker_ en el cluster de Kubernetes.
+Para crear una segunda plantilla a partir de la primera, podemos clonar la plantilla anterior (con la opción `clone` que ofrece Rancher y hacerle unos ajustes para ampliar por ejemplo el _flavor_ de los nodos que tengan la función _worker_ en el cluster de Kubernetes).
 
 image::node-templates-clone.png[]
-====
+****
 
-La figura siguiente ilustra dos plantillas disponibles para la creación de un cluster Kubernetes, una plantilla con _sabor_ `medium` y para los nodos https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/[*etcd*] y https://kubernetes.io/docs/concepts/#kubernetes-control-plane[*Control Plane*], y otra plantilla con _sabor_  `xlarge` para los nodos https://kubernetes.io/docs/concepts/architecture/nodes/[*Worker*].
+La figura siguiente ilustra dos plantillas disponibles para la creación de un cluster Kubernetes, una plantilla con _sabor_ `medium` para los nodos https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/[*etcd*] y https://kubernetes.io/docs/concepts/#kubernetes-control-plane[*Control Plane*], y otra plantilla con _sabor_  `xlarge` para los nodos https://kubernetes.io/docs/concepts/architecture/nodes/[*Worker*].
+
+image::node-templates-full-list.png[]
 
 ## Creación de cluster Kubernetes usando plantillas
 
-A partir de las plantillas creadas crearemos un  cluster Kubernetes de ejemplo para tareas de CI con estas caracterísitcas:
+A partir de las plantillas creadas crearemos un  cluster Kubernetes de ejemplo para tareas de CI. Las caracterísitcas de los nodos son las siguientes:
 
 * Un _node pool_ de 3 nodos `medium` para `etcd` y `Control Plane` con prefijo `k8-prod-ci`.
 * Un _node pool_ de 4 nodos `xlarge` para `Worker` con prefijo `k8-prod-ci-worker`.
 
 image::cluster-definition.png[]
 
-Transcurridos unos minutos, el cluster estará creada y podremos ver en el proyecto OpenStack asociado las instacias creadas distinguidas con los prefijos `k8s-prod-ci` y `k8-prod-ci-worker`
+Transcurridos unos minutos, el cluster estará creado y podremos ver en el proyecto OpenStack asociado las instancias creadas distinguidas con los prefijos `k8s-prod-ci` y `k8-prod-ci-worker`
 
 ___
 
