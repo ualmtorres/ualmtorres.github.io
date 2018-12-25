@@ -430,9 +430,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toctitle">Tabla de contenidos</div>
 <ul class="sectlevel1">
 <li><a href="#trueresumen">Resumen</a></li>
-<li><a href="#trueactivaci-n-de-openstack-como-proveedor-de-infraestructura-para-rancher">1. Activación de OpenStack como proveedor de infraestructura para Rancher</a></li>
-<li><a href="#truecreaci-n-de-la-plantilla-para-nodos">2. Creación de la plantilla para nodos</a></li>
-<li><a href="#truecreaci-n-de-cluster-kubernetes-usando-plantillas">3. Creación de cluster Kubernetes usando plantillas</a></li>
+<li><a href="#trueinstalaci-n-y-configuraci-n-inicial-de-rancher">1. Instalación y configuración inicial de Rancher</a>
+<ul class="sectlevel2">
+<li><a href="#trueinstalaci-n-de-rancher">1.1. Instalación de Rancher</a></li>
+<li><a href="#truepreparaci-n-de-claves-ssh-en-rancher">1.2. Preparación de claves SSH en Rancher</a></li>
+</ul>
+</li>
+<li><a href="#trueactivaci-n-de-openstack-como-proveedor-de-infraestructura-para-rancher">2. Activación de OpenStack como proveedor de infraestructura para Rancher</a></li>
+<li><a href="#truecreaci-n-de-la-plantilla-para-nodos">3. Creación de la plantilla para nodos</a></li>
+<li><a href="#truecreaci-n-de-cluster-kubernetes-usando-plantillas">4. Creación de cluster Kubernetes usando plantillas</a></li>
+<li><a href="#trueconclusiones">5. Conclusiones</a></li>
 </ul>
 </div>
 </div>
@@ -450,7 +457,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="trueresumen"><a class="anchor" href="#trueresumen"></a>Resumen</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><a href="https://rancher.com/">Rancher</a> es un proyecto open-source que nos permite ofrecer <a href="https://kubernetes.io/">Kubernetes</a> como servicio. Su gran ventaja es que permite gestionar desde un único lugar clusters Kubernetes alojados bien en alguno de los proveedores de Kubernetes más populares, como Google Container Engine, Amazon EKS o Azure Kubernetes Service, o bien en proveedores de infraestructura, como Amazon EC2, Microsoft Azure, Digital Ocean, RackSpace, OpenStack, SoftLayer, entre otros.</p>
+<p><a href="https://rancher.com/">Rancher</a> es un proyecto open-source que nos permite ofrecer <a href="https://kubernetes.io/">Kubernetes</a> como servicio. Su gran ventaja es que permite gestionar desde un único lugar clusters Kubernetes alojados bien en alguno de los proveedores de Kubernetes más populares, como Google Container Engine, Amazon EKS o Azure Kubernetes Service, o bien, en proveedores de infraestructura, como Amazon EC2, Microsoft Azure, Digital Ocean, RackSpace, OpenStack, SoftLayer, entre otros.</p>
 </div>
 <div class="paragraph">
 <p>En este tutorial veremos cómo crear un cluster Kubernetes usando OpenStack como proveedor de infaestructura.</p>
@@ -458,7 +465,121 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect1">
-<h2 id="trueactivaci-n-de-openstack-como-proveedor-de-infraestructura-para-rancher"><a class="anchor" href="#trueactivaci-n-de-openstack-como-proveedor-de-infraestructura-para-rancher"></a>1. Activación de OpenStack como proveedor de infraestructura para Rancher</h2>
+<h2 id="trueinstalaci-n-y-configuraci-n-inicial-de-rancher"><a class="anchor" href="#trueinstalaci-n-y-configuraci-n-inicial-de-rancher"></a>1. Instalación y configuración inicial de Rancher</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Rancher es una plataforma de gestión de distribuciones de Kubernetes en proveedores diferentes (Google, Amazon, Microsoft, RackSpace, OpenStack, &#8230;&#8203;). Rancher permite la creación y administración centralizada de clusters de Kubernetes independientemente del proveedor elegido. Además, incorpora un catálogo de aplicaciones que permite desplegarlas de forma sencilla.</p>
+</div>
+<div class="paragraph">
+<p>A continuación veremos cómo realizar una instalación básica de Rancher y cómo configurar la clave SSH necesaria para que Rancher pueda aprovisionar instancias en OpenStack. Los usuarios de Rancher-DI pueden saltar este apartado e ir directamente al apatado siguiente <a href="#trueactivaci-n-de-openstack-como-proveedor-de-infraestructura-para-rancher">Activación de OpenStack como proveedor de infraestructura para Rancher</a></p>
+</div>
+<div class="sect2">
+<h3 id="trueinstalaci-n-de-rancher"><a class="anchor" href="#trueinstalaci-n-de-rancher"></a>1.1. Instalación de Rancher</h3>
+<div class="paragraph">
+<p>Siguiendo la <a href="https://rancher.com/quick-start/">Guía rápida de instalación de Rancher</a>, a partir de una máquina Ubuntu configurada con Docker ejecutaremos</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">sudo docker run -d \
+    --volumes-from rancher-data \ <i class="conum" data-value="1"></i><b>(1)</b>
+    --restart=unless-stopped \
+    -p 80:80 -p 443:443 \
+    rancher/rancher:latest`</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Almacenamos los datos de Rancher como un volumen fuera del contenedor.</td>
+</tr>
+</table>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Instalación de Rancher usando certificados SSL</div>
+<div class="paragraph">
+<p>Si disponemos de certificados SSL podemos iniciar Rancher indicándole que use los certificados. En el caso de Rancher-DI, hemos colocado los certificados en un directorio que pasamos como volumen a Rancher.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">docker run -d \
+    --restart=unless-stopped \
+    -p 80:80 -p 443:443 \
+    -v /home/ubuntu/rancherdata:/var/lib/rancher \ <i class="conum" data-value="1"></i><b>(1)</b>
+    -v /home/ubuntu/certificados/star_di_ual_es.crt:/etc/rancher/ssl/cert.pem \ <i class="conum" data-value="2"></i><b>(2)</b>
+    -v /home/ubuntu/certificados/star_di_ual_es.key:/etc/rancher/ssl/key.pem \ <i class="conum" data-value="3"></i><b>(3)</b>
+    rancher/rancher:latest \
+    --no-cacerts <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Volumen para almacenamiento de datos</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Concatenación del certificado de Rancher con el de la entidad certificadora (Rancher usa <a href="https://knowledge.digicert.com/solution/SO16297.html">cadenas de certificados</a>)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Clave privada</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Desactivación de los certificados predeterminados generados por Rancher</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truepreparaci-n-de-claves-ssh-en-rancher"><a class="anchor" href="#truepreparaci-n-de-claves-ssh-en-rancher"></a>1.2. Preparación de claves SSH en Rancher</h3>
+<div class="paragraph">
+<p>Al usar OpenStack como proveedor de infraestructura en Rancher estamos delegando en Rancher la creación de las instancias OpenStack para los nodos del clúster de Kubernetes así como su aprovisionamiento (instalación de la imagen, Docker, configuración de Kubernetes, y demás). Por tanto, necesitaremos un par de claves SSH que genereraremos para este fin. La clave privada se la daremos a Rancher y la clave pública tendrá que estar en cada proyecto OpenStack en el que se quiera desplegar un cluster Kubernetes con Rancher. Las instancias creadas incorporarán la clave pública que se emparejará con la clave privada que usa Rancher.</p>
+</div>
+<div class="paragraph">
+<p>En proveedores públicos como Google Cloud Platform o Azure esta cuestión está resuelta con <em>Cloud Shell</em>, que se encarga tanto de generar el par de claves que usa para la creación y aprovisionamiento de las instancias, como de copiarlas a nuestro proyecto. En OpenStack, este proceso es manual.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Si vamos a ofrecer Rancher a un grupo de usuarios, los cuales desplegarán sus clusters Kubernetes en proyectos OpenStack diferentes, deberemos facilitarles la clave SSH pública de creación de instancias de Rancher para que la importen a sus proyectos OpenStack.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Usaremos un par de claves SSH específicas para este propósito en la máquina en la que se está ejecutando Rancher (p.e. <code>ssh-keygen -f rancher-key</code> dejando todos los parámetros por defecto. Eso genererá los archivos <code>rancher-key</code> y <code>rancher-key.pub</code>)</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>En el caso de Rancher-DI, tenemos instalado Rancher como un contenedor en una instancia Ubuntu en OpenStack. Hemos creado el par de claves en la instancia OpenStack (<code>ssh-keygen -f rancher-di</code>) y después hemos copiado la clave privada (<code>rancher-di</code>) al contenedor de Rancher (<code>docker cp rancher_di &lt;contenedor-rancher&gt;:/root</code>). Finalmente, la clave privada se encuentra en <code>/root/rancher-di</code>. <strong>Es muy importante que anotememos esta ruta, ya que luego habrá que usarla al crear la plantilla OpenStack para la creación de los nodos del cluster de Kubernetes</strong>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueactivaci-n-de-openstack-como-proveedor-de-infraestructura-para-rancher"><a class="anchor" href="#trueactivaci-n-de-openstack-como-proveedor-de-infraestructura-para-rancher"></a>2. Activación de OpenStack como proveedor de infraestructura para Rancher</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>De forma predeterminada, Rancher ofrece los siguientes proveedores para la creación de clusters Kubernetes:</p>
@@ -477,7 +598,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>Sin embargo, otros proveedores de infraestructura como RackSpace, <a href="https://www.openstack.org/">OpenStack</a>, SoftLayer, entre otros, no están disponibles de forma predeterminada.</p>
 </div>
 <div class="paragraph">
-<p>Para activar OpenStack como nuevo proveedor de infraestructura (esto es aplicable a cualquier otro proveedor, p.e. RackSpace), seleccionaremos <strong>Global</strong> como cluster y a continuación <strong>Node Drivers</strong> en la barra de menú. Esta acción muestra todos los proveedores que podemos añadir para la creación de los nodos de los clusters Kubernetes que creemos.</p>
+<p>Para activar OpenStack como nuevo proveedor de infraestructura (esto es aplicable a cualquier otro proveedor, p.e. RackSpace), seleccionaremos <code>Global</code> como cluster y a continuación <code>Node Drivers</code> en la barra de menú. Esta acción muestra todos los proveedores que podemos añadir para la creación de los nodos de los clusters Kubernetes que creemos.</p>
 </div>
 <div class="paragraph">
 <p>La figura siguiente ilustra la lista de proveedores y cómo se activa OpenStack como proveedor de infraestructura.</p>
@@ -488,7 +609,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="paragraph">
-<p>Al pulsar <strong>Activate</strong> sobre OpenStack, quedará activado OpenStack como proveedor de infraestructura, tal y como ilustra la figura siguiente:</p>
+<p>Al pulsar <code>Activate</code> sobre OpenStack quedará activado OpenStack como proveedor de infraestructura, tal y como ilustra la figura siguiente:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -501,16 +622,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect1">
-<h2 id="truecreaci-n-de-la-plantilla-para-nodos"><a class="anchor" href="#truecreaci-n-de-la-plantilla-para-nodos"></a>2. Creación de la plantilla para nodos</h2>
+<h2 id="truecreaci-n-de-la-plantilla-para-nodos"><a class="anchor" href="#truecreaci-n-de-la-plantilla-para-nodos"></a>3. Creación de la plantilla para nodos</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Google Container Engine, Amazon EKS y demás, son productos comerciales que ya tienen establecida su URL, los nombres de las zonas de disponibilidad, los nombres de las imágenes para la creación de nodos, y demás. Sin embargo, dado que no existe un único proveedor OpenStack, los parámetros citados anteriormente como URL, nombres de zonas de disponibilidad, nombres de imagen, y demás, pueden variar (y seguro que lo hacen) de un proveedor OpenStack a otro.</p>
 </div>
 <div class="paragraph">
-<p>Cada usuario de Rancher tendrá que configurar sus propias plantillas para especificar los distintos proveedores OpenStack a los que tenga acceso y las distintas configuraciones de instancia en OpenStack que quiere usar en función del tipo de nodo Kubernetes que vaya a crear.</p>
+<p>Cada usuario de Rancher tendrá que configurar sus propias plantillas para especificar los distintos proveedores OpenStack a los que tenga acceso, así como las distintas configuraciones de instancia en OpenStack que quiere usar en función del tipo de nodo Kubernetes que vaya a crear.</p>
 </div>
 <div class="paragraph">
-<p>Para crear una plantilla, en el menú desplegable del usuario seleccionamos <strong>Node Templates</strong> y después pulsamos el botón <strong>Add Template</strong></p>
+<p>Para crear una plantilla, en el menú desplegable del usuario seleccionamos <code>Node Templates</code> y después pulsamos el botón <code>Add Template</code>.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -531,7 +652,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p><code>activeTimeout</code>: Dejar el valor predeterminado de 200, que será el timeout que permitimos a OpenStack para la creación de nodos.</p>
+<p><code>activeTimeout</code>: Dejar el valor predeterminado de <code>200</code>, que será el timeout que permitimos a OpenStack para la creación de nodos.</p>
 </li>
 <li>
 <p><code>authURL</code>: Endpoint público de Keystone que proporciona la auntenticación. En nuestro caso <a href="http://openstack.di.ual.es:5000/v3" class="bare">http://openstack.di.ual.es:5000/v3</a> (sólo accesible desde la VPN de la UAL). Esta información la puede encontrar el administrador de OpenStack abriendo la consola de Horizon y consultando los servicios en el menu <code>Admin | System Information</code>. También se puede obtener la URL mediante el CLI de OpenStack con:</p>
@@ -549,10 +670,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p><code>availabilityZone</code>: Zona de disponibilidad donde se crearán las instancias para los nodos Kubernetes que se creen con esta plantilla. En nuestro caso introduciremos la única zona de disponibilidad que tenemos, denominada <code>nova</code>.</p>
 </li>
 <li>
-<p><code>domainName</code>: Nombre del dominio al que pertenece el usuario que proporciona los recursos OpenStack a esta plantilla. En nuestro caso introduciremos <code>default</code>. También se podría haber introducido el <code>domainId</code>, pero esto es un valor más difícil de obtener.</p>
+<p><code>domainName</code>: Nombre del dominio al que pertenece el usuario que proporciona los recursos OpenStack a esta plantilla. En nuestro caso introduciremos <code>default</code>. En lugar de configurar el parámetro <code>domainId</code>, se podría configurar el parámetro <code>domainId</code>, pero esto es un valor más difícil de obtener.</p>
 </li>
 <li>
-<p><code>endPointType</code>: Tipo de endpoint que usaremos para interactuar con el componente <strong>Keystone</strong> de OpenStack para la autenticación. Nosotros dejaremos <code>publicURL</code>, ya que Rancher no tiene acceso a las red interna ni a la de administración de OpenStack.</p>
+<p><code>endPointType</code>: Tipo de endpoint que usaremos para interactuar con el componente <strong>Keystone</strong> de OpenStack para la autenticación. Nosotros dejaremos <code>publicURL</code>, ya que Rancher no tiene acceso a la red de túnel ni a la de mantenimiento de OpenStack.</p>
 </li>
 <li>
 <p><code>flavorName</code>: Nombre completo del sabor con el que se crearán los nodos que se creen con esta plantilla. En este ejemplo usaremos <code>medium</code>, aunque podemos elegir cualquier otro entre los disponibles en el OpenStack al que estemos accediendo (p.e. <code>tiny, small, large, xlarge</code>, y demás).</p>
@@ -561,14 +682,55 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p><code>floatingipPool</code>: Nombre de la red externa que proporciona las IP flotantes a las instancias creadas. En nuestro caso introduciremos <code>ext-net</code>.</p>
 </li>
 <li>
-<p><strong>imageName</strong>: Nombre completo de la imagen a usar para crear las instancias. En nuestro caso usaremos <code>Ubuntu 16.04 LTS</code>, aunque podríamos haber usado cualquiera de las disponibles en OpenStack-DI (<code>CentOS 7</code>, <code>Fedora 27</code>, &#8230;&#8203;)</p>
+<p><code>imageName</code>: Nombre completo de la imagen a usar para crear las instancias. En nuestro caso usaremos <code>Ubuntu 16.04 LTS</code>, aunque podríamos haber usado cualquiera de las disponibles en OpenStack-DI (<code>CentOS 7</code>, <code>Fedora 27</code>, <code>Rancher OS</code>, &#8230;&#8203;)</p>
 </li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><a href="https://rancher.com/rancher-os/">Rancher OS</a> es una distribución reducida de Linux que contiene lo mínimo para ejecutar Docker.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
 <li>
 <p><code>ipVersion</code>: Dejamos <code>4</code>, ya que las direcciones que usamos son IPv4.</p>
 </li>
 <li>
 <p><code>keypairName</code>: Nombre del archivo de clave pública que se inyectará a la instancia en la creación, y que por tanto, <strong>deberá estar disponible con ese nombre en el proyecto OpenStack en el que se van a crear las instancias que se creen usando esta plantilla</strong>.</p>
 </li>
+</ul>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Creación de un par de claves para los instancias OpenStack</div>
+<div class="paragraph">
+<p>Dado que estamos delegando a Rancher la creación de las instancias OpenStack para los nodos del clúster de Kubernetes, Rancher se encargará de crear y aprovisionar las instancias con todo lo necesario (instalación de la imagen, Docker, configuración de Kubernetes, y demás).</p>
+</div>
+<div class="paragraph">
+<p>Por tanto, deberemos importar a cada proyecto OpenStack en el que se vaya a crear un cluster Kubernetes la clave pública correspondiente a la clave privada que usar Rancher para la creación de instancias.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6TiN7lieyNtdnF3a85Yx2GlRlAzJ8nMPPnpz7ra/DexNu1Q7zTUIntqtSrsL34bbw0u0ua1DSJXxbMHnAx6s2/zqqeKyVvLxXtkB0cCYMJTHkpn8vv3ATeLiRAZwu5M/LgArx10oqB5b82eKvxoT6MF0vR310zZPsHEI/ZlnUssajf/h1Rc/Pn6FRWYtu/ALMlYuTJHLnrBvXZ1qFxo1yf2p2uAEgKqT9uj+z3od7Kud0fU2sY/qv0ppV/hEh/rTMEw6mdicx/xqNzWronUD641sT6ZNHB3YlJpNMhSECdoDX24bP7jPH1M6Z9XMK4gRE0u9n9ujufz+nj3rYBI9R ubuntu@rancher20</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Importa esta clave pública al proyecto OpenStack, asígnale un nombre y usa dicho nombre para el parámetro <code>keypairName</code> de la plantilla.</strong></p>
+</div>
+</div>
+</div>
+<div class="ulist">
+<ul>
 <li>
 <p><code>netName</code>: Nombre de la red a la que se conectarán las instancias que se creen de acuerdo con esta plantilla. Revisa las redes de tu proyecto OpenStack e identifica el nombre de la red donde se sitúarán las instancias a crear.</p>
 </li>
@@ -576,7 +738,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p><code>password</code>: Contraseña del usuario en OpenStack para poder dar acceso a Rancher para que cree las instancias.</p>
 </li>
 <li>
-<p><code>privateKeyFile</code>: Nombre completo incluyendo la ruta del archivo de clave privada que usará Rancher para aprovisionar las instancias <strong>y que será la pareja de la clave pública que está en el proyecto en el que se crearán las instancias</strong>.</p>
+<p><code>privateKeyFile</code>: Nombre completo incluyendo la ruta del archivo de clave privada que usará Rancher para aprovisionar las instancias <strong>y que será la pareja de la clave pública que está en el proyecto en el que se crearán las instancias</strong>. En el caso de Rancher-DI, el valor a introducir es <code>/root/rancher-di</code>.</p>
 </li>
 <li>
 <p><code>region</code>: Nombre de la región. En nuestro caso es <code>RegionOne</code></p>
@@ -588,10 +750,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p><code>sshPort</code>: Puerto de acceso a las instancias. Dejamos el valor <code>22</code>.</p>
 </li>
 <li>
-<p><code>sshUser</code>: Nombre de usuario de la instancia que se va a crear y que dependerá del tipo e imagen usada para crear la instancia. Para las imágenes Ubuntu el usuario es <code>ubuntu</code>, para las Rancher es <code>rancher</code>, para las Fedora es <code>fedora</code>.</p>
+<p><code>sshUser</code>: Nombre de usuario de la instancia que se va a crear, y que dependerá del tipo e imagen usada para crear la instancia. Por ejemplo, para las imágenes Ubuntu el usuario es <code>ubuntu</code>, para las Rancher OS es <code>rancher</code>, para las Fedora es <code>fedora</code>.</p>
 </li>
 <li>
-<p><code>tenantName</code>: Nombre del proyecto OpenStack en el que se creen estas instancias.</p>
+<p><code>tenantName</code>: Nombre del proyecto OpenStack en el que se creen estas instancias. Revisa el nombre del proyecto.</p>
 </li>
 <li>
 <p><code>userName</code>: Nombre de usuario OpenStack.</p>
@@ -602,7 +764,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>Finalmente, asignamos un nombre a esta plantilla (p.e. <code>produccion-ubuntu14-medium</code>)</p>
 </div>
 <div class="paragraph">
-<p>A partir de este momento ya tenemos una plantilla con la que podremos crear los nodos de nuestro cluster Kubernetes.</p>
+<p>A partir de este momento ya tenemos una plantilla con la que podremos crear los nodos de nuestro cluster Kubernetes. Todos los nodos que se creen usando esta plantilla tendrán las características definidas en la plantilla (imagen, sabor, red, grupos de seguridad, y demás).</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -613,7 +775,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <div class="title">Creacion de varias plantillas</div>
 <div class="paragraph">
-<p>Para ajustar mejor la necesidad de cada tipo de nodo a crear, se pueden definir plantillas diferentes con sabores diferentes con mayor o menor cantidad de recursos.</p>
+<p>Para ajustar mejor la necesidad de cada tipo de nodo a crear se pueden definir plantillas diferentes con sabores diferentes con mayor o menor cantidad de recursos.</p>
 </div>
 <div class="paragraph">
 <p>Para crear una segunda plantilla a partir de la primera, podemos clonar la plantilla anterior (con la opción <code>clone</code> que ofrece Rancher y hacerle unos ajustes para ampliar por ejemplo el <em>flavor</em> de los nodos que tengan la función <em>worker</em> en el cluster de Kubernetes).</p>
@@ -636,10 +798,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect1">
-<h2 id="truecreaci-n-de-cluster-kubernetes-usando-plantillas"><a class="anchor" href="#truecreaci-n-de-cluster-kubernetes-usando-plantillas"></a>3. Creación de cluster Kubernetes usando plantillas</h2>
+<h2 id="truecreaci-n-de-cluster-kubernetes-usando-plantillas"><a class="anchor" href="#truecreaci-n-de-cluster-kubernetes-usando-plantillas"></a>4. Creación de cluster Kubernetes usando plantillas</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>A partir de las plantillas creadas crearemos un  cluster Kubernetes de ejemplo para tareas de CI. Las caracterísitcas de los nodos son las siguientes:</p>
+<p>A partir de las plantillas creadas desplegaremos un cluster Kubernetes de ejemplo para tareas de CI. Las caracterísitcas de los nodos son las siguientes:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -659,6 +821,17 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>Transcurridos unos minutos, el cluster estará creado y podremos ver en el proyecto OpenStack asociado las instancias creadas distinguidas con los prefijos <code>k8s-prod-ci</code> y <code>k8-prod-ci-worker</code></p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueconclusiones"><a class="anchor" href="#trueconclusiones"></a>5. Conclusiones</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Rancher ofrece una plataforma integrada para creación y mantenimiento de clusters Kubernetes. En el caso de que usemos proveedores públicos (Google, Azure, Amazon, &#8230;&#8203;) para el despliegue de la infraestructura, basta con completar los parámetros que proporcione el proveedor. Sin embargo, dado que cada cloud OpenStack al que tengamos acceso puede tener parámetros de configuración diferentes (p.e. nombre de las imágenes, sabores, red externa, y demás), debemos configurar nuestras propias plantillas de acuerdo con la instalación de OpenStack a la que tengamos acceso.</p>
+</div>
+<div class="paragraph">
+<p>En este tutorial hemos visto cómo crear estas plantillas y cómo crear las claves SSH que serán usadas por Rancher para la creación y aprovisionamiento de las instancias del cluster Kubernetes.</p>
+</div>
 <hr>
 <div class="paragraph">
 <p>Cloud-DI Team, 2018</p>
@@ -668,7 +841,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-12-20 20:22:09 CET
+Last updated 2018-12-25 08:13:55 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
