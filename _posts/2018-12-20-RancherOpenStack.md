@@ -1,10 +1,10 @@
 ---
 layout: post
-title: Creación de clusters Kubernetes con Rancher usando OpenStack como proveedor de infraestructura
+title: Uso de OpenStack como proveedor de infraestructura en Rancher
 category: posts
 ---
 
-Disponible el [Tutorial sobre Creación de clusters Kubernetes con Rancher usando OpenStack como proveedor de infraestructura](http://ualmtorres.github.io/howtos/RancherOpenStack). El tutorial nos muestra:
+Disponible el [Tutorial sobre Uso de OpenStack como proveedor de infraestructura en Rancher](http://ualmtorres.github.io/howtos/RancherOpenStack). El tutorial nos muestra:
 
 * Activar OpenStack como proveedor de infraestructura en Rancher
 * Crear plantillas OpenStack para nodos Kubernetes
