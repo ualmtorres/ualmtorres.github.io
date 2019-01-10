@@ -1,0 +1,1288 @@
+////
+NO CAMBIAR!!
+Codificación, idioma, tabla de contenidos, tipo de documento
+////
+:encoding: utf-8
+:lang: es
+:toc: right
+:toc-title: Tabla de contenidos
+:doctype: book
+:imagesdir: ./images
+
+
+////
+Nombre y título del trabajo
+////
+# Administración de OpenStack
+Cloud-DI
+Cloud-DI Team <clouddi@ual.es>
+
+image::di.png[]
+
+// NO CAMBIAR!! (Entrar en modo no numerado de apartados)
+:numbered!: 
+
+
+[abstract]
+## Resumen
+
+OpenStack nos proporciona Infraestructura como servicio (IaaS) muy variada (redes, imágenes, instancias, distintos tipos de almacenamiento, …​). Todos estos recursos están disponibles a los usuarios a través de proyectos. En este curso realizaremos una introducción a la administración de usuarios, cuotas, redes, imágenes y volúmenes) usando OpenStack-DI como plataforma para la realización de ejercicios.
+
+Para las tareas de administración OpenStack ofrece un CLI que permite realizar todas las operaciones que ofrece la API de OpenStack. Además, OpenStack ofrece una interfaz web, denominada Horizon, que permite realizar las operaciones más habituales y facilita el acceso a usuarios no experimentados.
+
+[IMPORTANT]
+====
+El acceso a OpenStack-DI y a otros recursos más de Cloud-DI se puede hacer directamente desde https://openstack.di.ual.es/horizon[https://openstack.di.ual.es/horizon] o desde la web de servicios de Cloud-DI https://cloud.di.ual.es[https://cloud.di.ual.es]. Allí además hay disponible una lista de respuestas a preguntas frecuentes y los https://cloud.di.ual.es/TerminosServicio.html[Términos de servicio de Cloud-DI].
+
+En https://moodle.di.ual.es[https://moodle.di.ual.es] se encuentran disponibles una serie de videos ilustrativos sobre los sevicios ofrecidos por Cloud-DI y sobre las operaciones básicas para el uso de OpenStack-DI.
+
+Para realizar operaciones repetitivas o avanzadas es conveniente utilizar el CLI. Aquí está disponible la https://docs.openstack.org/python-openstackclient/pike/cli/command-list.html#command-list[Lista de comandos CLI].
+====
+
+// Entrar en modo numerado de apartados
+:numbered:
+
+//// 
+COLOCA A CONTINUACION EL TITULO DEL APARTADO
+////
+
+## Componentes de OpenStack
+
+OpenStack tiene una arquitectura totalmente modular. Se comienza instalando los componentes mínimos (identidad, imágenes, instancias y redes). Posteriormente se pueden añadir otros componentes para aumentar la cartera de servicios (almacenamiento, orquestación, procesamiento de datos, y demás)
+
+image::componentes.png[Componentes de OpenStack]
+
+### Componentes mínimos
+
+* Keystone: Servicio de Identidad (*)
+* Glance: Servicio de imágenes (*)
+* Nova: Servicio de cómputo (máquinas virtuales) (*)
+* Neutron: Servicio de redes (*)
+
+### Componentes recomendados
+
+* Horizon: Interfaz web (*)
+* Cinder: Almacenamiento de bloques (*)
+
+### Otros componentes interesantes
+
+* Octavia: Servicio de balanceo de carga (*, disponible en Cloud-DI como Neutron LBaaS)
+* Manila: Servicio de sistemas de archivos compartidos (*)
+* Swift: Servicio de almacenamiento de objetos (*)
+* Sahara: Servicio de procesamiento de datos (*)
+* Heat: Servicio de orquestación (*)
+* Ceilometer: Servicio de recolección de datos de telemetría
+* Aodh: Servicio de alerta de telemetría
+* Cloudkitty: Servicio de tarificación
+
+### Servicios auxiliares
+
+* Barbican: Servicio de gestión de claves (*)
+
+Más información en https://www.openstack.org/software/project-navigator/openstack-components#openstack-services[lista de componentes de OpenStack]
+
+[NOTE]
+====
+Los componentes marcardos con asterisco (*) están disponibles actualmente en https://openstack.di.ual.es/horizon[OpenStack-DI].
+====
+
+La figura siguiente ilustra cómo interactúan los componentes principales de OpenStack y la funcionalidad que ofrece cada uno.
+
+image::arquitectura.png[Arquitectura de componentes de OpenStack]
+
+## Acceso a OpenStack
+
+### Clouds públicos
+
+* https://www.rackspace.com/es/openstack[Rackspace OpenStack]
+* https://www.cloud.telefonica.com/en/open-cloud/[Telefónica Open Cloud]
+* https://cloud.telekom.de/en/infrastructure/open-telekom-cloud[Open Telekom Cloud]
+* https://nws.netways.de/[Netways Web Services]
+* https://yellowcircle.net/[Yellow Circle]
+
+Más información en https://www.openstack.org/passport/[The OpenStack Public Cloud Passport]
+
+### DevStack
+
+Distribución de OpenStack para instalación en equipo local. Se recomienda usarlo en una máquina virtual. https://docs.openstack.org/devstack/latest/[Guía de instalacion de DevStack]
+
+### OpenStack on-premise
+
+Disponible para SUSE, RHEL, CentOS y Ubuntu.
+
+Instalación en servidores on-premise.
+
+https://docs.openstack.org/rocky/install/[Guías de instalación]
+
+.Ciclo de versiones en OpenStack
+****
+OpenStack tiene un ciclo de versiones semestral programadas para febrero y agosto de cada año. Sus versiones siguen el convenio del orden alfabético de sus iniciales. La versión actual (enero de 2019) es **R**ocky. En febrero de 2019 estárá disponible **S**tein. 
+OpenStack-DI es OpenStack **O**cata (febrero de 2017) sobre Ubuntu (https://docs.openstack.org/ocata/install/ubuntu-services.html[Guía de instalación]).
+****
+
+### Configuración de servidores
+
+Los requisitos mínimos para una instalación para producción debería contar con un servidor para las funciones de _Control_ y _Red_, y un servidor para las funciones de _Cómputo_, en el que se ejecutarán las máquinas virtuales creadas. Posteriormente, es posible añadir nuevos servidores de cómputo ofreciendo un escalado horizontal.
+
+Los servicios de almacenamiento (_Cinder_, para bloques; _Swift_, para objetos; y _Manila_, para sistemas de archivos compartidos) suelen instalarse en servidores independientes, aunque se podría forzar su instalación en uno de los servidores disponibles, aunque no es recomendable para un entorno de producción.
+
+[NOTE]
+====
+El componente _Cinder_ para almacenamiento de bloques permite el uso directo de dispositivos de almacenamiento (p.e. NAS) en lugar de usar servidores. La documentación oficial de OpenStack ofrece un listado de
+https://docs.openstack.org/ocata/config-reference/block-storage/volume-drivers.html[drivers para dispositivos configurables _Cinder_].
+====
+
+Se recomienda consultar la documentación de OpenStack para conocer las https://docs.openstack.org/install-guide/overview.html#example-architecture[características hardware de los servidores].
+
+#### Configuración deseable
+
+A continuación se muestra la configuración de servidores deseable. En la figura se observan servidores dedicados e independientes para Control y Red, servidores para Cómputo, y servidores dedicados para cada tipo de almacenamiento (Bloques, Objetos y Sistemas de archivos compartidos).
+
+image::configuracionDeseable.png[]
+
+Como no siempre se cuenta con el hardware suficiente, o bien las cargas de trabajo de algunos servicios van a ser pequeñas podemos compartir servidores para varios componentes de OpenStack. A continuación se muestran configuraciones alternativas que podrán tener mayor o menor sentido en función de la carga de trabajo a la que esté expuesta nuestra plataforma OpenStack.
+
+#### Configuración combinando nodos de Control+Red y Cinder+Manila
+
+Una posible configuración para ajustar el número de servidores pasa por combinar:
+
+* Las funciones de Control y Red.
+* Las funciones de Almacenamiento de bloques y Sistemas de archivos compartidos.
+
+[TIP]
+====
+En el caso de combinar en el mismo nodo distintos tipos de servicios de almacenamiento se recomienda utilizar discos o arrays de discos independientes para cada tipo de almacenamiento. Por ejemplo, si combinamos en un mismo nodo _Cinder_ y _Manila_, se recomienda contar con discos para _Cinder_ y discos para _Manila_.
+====
+
+image::configuracionMasAjustada.png[]
+
+#### Configuración combinando un nodo Swift con el resto de servicios de almacenamiento
+
+El servicio de almacenamiento de objetos, _Swift_, se instala en al menos dos servidores para ofrecer tolerancia a fallos. Una idea para intentar ajustar los recursos puede pasar por instalar los servicios de almacenamiento de bloques y de objetos en uno de los nodos _Swift_, tal y como muestra la figura siguiente.
+
+image::configuracionMasAjustadaAun.png[]
+
+#### Configuración mínima
+
+Como se puede observar, se pueden dar lugar a gran cantidad de configuraciones diferentes en función de dónde decidamos instalar los servicios de OpenStack.
+
+Una configuración más ajustada aún, quizá la más ajustada, pasa por combinar en un mismo nodo Control, Red, Almacenamiento de bloques y Sistemas de archivos compartidos.
+
+image::configuracionMuyMuyAjustada.png[]
+
+[NOTE]
+====
+OpenStack-DI dispone del hardware siguiente para los servicios de almacenamiento de OpenStack:
+
+* Cinder (Almacenamiento de bloques): NAS
+* Swift (Almacenamiento de objetos): Dos servidores dedicados que ofrecen tolerancia a fallos
+* Manila (Sistemas de archivos compartidos): Servidor dedicado.
+
+Además, los nodos de Control y Red son separados y los nodos de cómputo también son dedicados
+====
+
+.Alta disponibilidad
+****
+En entornos de producción es conveniente contar con algunos servicios replicados para aumentar la tolerancia a fallos.
+
+La documentación oficial de OpenStack ofrece una https://docs.openstack.org/ha-guide/[Guía para configuración de alta disponibilidad].
+****
+
+## Uso de credenciales
+
+En la instalación de OpenStack se crean dos archivos de credenciales, uno para el usuario `admin` y otro para un usuario `demo`. Para inteactuar con el CLI cargaremos las credenciales del usuario `admin`. Los archivos de credenciales básicamente contienen datos sobre usuario, contraseña, proyecto y URL de autenticación.
+
+[source, bash]
+----
+$ source openrc-admin
+----
+
+[NOTE]
+====
+Los asistentes al curso pueden encontrar los archivos de credenciales creados en la instalación de OpenStack en su `home`. Existe una cuenta con privilegios de superusuario con el login de Campus Virtual. El password y otros datos de conexión serán facilitados en el aula.
+====
+
+## Administración de proyectos
+
+El asistente para la creación de proyectos permite especificar la información del proyecto, sus miembros, grupos y recursos asociados al proyecto. De forma predeterminada, los proyectos quedan activados (_enabled_) al crearlos. Podemos desmarcar esta opción si queremos crearlo pero mantenerlo desactivado por ahora.
+
+image::CreateProject.png[]
+
+[NOTE]
+====
+Si estamos creando el proyecto mientras creamos un usuario, el usuario aún no aparece en la sección de `Project Members`.
+====
+
+En la zona `Quota` del asistente de creación de proyectos especificamos las restricciones de cuota respecto al uso de recursos. Caben destacar estas opciones:
+
+* `VCPUs`: Número de cores asignados al proyecto.
+* `Instances`: Número de instancias (máquinas virtuales) que se pueden crear en el proyecto.
+* `Volumes`: Número de volúmenes que se pueden crear en el proyecto
+* `Volume Snapshots`: Número de snapshots de volúmen que se pueden crear en el proyecto.
+* `RAM (MB)`: Cantidad de RAM, expresada en MB, asignada al proyecto.
+* `Floating IPs`: Cantidad de IPs flotantes asignadas al proyecto. Las IPs flotantes se usan para asignar a una instancia una IP de la red externa de OpenStack de forma que la instancia sea accesible desde fuera (SSH, HTTP, ...)
+* `Shares`: Cantidad de sistemas de archivos compartidos que se pueden crear en el proyecto.
+* `Shares gigabites`: Espacio en GB para _shares_ asignados al proyecto.
+
+**CLI**
+
+[source, bash]
+----
+$ openstack project create \
+--domain default \
+--description "Proyecto stic" --enable \
+stic
+
++-------------+----------------------------------+
+| Field       | Value                            |
++-------------+----------------------------------+
+| description | Proyecto stic                    |
+| domain_id   | default                          |
+| enabled     | True                             |
+| id          | 23d0050d8b7040c69e6a2d1d90c488ec |
+| is_domain   | False                            |
+| name        | stic                             |
+| parent_id   | default                          |
++-------------+----------------------------------+
+----
+
+### Listado de proyectos
+
+**Horizon**
+
+* Menú `Identity | Projects`
+
+**CLI**
+
+[source, bash]
+----
+$ openstack project list
++----------------------------------+------------------------------------------------------------------+
+| ID                               | Name                                                             |
++----------------------------------+------------------------------------------------------------------+
+| 3e0cd10ba4b041c08a254421062d62db | 528295a77d1049a8b9e265358e9aae20-54550ecd-388d-4de6-846e-74cabc6 |
+| 528295a77d1049a8b9e265358e9aae20 | mtorres                                                          |
+| 85667a0f9b4e4484bb050658d08bbd12 | admin                                                            |
+| 8eb19bd7f6a8443b9c174a193478fdec | demo                                                             |
+| b3047d7355784ea19c17a825469f2f11 | hpcjmart                                                         |
+| f02340f3518d4129955ae1fa08a8c93f | service                                                          |
++----------------------------------+------------------------------------------------------------------+
+----
+
+### Activación/Desactivación de proyectos
+
+**Horizon**
+
+* Menú `Identity | Users`
+* En el desplegable de acciones sobre el proyecto seleccionar `Edit Project`.
+* Desactiva `Enabled` en el cuadro de diálogo
+
+**CLI**
+
+[source, bash]
+----
+$ openstack project set stic --disable
+$ openstack project show stic
++-------------+----------------------------------+
+| Field       | Value                            |
++-------------+----------------------------------+
+| description | Proyecto stic                    |
+| domain_id   | default                          |
+| enabled     | False                            |
+| id          | 23d0050d8b7040c69e6a2d1d90c488ec |
+| is_domain   | False                            |
+| name        | stic                             |
+| parent_id   | default                          |
++-------------+----------------------------------+
+
+$ openstack project set stic --enable
+$ openstack project show stic
++-------------+----------------------------------+
+| Field       | Value                            |
++-------------+----------------------------------+
+| description | Proyecto stic                    |
+| domain_id   | default                          |
+| enabled     | True                             |
+| id          | 23d0050d8b7040c69e6a2d1d90c488ec |
+| is_domain   | False                            |
+| name        | stic                             |
+| parent_id   | default                          |
++-------------+----------------------------------+
+----
+
+### Modificación de cuotas
+
+**Horizon**
+
+* Menú `Identity | Projects`
+* En el desplegable de acciones sobre el proyecto seleccionar `Modify Quotas`.
+
+**CLI**
+
+Sintaxis:
+
+[source, bash]
+----
+openstack quota set [-h] [--class] [--properties <properties>]
+                           [--server-groups <server-groups>] [--ram <ram>]
+                           [--key-pairs <key-pairs>] [--instances <instances>]
+                           [--fixed-ips <fixed-ips>]
+                           [--injected-file-size <injected-file-size>]
+                           [--server-group-members <server-group-members>]
+                           [--injected-files <injected-files>]
+                           [--cores <cores>]
+                           [--injected-path-size <injected-path-size>]
+                           [--per-volume-gigabytes <per-volume-gigabytes>]
+                           [--gigabytes <gigabytes>]
+                           [--backup-gigabytes <backup-gigabytes>]
+                           [--snapshots <snapshots>] [--volumes <volumes>]
+                           [--backups <backups>] [--l7policies <l7policies>]
+                           [--subnetpools <subnetpools>] [--vips <vips>]
+                           [--ports <ports>] [--subnets <subnets>]
+                           [--networks <networks>]
+                           [--floating-ips <floating-ips>]
+                           [--secgroup-rules <secgroup-rules>]
+                           [--health-monitors <health-monitors>]
+                           [--secgroups <secgroups>] [--routers <routers>]
+                           [--rbac-policies <rbac-policies>]
+                           [--volume-type <volume-type>]
+                           <project/class>
+----
+
+Ejemplo: Asignar 100GB de RAM (102400 MB) y 40 cores al proyecto `stic`
+
+[source, bash]
+----
+$ openstack quota set \
+--ram 102400 \
+--cores 40 \
+stic 
+----
+
+### Mostrar la cuota de un proyecto
+
+* Menú `Identity | Projects`
+* En el desplegable de acciones sobre el proyecto seleccionar `Modify Quotas`.
+
+**CLI**
+
+[source, bash]
+----
+$ openstack quota show stic
++----------------------+----------------------------------+
+| Field                | Value                            |
++----------------------+----------------------------------+
+| backup-gigabytes     | 1000                             |
+| backups              | 10                               |
+| cores                | 40                               |
+| fixed-ips            | -1                               |
+| floating-ips         | 50                               |
+| gigabytes            | 1000                             |
+| gigabytes_NAS        | -1                               |
+| health_monitors      | -1                               |
+| injected-file-size   | 10240                            |
+| injected-files       | 5                                |
+| injected-path-size   | 255                              |
+| instances            | 10                               |
+| key-pairs            | 100                              |
+| l7_policies          | -1                               |
+| listeners            | -1                               |
+| load_balancers       | 10                               |
+| location             | None                             |
+| name                 | None                             |
+| networks             | 10                               |
+| per-volume-gigabytes | -1                               |
+| pools                | 10                               |
+| ports                | 50                               |
+| project              | 23d0050d8b7040c69e6a2d1d90c488ec |
+| project_id           | None                             |
+| properties           | 128                              |
+| ram                  | 102400                           |
+| rbac_policies        | 10                               |
+| routers              | 10                               |
+| secgroup-rules       | 100                              |
+| secgroups            | 10                               |
+| server-group-members | 10                               |
+| server-groups        | 10                               |
+| snapshots            | 10                               |
+| snapshots_NAS        | -1                               |
+| subnet_pools         | -1                               |
+| subnets              | 10                               |
+| volumes              | 10                               |
+| volumes_NAS          | -1                               |
++----------------------+----------------------------------+
+----
+
+### Eliminación de proyectos
+
+**Horizon**
+
+* Menú `Identity | Projects`
+* En el desplegable de acciones sobre el proyecto seleccionar `Delete Project`.
+
+**CLI**
+
+[source, bash]
+----
+$ openstack project delete stic
+----
+
+[NOTE]
+====
+Para más información sobre la administración de proyectos OpenStack con CLI consulta la https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/project.html[página de comandos de administración de proyectos] y la https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/project-purge.html[página de comandos de eliminación de recursos asociados e un proyecto].
+====
+
+.Creación de un proyecto
+====
+1. Crear un proyecto OpenStack desde Horizon con tus datos. Usar el login de Campus Virtual para el nombre del proyecto. Usar como descripción `Proyecto de <nombre> <apellidos>`.
+2. Eliminar el proyecto desde Horizon.
+3. Volver a crear el proyecto desde CLI.
+====
+
+## Administración de usuarios
+
+### Listado de usuarios
+
+**Horizon**
+
+* Menú `Identity | Users`
+
+**CLI**
+
+[source, bash]
+----
+$ openstack user list
++----------------------------------+-------------------+
+| ID                               | Name              |
++----------------------------------+-------------------+
+| 06f46cedb8874d69850aed936742f5f0 | heat              |
+| 306f370687584a1f851f0d626bf64ee4 | neutron           |
+| 3c89d8a109624c5493aea8665874cb24 | glance            |
+| 5bb4b818f13f44de94983d06ea22781c | stic              |
+| 61e2375a17c44938ad8ae3d5066da1eb | demo              |
+| 68e2b938334a4b48b5edd62520be4459 | cinder            |
+| 7a0df2b92fe540c881ad6ba0b1ac492e | barbican          |
+| 91c31349597b4442bf431d513dcc7a39 | mtorres           |
+| 947b6b6494e348e588084594114a79d0 | placement         |
+| a673c5c0e85d43cd91ad32d189501a78 | sahara            |
+| a6ecc1af07c645a2917014eadaae9914 | heat_domain_admin |
+| ad586deb2ff24520a9a7cc7bd1759c0e | swift             |
+| c7d808b8e7584e7a91aaf6f583132d95 | nova              |
+| e141c664d6b34acf99b2a87972c93bff | hpcjmart          |
+| f396528efb1d463888bad2c55169fc1b | manila            |
+| fd6181333c8c4c79a7da38f4f277c222 | admin             |
++----------------------------------+-------------------+
+----
+
+### Creación de usuarios
+
+**Horizon**
+
+* Menú `Identity | Users`
+* Pulsar `Create User`. Aparecerá el cuadro de diálogo siguiente. En él completaremos `User Name`, `Description`, `Email`, `Password`. Además, seleccionaremos un proyecto predeterminado para el usuario y un rol. Por último, el usuario queda activado (_enabled_) de forma predeterminada. Podemos desmarcar esta opción si queremos crearlo pero mantenerlo desactivado por ahora.
+
+image::CreateUser.png[]
+
+Si decidimos crear el proyecto sobre la marcha, iremos al cuadro de diálogo de creación de proyecto. En él seguiremos los pasos descritos en el apartado <<Administración de proyectos>>. Una vez creado el proyecto, volveremos al asistente para la creación de usuarios.
+
+Los roles establecen los privilegios asignados a un usuario.
+
+**CLI**
+
+[source, bash]
+----
+$ openstack user create \
+--domain default \
+--project stic \
+--password xxx \
+--email invitado@gmail.com \
+--description "Usuario Invitado" --enable \
+invitado
++---------------------+----------------------------------+
+| Field               | Value                            |
++---------------------+----------------------------------+
+| default_project_id  | 6ef52b4acbb3423ab260dcd7788c9293 |
+| description         | Usuario Invitado                 |
+| domain_id           | default                          |
+| email               | invitado@gmail.com               |
+| enabled             | True                             |
+| id                  | 0379b25c6ccc49428c855a090005475d |
+| name                | invitado                         |
+| options             | {}                               |
+| password_expires_at | None                             |
++---------------------+----------------------------------+
+----
+
+### Modificación de contraseña
+
+**Horizon**
+
+* Menú `Identity | Users`
+* En el desplegable de acciones sobre el usuario seleccionar `Change Password`.
+
+**CLI**
+
+[source, bash]
+----
+$ openstack user set --password theNewPassword invitado
+----
+
+### Activación/Desactivación de usuarios
+
+**Horizon**
+
+* Menú `Identity | Users`
+* En el desplegable de acciones sobre el usuario seleccionar `Enable|Disable User`.
+
+**CLI**
+
+[source, bash]
+----
+$ openstack user set stic --disable
+$ openstack user show stic
++---------------------+----------------------------------+
+| Field               | Value                            |
++---------------------+----------------------------------+
+| default_project_id  | 6ef52b4acbb3423ab260dcd7788c9293 |
+| domain_id           | default                          |
+| enabled             | False                            |
+| id                  | 5bb4b818f13f44de94983d06ea22781c |
+| name                | stic                             |
+| options             | {}                               |
+| password_expires_at | None                             |
++---------------------+----------------------------------+
+
+$ openstack user set stic --enable
+$ openstack user show stic
++---------------------+----------------------------------+
+| Field               | Value                            |
++---------------------+----------------------------------+
+| default_project_id  | 6ef52b4acbb3423ab260dcd7788c9293 |
+| domain_id           | default                          |
+| enabled             | True                             |
+| id                  | 5bb4b818f13f44de94983d06ea22781c |
+| name                | stic                             |
+| options             | {}                               |
+| password_expires_at | None                             |
++---------------------+----------------------------------+
+----
+
+### Mostrar información de un usuario
+
+**Horizon**
+
+* Menú `Identity | Users`
+* Seleccionar usuario
+
+**CLI**
+
+[source, bash]
+----
+$ openstack user show invitado
++---------------------+----------------------------------+
+| Field               | Value                            |
++---------------------+----------------------------------+
+| default_project_id  | 6ef52b4acbb3423ab260dcd7788c9293 |
+| description         | Usuario Invitado                 |
+| domain_id           | default                          |
+| email               | invitado@gmail.com               |
+| enabled             | True                             |
+| id                  | 0379b25c6ccc49428c855a090005475d |
+| name                | invitado                         |
+| options             | {}                               |
+| password_expires_at | None                             |
++---------------------+----------------------------------+
+----
+
+### Añadir un usuario a un proyecto
+
+Al añadir un usuario a un proyecto indicaremos el usuario, el proyecto y el rol del usuario en el proyecto.
+
+**Horizon**
+
+* Menú `Identity | Projects`
+* En el desplegable de acciones sobre el proyecto seleccionar `Manage Members`.
+* Colocar en la sección `Project Members` los usuarios correspondientes seleccionando además el rol. De forma predeterminada dejaremos el rol `user`.
+
+**CLI**
+
+Sintaxis:
+
+[source, bash]
+----
+openstack role add
+    --domain <domain> | --project <project> [--project-domain <project-domain>]
+    --user <user> [--user-domain <user-domain>] | --group <group> [--group-domain <group-domain>]
+    --role-domain <role-domain>
+    --inherited
+    <role>
+----
+
+Ejemplo: Añadir el usuario admin al proyecto stic con el rol user.
+
+[source, bash]
+----
+$ openstack role add \
+    --project stic \
+    --user mtorres \
+    user
+----
+
+.Incorporación transitoria del usuario `admin` en otros proyectos
+****
+Existen operaciones que no pueden ser realizadas directamente por el usuario `admin`. Se trata fundamentalmente de operaciones en las que no se puede especificar el proyecto sobre el que realizar la operación. En este caso, sólo los miembros del proyecto pueden realizar estas operaciones.
+
+Dado que no tenemos, ni debemos tener, las credenciales de los usuarios que son miembros de los proyectos en los que hay que actuar, una solución puede ser la siguiente. En primier lugar, se añade al usuario `admin` como miembro del proyecto. A continuación, el usuario `admin` realiza las operaciones necesarias. Por último, se retira al usuario `admin` del proyecto.
+
+[source, bash]
+----
+$ openstack role add --project stic --user admin admin <1>
+$ << Realizar operaciones >>
+$ openstack role remove --project stic --user admin admin <2>
+----
+<1> Incorporación como miembro para la realización de tareas
+<2> Salida del proyecto tras realizar las operaciones
+****
+
+### Rol de un usuario en un proyecto
+
+**Horizon**
+
+* Menú `Identity | Projects`
+* En el desplegable de acciones sobre el proyecto seleccionar `Manage Members`.
+* Consultar el rol en la pestaña `Project Members`
+
+**CLI**
+Sintaxis:
+
+[source, bash]
+----
+openstack role list
+    --domain <domain> | --project <project> [--project-domain <project-domain>]
+    --user <user> [--user-domain <user-domain>] | --group <group> [--group-domain <group-domain>]
+    --inherited
+----
+
+Ejemplo: Obtener el rol de `mtorres` en el proyecto `stic`
+
+[source, bash]
+----
+$ openstack role list \
+    --project stic \
+    --user mtorres
+Listing assignments using role list is deprecated. Use role assignment list --user <user-name> --project <project-name> --names instead.
++----------------------------------+------+---------+---------+
+| ID                               | Name | Project | User    |
++----------------------------------+------+---------+---------+
+| 71f5e1dcaffe476db25f9b660a2963bb | user | stic    | mtorres |
++----------------------------------+------+---------+---------+
+----
+
+También podemos conocer la lista de todos los usuarios y sus roles en un proyecto. Para ello usaremos el comando `openstack role assignment list`.
+
+Sintaxis: 
+
+[source,bash]
+----
+openstack role assignment list
+    [--role <role>]
+    [--role-domain <role-domain>]
+    [--user <user>]
+    [--user-domain <user-domain>]
+    [--group <group>]
+    [--group-domain <group-domain>]
+    [--domain <domain>]
+    [--project <project>]
+    [--project-domain <project-domain>]
+    [--effective]
+    [--inherited]
+    [--names]
+----
+
+Ejemplo: Obtener los usuarios y sus roles en el proyecto `stic`
+
+[source, bash]
+----
+$ openstack role assignment list \
+    --project stic \
+    --names <1>
+    
++------+-----------------+-------+--------------+--------+-----------+
+| Role | User            | Group | Project      | Domain | Inherited |
++------+-----------------+-------+--------------+--------+-----------+
+| user | stic@Default    |       | stic@Default |        | False     |
+| user | mtorres@Default |       | stic@Default |        | False     |
++------+-----------------+-------+--------------+--------+-----------+
+----
+<1> Si usamos el parámetro `--names` aparecerán los nombres de los roles, usuarios y proyectos en lugar de los identificadores.
+
+### Eliminación de usuarios
+
+**Horizon**
+
+* Menú `Identity | Users`
+* En el desplegable de acciones sobre el usuario seleccionar `Delete User`.
+
+**CLI**
+
+[source, bash]
+----
+$ openstack user delete invitado
+----
+
+[NOTE]
+====
+Para más información sobre la administración de usuarios OpenStack con CLI consulta la https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/user.html[página de comandos de administración de usuarios] y la https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/user-role.html[página de roles de usuario].
+====
+
+.Creación de un usuario
+====
+1. Crear un usuario OpenStack desde Horizon con tus datos y añadirlo con el rol `user` a tu proyecto. 
+2. Eliminar el usuario desde Horizon.
+3. Volver a crear el usuario desde CLI.
+====
+
+## Automatizar la creación de proyectos
+
+La gran ventaja de disponer de un CLI es que podemos automatizar tareas repetitivas, aumentando la productividad y reduciendo la introducción de errores.
+
+Supongamos que contamos con un archivo CSV de usuarios en el que cada línea contiene un nombre de usuario y su email. Además, usaremos el punto y coma (;) como separador como ejemplo para poder resolver el uso de diferentes separadores en el futuro.
+
+.Archivo `usuarios.csv` con la lista de usuarios
+
+[source, bash]
+----
+usuario1;usuario1@gmail.com
+usuario2;usuario2@gmail.com
+----
+
+A continuación preparemos un script que itere sobre las líneas del archivo anterior y cree para cada una (cada usuario) un proyecto con el nombre del usuario, un usuario y añada el usuario al proyecto con el rol `user`.
+
+.Script `crearProyectos.sh` para la automatización de la creación de proyectos y usuarios a partir del archivo `usuarios.csv`
+[source, bash]
+----
+while IFS=';' read -r usuario email <1>
+do
+  openstack project create --domain default --description "Proyecto $usuario" --enable $usuario <2>
+  openstack user create --domain default --project $usuario --password $usuario --email $email --description "Usuario $usuario" --enable  $usuario <3>
+  openstack role add --project $usuario --user $usuario user <4>
+done < usuarios.csv <5>
+----
+<1> Usar punto y coma (;) como separador y asignar variables a los datos leídos (`usuario` y `email`).
+<2> Crear proyecto en el dominio `default`.
+<3> Crear usuario en el proyecto `default`.
+<4> Añadir el rol `user` al usaurio dentro del proyecto.
+<5> Archivo sobre el que se itera.
+
+.Creación de un script para creación de proyetos y usuarios
+====
+Crear un archivo denominado `usuariosFicticios.csv` con usuarios ficticios que incluya nombre, apellidos, login, email.
+
+Usar el archivo anterior para crear un script que cree un proyecto a cada usuario. El nombre de proyecto será el login de usuario y la descripción será `Proyecto de <nombre> <apellidos>`. Crear también el usuario y añadir el usuario al proyecto con el rol `admin`.
+====
+
+## Descarga de credenciales
+
+Hasta ahora hemos estado usando las credenciales de `admin` disponibles en el archivo `openrc-admin`. Podemos descargar nuestro archivo credenciales disponible en Horizon. Seleccionar `Project | Compute | API Access`. Pulsar el botón `Download OpenStack RC File v3`.
+
+Colocaremos ese archivo de credenciales en nuestro `home` de forma que podamos usarlo fácilmente. Lo cargaremos con 
+
+[source, bash]
+----
+$ source <archivoCredenciales>
+----
+
+## Administración de redes
+
+La plataforma OpenStack que estamos usando cuenta con un rango de direcciones IP facilitadas por el STIC. Durante la instalación de OpenStack se define una _red externa_ a la que asignaremos dicho rango o una parte de él (si es que necesitamos las otras direcciones para otras cuestiones).
+
+Después, cada usuario creará las redes necesarias en sus proyectos con la limitación de los recursos que le imponga su cuota.
+
+En esta sección veremos cómo crear redes y routers virtuales.
+
+## Creación de una red
+
+**Horizon**
+
+* Menú `Project | Network | Networks`
+* Pulsar el botón `Create Network`
+
+Aparece un cuadro de diálogo con tres pestañas en las que se indican el nombre de la red a crear, las características de la subred (p.e. CIDR) y detalles de la subred (si usa DHCP, servidores DNS, ...)
+
+Como ejemplo crearemos una red en el proyecto `stic` con los datos siguientes:
+
+* Nombre de la red: `stic-net`
+* Nombre de la subred: `stic-subnet`
+* Direcciones de red: `10.0.0.0/24`
+* DNS: `150.214.156.2`
+* El resto de parámetros queda con los valores predeterminados
+
+----
+$ openstack network create \
+    --project stic \
+    --enable \
+    --description "Red stic" \
+    stic-net
++---------------------------+--------------------------------------+
+| Field                     | Value                                |
++---------------------------+--------------------------------------+
+| admin_state_up            | UP                                   |
+| availability_zone_hints   |                                      |
+| availability_zones        |                                      |
+| created_at                | 2019-01-09T15:26:19Z                 |
+| description               | Red stic                             |
+| dns_domain                | None                                 |
+| id                        | 814d4714-ad38-4d02-91f8-bec84e5d8f41 |
+| ipv4_address_scope        | None                                 |
+| ipv6_address_scope        | None                                 |
+| is_default                | None                                 |
+| mtu                       | 1450                                 |
+| name                      | stic-net                             |
+| port_security_enabled     | True                                 |
+| project_id                | 23d0050d8b7040c69e6a2d1d90c488ec     |
+| provider:network_type     | vxlan                                |
+| provider:physical_network | None                                 |
+| provider:segmentation_id  | 15                                   |
+| qos_policy_id             | None                                 |
+| revision_number           | 3                                    |
+| router:external           | Internal                             |
+| segments                  | None                                 |
+| shared                    | False                                |
+| status                    | ACTIVE                               |
+| subnets                   |                                      |
+| updated_at                | 2019-01-09T15:26:19Z                 |
++---------------------------+--------------------------------------+
+----
+
+[bash, source]
+----
+$ openstack subnet create \
+    --project stic \
+    --network stic-net \
+    --subnet-range 10.0.0.0/24 \
+    --dns-nameserver 150.214.156.2 \
+    stic-subnet
++-------------------+--------------------------------------+
+| Field             | Value                                |
++-------------------+--------------------------------------+
+| allocation_pools  | 10.0.0.2-10.0.0.254                  |
+| cidr              | 10.0.0.0/24                          |
+| created_at        | 2019-01-09T15:30:24Z                 |
+| description       |                                      |
+| dns_nameservers   | 150.214.156.2                        |
+| enable_dhcp       | True                                 |
+| gateway_ip        | 10.0.0.1                             |
+| host_routes       |                                      |
+| id                | e9f8b69f-8885-482d-b868-768f0b5222b6 |
+| ip_version        | 4                                    |
+| ipv6_address_mode | None                                 |
+| ipv6_ra_mode      | None                                 |
+| name              | stic-subnet                          |
+| network_id        | 814d4714-ad38-4d02-91f8-bec84e5d8f41 |
+| project_id        | 23d0050d8b7040c69e6a2d1d90c488ec     |
+| revision_number   | 2                                    |
+| segment_id        | None                                 |
+| service_types     |                                      |
+| subnetpool_id     | None                                 |
+| updated_at        | 2019-01-09T15:30:24Z                 |
++-------------------+--------------------------------------+
+----
+
+[source, bash]
+----
+$ openstack router create \
+    --project stic \
+    stic-router
++-------------------------+--------------------------------------+
+| Field                   | Value                                |
++-------------------------+--------------------------------------+
+| admin_state_up          | UP                                   |
+| availability_zone_hints |                                      |
+| availability_zones      |                                      |
+| created_at              | 2019-01-09T16:44:16Z                 |
+| description             |                                      |
+| distributed             | False                                |
+| external_gateway_info   | None                                 |
+| flavor_id               | None                                 |
+| ha                      | False                                |
+| id                      | 213736df-a21e-4256-89ef-a7a833667079 |
+| name                    | stic-router                          |
+| project_id              | 23d0050d8b7040c69e6a2d1d90c488ec     |
+| revision_number         | None                                 |
+| routes                  |                                      |
+| status                  | ACTIVE                               |
+| updated_at              | 2019-01-09T16:44:16Z                 |
++-------------------------+--------------------------------------+    
+----
+
+Conexión del router a una subred
+
+[source, bash]
+----
+$ openstack router add subnet \
+    stic-router \
+    stic-subnet
+----
+
+Conexión del router a la red externa
+
+[source, bash]
+----
+$ openstack router set \
+    --external-gateway lowcost-net \
+    stic-router
+----
+
+.Configuración de red de proyecto
+====
+1. Crear desde Horizon una red en tu proyecto con el nombre `<usuario>-net`. Añadirle una subred con el nombre `<usuario>-subnet` con CIDR `10.0.1.0/24` y DNS `150.214.156.2`.
+2. Crear un router conectado a la red externa y añadirle una interfaz de red conectada a la subred creada en el paso anterior.
+2. Eliminar el router y la red desde Horizon.
+3. Volver a crear la red, subred y router desde CLI.
+====
+
+### Conexión a varias redes
+
+Una situación común y útil es contar con una serie de máquinas virtuales accesibles desde el exterior y otro conjunto de máquinas aisladas en una segunda red, la cual incluye máquinas virtuales no accesibles desde el exterior.
+
+Esta situación se resuelve creando una segunda red con rango de direcciones diferentes y no conectado a la red externa mediante un router.
+
+El ejemplo siguiente muestra la creación de una segunda red con las características siguientes:
+
+* Nombre del proyecto: `stic`
+* Nombre de la red: `stic-servers-net`
+* Descripción: `Red servidores stic`
+* Nombre de la subred: `stic-servers-subnet`
+* Direcciones de red: `20.0.0.0/24`
+* DNS: `150.214.156.2`
+
+[source, bash]
+----
+$ openstack network create \
+    --project stic \
+    --enable \
+    --description "Red servidores stic" \
+    stic-servers-net
+$ openstack subnet create \
+    --project stic \
+    --network stic-servers-net \
+    --subnet-range 20.0.0.0/24 \
+    --dns-nameserver 150.214.156.2 \
+    stic-servers-subnet
+----
+
+.Clientes específicos
+****
+El CLI `openstack` es una interfaz uniforme que proporciona un punto de acceso único a las distintas APIs de los distintos componentes OpenStack.
+
+Anteriomente, cada componente tenía su propio cliente, lo que además de dificutar la interacción mediante comandos, a veces existía falta de coherencia en el uso y orden de parámetros. Actualmente están disponibles la gran mayoría de comandos en el CLI `openstack`. Sin embargo, en versiones anteriores como Ocata, aún podemos encontrar comandos que no encuentran su homólogo en el CLI `openstack` o bien ha sido transformado y cambia su uso notablemente. 
+
+La documentación oficial mantiene la list de https://docs.openstack.org/ocata/cli-reference/[Clientes específicos para OpenStack Ocata]
+****
+
+La operación de conexión de una instancia a otras redes mediante la conexión de otras interfaces de red no tiene en OpenStack Ocata un comando similar al `interface-attach` que proporciona el cliente `nova`, que es uno de los clientes del componente del servicio de cómputo de OpenStack.
+
+[source, bash]
+----
+$ nova interface-attach  \
+    --net-id caf51c2c-e03c-413c-9dcf-3925f5be4a00 \ <1>
+    my-cirros
+----
+<1> El parámetro `net-id` sólo admite el ID de la red a la que se va a conectar la instancia. No admite el nombre de la red.
+
+[TIP]
+====
+El ID de la red lo obtenemos con 
+
+[source, bash]
+----
+$ openstack network list
+----
+====
+
+## Configuracion básica de un proyecto de usuario final
+
+En la sección <<Automatizar la creación de proyectos>> creamos un script para la creación de proyectos y usuarios. Podríamos extender el script anterior añadiendo la creación y configuración de la red inicial. De esta forma, cuando los usuarios creen sus máquinas virtuales, éstas ya quedarán conectadas de forma predeterminada a dicha red. Esto reduce la posibilidad de aparición de problemas y quejas debidos a fallos en la creación de la infraestrucutra de red de cada proyecto, sobre todo en usuarios poco experimentados.
+
+[source, bash]
+----
+while IFS=';' read -r usuario email
+do
+  openstack project create --domain default --description "Proyecto $usuario" --enable $usuario
+  openstack user create --domain default --project $usuario --password $usuario --email $email --description "Usuario $usuario" --enable $usuario
+  openstack role add --project $usuario --user $usuario user
+  openstack network create --project $usuario --enable --description "Red $usuario" $usuario-net
+  openstack subnet create --project $usuario --network $usuario-net --subnet-range 10.0.0.0/24 --dns-nameserver 150.214.156.2 $usuario-subnet
+  openstack router create --project $usuario $usuario-router
+  openstack router add subnet $usuario-router $usuario-subnet
+  openstack router set --external-gateway lowcost-net $usuario-router
+done < usuarios.csv
+----
+
+## Administración de imágenes
+
+Las imágenes nos permiten crear instancias. OpenStack mantiene una lista de imágenes preparadas para la ejecución en un cloud. La mayoría de las imágenes contienen el paquete `cloud-init` que soporta la inyección de pares de claves y de datos de usuario.
+
+En la página de https://docs.openstack.org/image-guide/obtain-images.html[imágenes disponibles preparadas para cloud] podemos encontrar imágenes CentOS, CirrOS, Debian, Fedora, Ubuntu, OpenSUSE, SUSE Enterprise Server, Red Hat Enterprise (se requiere una suscripción válida) y una versión de evalación de 6 meses de duración de Microsoft Windows Server 2012.
+
+### Subida de imágenes
+
+Para poder crear instancias de una imagen, la imagen debe estar subida a OpenStack y accesible desde nuestro proyecto, bien porque sea pública o bien, porque pertenezca a nuestro proyecto.
+
+Los pasos son sencillos. Basta con descargar la imagen y subirla a OpenStack. Hagamos una prueba para subir CentOS 7.
+
+En el http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1809.qcow2[enlace de descarga de CentOS 7] seleccionaremos la versión más reciente de las _Generic cloud_ y que estén en formato https://en.wikipedia.org/wiki/Qcow[`qcow2`], un formato de imágenes utilizado por https://en.wikipedia.org/wiki/QEMU[QEMU], un emulador libre y de código abierto para virtualización de hardware. En el momento de la realización de este tutorial la última revisión disponible es la 1809. Descargaremos este archivo en nuestro equipo. 
+
+**Horizon**
+
+Como administradores seleccionar `Admin | System | Images | Create Image` y aparecerá el cuadro de diálogo de la figura siguiente:
+
+image::UploadImage.png[]
+
+Completaremos el cuadro de diálogo con estos datos:
+
+* `Image Name: CentOS7`
+* `File`: Ruta en la que hayamos descargado la imagen de CentOS 7.
+* `Format: QCOW2`
+* `Visibility: Public`
+* `Protected: Yes` (No permite que la imagen sea borrada por otros usuarios`
+
+[TIP]
+====
+Podemos configurar los valores de `Minimum Disk (GB)` y `Minimum RAM (MB)` con los valores mínimos de disco y de RAM que tiene que tener el sabor que usemos para crear la instancia. De esta forma sólo será posible crear instancias de esta imagen creadas con sabores que cumplan dichos mínimos.
+====
+
+Trascurridos unos instantes, la imagen será subida a OpenStack y estará disponible para ser instanciada desde otros proyectos, ya que es pública. El usuario de conexión es `centos`
+
+**CLI**
+
+Sintaxis:
+
+[source, bash]
+----
+openstack image create
+    [--id <id>]
+    [--store <store>]
+    [--container-format <container-format>]
+    [--disk-format <disk-format>]
+    [--size <size>]
+    [--min-disk <disk-gb>]
+    [--min-ram <ram-mb>]
+    [--location <image-url>]
+    [--copy-from <image-url>]
+    [--file <file> | --volume <volume>]
+    [--force]
+    [--checksum <checksum>]
+    [--protected | --unprotected]
+    [--public | --private | --community | --shared]
+    [--property <key=value> [...] ]
+    [--tag <tag> [...] ]
+    [--project <project> [--project-domain <project-domain>]]
+    <image-name>
+----
+
+Ejemplo: Subida de una imagen de Fedora 29
+
+Desde la https://docs.openstack.org/image-guide/obtain-images.html[página de OpenStack de imágenes cloud] accedemos a la https://alt.fedoraproject.org/cloud/[página de imágenes de Fedora]. Allí encontramos la https://download.fedoraproject.org/pub/fedora/linux/releases/29/Cloud/x86_64/images/Fedora-Cloud-Base-29-1.2.x86_64.qcow2[imagen para OpenStack de Fedora 29] (formato qcow2).
+
+[source, bash]
+----
+$ cd /tmp
+$ wget https://download.fedoraproject.org/pub/fedora/linux/releases/29/Cloud/x86_64/images/Fedora-Cloud-Base-29-1.2.x86_64.qcow2
+$ openstack image create \
+    --container-format bare \
+    --disk-format qcow2 \
+    --file /tmp/Fedora-Cloud-Base-29-1.2.x86_64.qcow2 \
+    --public \
+    "Fedora 29"
+----
+
+Trascurridos unos instantes, la imagen será subida a OpenStack y estará disponible para ser instanciada desde otros proyectos, ya que es pública. El usuario de conexión es `fedora`
+
+.Subir una imagen de Debian
+====
+Descargar  una imagen de Debian desde la página de descargas de imágenes y subirla al proyecto personal.
+====
+
+### Modificación de imágenes
+
+De forma predeterminada, los _snapshots_ creados por los usuarios son privados. Por tanto, otros usuarios no podrán tener acceso a dichas imágenes. Sólo el administrador puede hacer público un snapshot. Esta operación se realiza modificando una imagen.
+
+Ejemplo: Convertir a público el snapshot  `my-cirros-snapshot`
+
+[source, bash]
+----
+$ openstack image set --public my-cirros-snapshot
+----
+
+### Creación de imágenes propias
+
+Pese a que OpenStack mantiene una https://docs.openstack.org/image-guide/obtain-images.html[página de imágenes cloud], puede que la imagen que necesitemos no esté disponible en ese catálogo. En tal caso debemos crear una imagen propia habilitada para ejecutarse en cloud. Esta situación es particularmente habitual en imágenes de Microsoft Windows.
+
+Consulta esta página sobre la http://ualmtorres.github.io/howtos/Windows7OpenStack/[creación de una imagen Windows 7 para OpenStack]. El tutorial indica cómo eliminar el número de serie utilizado para la creación de la imagen de forma que no se replique cada vez que se instancie esa imagen. Al dejar la instalación sin número de serie, se pedirá al inicio de cada sesión un número de serie válido y será responsabilidad de cada usuario su uso correcto.
+
+Una vez creada la imagen se seguirán los pasos descritos en la sección <<Subida de imágenes>> para subir la imagen a OpenStack.
+
+### Bajada de imágenes 
+
+Podemos descargar las imágenes a nuestro sistema de archivos. Esto es especialmente útil en el caso de los _snapshots_, copias hechas a partir de una instancia que posteriormente pueden volver a ser instanciadas.
+
+Actualmente esta operación sólo está disponible a través de la línea de comandos.
+
+Sintaxis:
+
+[source, bare]
+----
+openstack image save
+    --file <filename>
+    <image> <1>
+----
+<1> La imagen también puede ser un _snapshot_
+
+## Administración de snapshots
+
+Un snapshot es una imagen creada a partir de una instancia. Una vez creado el snapshot, éste puede ser usado como base (imagen) para la creación de nuevas instancias. Esto es especialmente útil para distribuir imágenes con una configuración específica.
+
+Los snapshots creados están disponibles para ser instanciados en:
+
+i) La lista de imágenes del proyecto (menú `Project | Compute | Images`
+ii) Al crear una instancia hay que seleccionar `Image Snapshot` en el desplegable `Select Boot Source` del asistente para lanzar imágenes
+
+image::CrearInstanciaDesdeSnapshot.png[]
+
+### Creación de snapshots
+
+**Horizon**
+
+* Menú `Project | Compute | Instances`
+* En el desplegable de acciones sobre la instancia seleccionar `Create Snapshot`.
+
+**CLI**
+
+Sintaxis:
+
+[source, bash]
+----
+usage: nova image-create [--metadata <key=value>] [--show] [--poll]
+                         <server> <name>
+----
+
+Ejemplo: Crear una imagen denominada `my-cirros-snapshot` a partir de la instancia `cirros` (`ID: c827a43c-c3f3-49d5-8d70-f22286e75fd5`)
+
+[source, bash]
+----
+$ nova image-create c827a43c-c3f3-49d5-8d70-f22286e75fd5 my-cirros-snapshot <1>
+----
+<1> Al comando `nova image-create` hay que pasarle el ID de instancia a la que queremos hacer snapshot en lugar de su nombre.
+
+### Etiquetar un snapshot como imagen
+
+Al crear un snapshot a partir de una imagen son etiquetados como snapshots. Esto se debe a que al crear un snapshot se almacenan una serie de propiedades. Dos de ellas (`image_location` y `image_type`) indican que se trata de un snapshot. Podemos comprobarlo si mostramos los datos del snapshot.
+
+[source, bash]
+----
+openstack image show my-cirros-snapshot
++------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| Field            | Value                                                                                                                          |
++------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| checksum         | 4f9876e438806c7e5c116d060dde20c1                                                                                               |
+| container_format | bare                                                                                                                           |
+| created_at       | 2019-01-10T12:23:23Z                                                                                                           |
+| disk_format      | qcow2                                                                                                                          |
+| file             | /v2/images/d23e9baf-527b-42b0-be0a-d3894ca4314f/file                                                                           |
+| id               | d23e9baf-527b-42b0-be0a-d3894ca4314f                                                                                           |
+| min_disk         | 1                                                                                                                              |
+| min_ram          | 0                                                                                                                              |
+| name             | my-cirros-snapshot                                                                                                             |
+| owner            | 85667a0f9b4e4484bb050658d08bbd12                                                                                               |
+| properties       | base_image_ref='25fa8219-559c-4b85-8847-c431b13f8ad5', boot_roles='user', image_location='snapshot', image_state='available',  |
+|                  | image_type='snapshot', instance_uuid='c827a43c-c3f3-49d5-8d70-f22286e75fd5', owner_id='23d0050d8b7040c69e6a2d1d90c488ec',      |
+|                  | owner_project_name='stic', owner_user_name='stic', user_id='fd6181333c8c4c79a7da38f4f277c222'                                  |
+| protected        | False                                                                                                                          |
+| schema           | /v2/schemas/image                                                                                                              |
+| size             | 21889024                                                                                                                       |
+| status           | active                                                                                                                         |
+| tags             |                                                                                                                                |
+| updated_at       | 2019-01-10T12:23:35Z                                                                                                           |
+| virtual_size     | None                                                                                                                           |
+| visibility       | private                                                                                                                        |
++------------------+--------------------------------------------------------------------------------------------------------------------------------+
+----
+
+En algunas ocasiones esto puede resultar un inconveniente (p.e. preparamos una distribución de Windows Server 2012 con software para prácticas y queremos que sea considerada una imagen _nativa_ para localizarla más fácilmente). Para solucionar este inconveniente basta con modificar las dos propiedades `image_location` e `image_type`.
+
+**Horizon**
+
+* Menú `Project | Compute | Images`
+* En el desplegable de acciones sobre la imagen seleccionar `Update Medadata`.
+* Cambiar los valores de las propiedades `image_location` e `image_type` de `snapshot` por `image`
+
+image::UpdateMetadata.png[]
+
+**CLI**
+
+Ejemplo: Convertir en imagen el snapshot `my-cirros-snapshot`
+
+[source, bash]
+----
+openstack image set \
+    --property image_location=image \
+    --property image_type=image \
+    my-cirros-snapshot
+----
+
+## Creación de instancias
+
+[bash, source]
+
+Sintaxis:
+
+----
+openstack server create
+    (--image <image> | --volume <volume>)
+    --flavor <flavor>
+    [--security-group <security-group>]
+    [--key-name <key-name>]
+    [--property <key=value>]
+    [--file <dest-filename=source-filename>]
+    [--user-data <user-data>]
+    [--availability-zone <zone-name>]
+    [--block-device-mapping <dev-name=mapping>]
+    [--nic <net-id=net-uuid,v4-fixed-ip=ip-addr,v6-fixed-ip=ip-addr,port-id=port-uuid,auto,none>]
+    [--network <network>]
+    [--port <port>]
+    [--hint <key=value>]
+    [--config-drive <config-drive-volume>|True]
+    [--min <count>]
+    [--max <count>]
+    [--wait]
+    <server-name>
+----
+
+[bash, source]
+----
+openstack server create \
+    --image cirros \
+    --flavor tiny \
+    --security-group default \
+    --key-name mtorres_ual \
+    --nic net-id=stic-net \
+    cirrosis
+----
+
+.Creación y descarga de un snapshot
+====
+1. Crear una instancia a partir de una de las imágenes disponibles
+2. Asignarle una IP flotante
+3. Añadir en el `home` un archivo de texto denominado `prueba.txt` con el contenido `Texto de prueba`.
+4. Crear un snapshot
+5. Etiquetar el snapshot como imagen
+6. Instanciar el snapshot
+7. Asignarle una IP flotante, conectarnos a la nueva instancia y comprobar que está disponible el archivo de texto creado.
+====
+
+__
+
+Cloud-DI Team, 2019
+
+
