@@ -491,7 +491,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#trueetiquetar-un-snapshot-como-imagen">12.2. Etiquetar un snapshot como imagen</a></li>
 </ul>
 </li>
-<li><a href="#truecreaci-n-de-instancias">13. Creación de instancias</a></li>
+<li><a href="#truecreaci-n-de-instancias">13. Creación de instancias</a>
+<ul class="sectlevel2">
+<li><a href="#truecreaci-n-b-sica-de-una-instancia">13.1. Creación básica de una instancia</a></li>
+<li><a href="#truecreaci-n-de-una-instancia-auto-aprovisionada">13.2. Creación de una instancia auto aprovisionada</a></li>
+</ul>
+</li>
+<li><a href="#trueadministraci-n-de-sabores">14. Administración de sabores</a></li>
 </ul>
 </div>
 </div>
@@ -603,6 +609,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li>
 <p>Aodh: Servicio de alerta de telemetría</p>
+</li>
+<li>
+<p>Ironic: Aprovisionamiento en máquinas físicas</p>
 </li>
 <li>
 <p>Cloudkitty: Servicio de tarificación</p>
@@ -1191,6 +1200,9 @@ stic</code></pre>
 </td>
 <td class="content">
 <div class="paragraph">
+<p>Para más información sobre la administración de proyectos y usuarios con Horizon consulta la <a href="https://docs.openstack.org/ocata/admin-guide/dashboard-manage-projects-and-users.html">Guía del administrador para gestión de proyectos y usuarios</a> y la <a href="https://docs.openstack.org/ocata/admin-guide/dashboard-set-quotas.html">Guía del administrador para la gestión de cuotas</a>.</p>
+</div>
+<div class="paragraph">
 <p>Para más información sobre la administración de proyectos OpenStack con CLI consulta la <a href="https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/project.html">página de comandos de administración de proyectos</a> y la <a href="https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/project-purge.html">página de comandos de eliminación de recursos asociados e un proyecto</a>.</p>
 </div>
 </td>
@@ -1631,6 +1643,9 @@ Listing assignments using role list is deprecated. Use role assignment list --us
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
+<div class="paragraph">
+<p>Para más información sobre la administración de proyectos y usuarios con Horizon consulta la <a href="https://docs.openstack.org/ocata/admin-guide/dashboard-manage-projects-and-users.html">Guía del administrador para gestión de proyectos y usuarios</a>.</p>
+</div>
 <div class="paragraph">
 <p>Para más información sobre la administración de usuarios OpenStack con CLI consulta la <a href="https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/user.html">página de comandos de administración de usuarios</a> y la <a href="https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/user-role.html">página de roles de usuario</a>.</p>
 </div>
@@ -2243,6 +2258,23 @@ $ openstack image create \
 </tr>
 </table>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Para más información sobre la administración de imágenes con Horizon consulta la <a href="https://docs.openstack.org/ocata/admin-guide/dashboard-manage-images.html">Guía del administrador para gestión de imágenes</a>.</p>
+</div>
+<div class="paragraph">
+<p>Para más información sobre la administración de imágenes OpenStack con CLI consulta la <a href="https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/image.html">página de comandos de administración de imágenes</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -2293,25 +2325,21 @@ $ openstack image create \
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">usage: nova image-create [--metadata &lt;key=value&gt;] [--show] [--poll]
-                         &lt;server&gt; &lt;name&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">openstack server image create
+    [--name &lt;image-name&gt;]
+    [--wait]
+    &lt;server&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Ejemplo: Crear una imagen denominada <code>my-cirros-snapshot</code> a partir de la instancia <code>cirros</code> (<code>ID: c827a43c-c3f3-49d5-8d70-f22286e75fd5</code>)</p>
+<p>Ejemplo: Crear una imagen denominada <code>my-cirros-snapshot</code> a partir de la instancia <code>cirros</code></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ nova image-create c827a43c-c3f3-49d5-8d70-f22286e75fd5 my-cirros-snapshot <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack server image create \
+    --name my-cirros-snapshot \
+    my-cirros</code></pre>
 </div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Al comando <code>nova image-create</code> hay que pasarle el ID de instancia a la que queremos hacer snapshot en lugar de su nombre.</td>
-</tr>
-</table>
 </div>
 </div>
 <div class="sect2">
@@ -2387,12 +2415,28 @@ $ openstack image create \
     my-cirros-snapshot</code></pre>
 </div>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Para más información sobre la administración de imágenes OpenStack con CLI consulta la <a href="https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/server-image.html">página de comandos de creación de snapshots</a> y la <a href="https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/image.html">página de comandos de administración de imágenes</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="truecreaci-n-de-instancias"><a class="anchor" href="#truecreaci-n-de-instancias"></a>13. Creación de instancias</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="truecreaci-n-b-sica-de-una-instancia"><a class="anchor" href="#truecreaci-n-b-sica-de-una-instancia"></a>13.1. Creación básica de una instancia</h3>
 <div class="paragraph">
 <p>Sintaxis:</p>
 </div>
@@ -2421,7 +2465,7 @@ $ openstack image create \
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>openstack server create \
+<pre>$ openstack server create \
     --image cirros \
     --flavor tiny \
     --security-group default \
@@ -2456,9 +2500,119 @@ $ openstack image create \
 <li>
 <p>Asignarle una IP flotante, conectarnos a la nueva instancia y comprobar que está disponible el archivo de texto creado.</p>
 </li>
+<li>
+<p>Descargar el snapshot creado al sistema de archivos local</p>
+</li>
 </ol>
 </div>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truecreaci-n-de-una-instancia-auto-aprovisionada"><a class="anchor" href="#truecreaci-n-de-una-instancia-auto-aprovisionada"></a>13.2. Creación de una instancia auto aprovisionada</h3>
+<div class="paragraph">
+<p>A la hora de crear una instancia es posible pasarle un script que realice una tarea de inicialización de la instancia. Para ello hay que pasar un script al parámetro <code>user-data</code>.</p>
+</div>
+<div class="paragraph">
+<p>Como ejemplo, crearemos una instancia a partir de una imagen Ubuntu que quedará aprovisionada con Docker y Docker Compose durante su creación. Para ello, crearemos un script denominado <code>dockerInstall.sh</code> que contiene los comandos para instalar Docker y Docker-Compose en Ubuntu.</p>
+</div>
+<div class="listingblock">
+<div class="title">Archivo <code>dockerInstall.sh</code></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">#!/bin/bash
+
+echo "Instalando Docker"
+
+apt-get update
+apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+apt-key fingerprint 0EBFCD88
+add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+apt-get update
+apt-get install -y docker-ce
+groupadd docker
+usermod -aG docker ubuntu
+systemctl enable docker
+
+echo "Instalando Docker Compose"
+curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+
+exit 0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A continuación crearemos la instancia pasándole el archivo <code>dockerInstall.sh</code> al parámetro <code>user-data</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack server create \
+  --image "Ubuntu 16.04 LTS" \
+  --flavor medium \
+  --security-group default \
+  --key-name mtorres_ual \
+  --nic net-id=stic-net \
+  --user-data dockerInstall.sh \ <i class="conum" data-value="1"></i><b>(1)</b>
+  ubuntu-docker</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Archivo de inicialización de la instancia.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Para más información sobre la administración de instancias con Horizon consulta la <a href="https://docs.openstack.org/ocata/admin-guide/dashboard-manage-instances.html">Guía del administrador para gestión de instancias</a>.</p>
+</div>
+<div class="paragraph">
+<p>Para más información sobre la administración de imágenes OpenStack con CLI consulta la <a href="https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/server.html">página de comandos de administración de instancias</a> y la <a href="https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/server-image.html">guía para la creación de imágenes</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueadministraci-n-de-sabores"><a class="anchor" href="#trueadministraci-n-de-sabores"></a>14. Administración de sabores</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To Do</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Para más información sobre la administración de sabores con Horizon consulta la <a href="https://docs.openstack.org/ocata/admin-guide/dashboard-manage-flavors.html">Guía del administrador para gestión de sabores</a>.</p>
+</div>
+<div class="paragraph">
+<p>Para más información sobre la administración de sabores OpenStack con CLI consulta la <a href="https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/flavor.html">página de comandos de administración de sabores</a>.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>__</p>
@@ -2471,7 +2625,7 @@ $ openstack image create \
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-01-10 18:07:48 CET
+Last updated 2019-01-10 22:08:52 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

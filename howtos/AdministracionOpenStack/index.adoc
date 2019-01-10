@@ -73,6 +73,7 @@ image::componentes.png[Componentes de OpenStack]
 * Heat: Servicio de orquestación (*)
 * Ceilometer: Servicio de recolección de datos de telemetría
 * Aodh: Servicio de alerta de telemetría
+* Ironic: Aprovisionamiento en máquinas físicas
 * Cloudkitty: Servicio de tarificación
 
 ### Servicios auxiliares
@@ -429,6 +430,9 @@ $ openstack project delete stic
 
 [NOTE]
 ====
+Para más información sobre la administración de proyectos y usuarios con Horizon consulta la https://docs.openstack.org/ocata/admin-guide/dashboard-manage-projects-and-users.html[Guía del administrador para gestión de proyectos y usuarios] y la https://docs.openstack.org/ocata/admin-guide/dashboard-set-quotas.html[Guía del administrador para la gestión de cuotas].
+
+
 Para más información sobre la administración de proyectos OpenStack con CLI consulta la https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/project.html[página de comandos de administración de proyectos] y la https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/project-purge.html[página de comandos de eliminación de recursos asociados e un proyecto].
 ====
 
@@ -732,6 +736,8 @@ $ openstack user delete invitado
 
 [NOTE]
 ====
+Para más información sobre la administración de proyectos y usuarios con Horizon consulta la https://docs.openstack.org/ocata/admin-guide/dashboard-manage-projects-and-users.html[Guía del administrador para gestión de proyectos y usuarios].
+
 Para más información sobre la administración de usuarios OpenStack con CLI consulta la https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/user.html[página de comandos de administración de usuarios] y la https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/user-role.html[página de roles de usuario].
 ====
 
@@ -1139,6 +1145,13 @@ openstack image save
 ----
 <1> La imagen también puede ser un _snapshot_
 
+[NOTE]
+====
+Para más información sobre la administración de imágenes con Horizon consulta la https://docs.openstack.org/ocata/admin-guide/dashboard-manage-images.html[Guía del administrador para gestión de imágenes].
+
+Para más información sobre la administración de imágenes OpenStack con CLI consulta la https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/image.html[página de comandos de administración de imágenes].
+====
+
 ## Administración de snapshots
 
 Un snapshot es una imagen creada a partir de una instancia. Una vez creado el snapshot, éste puede ser usado como base (imagen) para la creación de nuevas instancias. Esto es especialmente útil para distribuir imágenes con una configuración específica.
@@ -1163,17 +1176,20 @@ Sintaxis:
 
 [source, bash]
 ----
-usage: nova image-create [--metadata <key=value>] [--show] [--poll]
-                         <server> <name>
+openstack server image create
+    [--name <image-name>]
+    [--wait]
+    <server>
 ----
 
-Ejemplo: Crear una imagen denominada `my-cirros-snapshot` a partir de la instancia `cirros` (`ID: c827a43c-c3f3-49d5-8d70-f22286e75fd5`)
+Ejemplo: Crear una imagen denominada `my-cirros-snapshot` a partir de la instancia `cirros`
 
 [source, bash]
 ----
-$ nova image-create c827a43c-c3f3-49d5-8d70-f22286e75fd5 my-cirros-snapshot <1>
+$ openstack server image create \
+    --name my-cirros-snapshot \
+    my-cirros
 ----
-<1> Al comando `nova image-create` hay que pasarle el ID de instancia a la que queremos hacer snapshot en lugar de su nombre.
 
 ### Etiquetar un snapshot como imagen
 
@@ -1231,7 +1247,14 @@ openstack image set \
     my-cirros-snapshot
 ----
 
+[NOTE]
+====
+Para más información sobre la administración de imágenes OpenStack con CLI consulta la https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/server-image.html[página de comandos de creación de snapshots] y la https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/image.html[página de comandos de administración de imágenes].
+====
+
 ## Creación de instancias
+
+### Creación básica de una instancia
 
 [bash, source]
 
@@ -1261,7 +1284,7 @@ openstack server create
 
 [bash, source]
 ----
-openstack server create \
+$ openstack server create \
     --image cirros \
     --flavor tiny \
     --security-group default \
@@ -1279,8 +1302,79 @@ openstack server create \
 5. Etiquetar el snapshot como imagen
 6. Instanciar el snapshot
 7. Asignarle una IP flotante, conectarnos a la nueva instancia y comprobar que está disponible el archivo de texto creado.
+8. Descargar el snapshot creado al sistema de archivos local 
 ====
 
+### Creación de una instancia auto aprovisionada
+
+A la hora de crear una instancia es posible pasarle un script que realice una tarea de inicialización de la instancia. Para ello hay que pasar un script al parámetro `user-data`.
+
+Como ejemplo, crearemos una instancia a partir de una imagen Ubuntu que quedará aprovisionada con Docker y Docker Compose durante su creación. Para ello, crearemos un script denominado `dockerInstall.sh` que contiene los comandos para instalar Docker y Docker-Compose en Ubuntu.
+
+.Archivo `dockerInstall.sh`
+[source, bash]
+----
+#!/bin/bash
+
+echo "Instalando Docker"
+
+apt-get update
+apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+apt-key fingerprint 0EBFCD88
+add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+apt-get update
+apt-get install -y docker-ce
+groupadd docker
+usermod -aG docker ubuntu
+systemctl enable docker
+
+echo "Instalando Docker Compose"
+curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+
+exit 0
+----
+
+A continuación crearemos la instancia pasándole el archivo `dockerInstall.sh` al parámetro `user-data`.
+
+[source, bash]
+----
+$ openstack server create \
+  --image "Ubuntu 16.04 LTS" \
+  --flavor medium \
+  --security-group default \
+  --key-name mtorres_ual \
+  --nic net-id=stic-net \
+  --user-data dockerInstall.sh \ <1>
+  ubuntu-docker
+----
+<1> Archivo de inicialización de la instancia.
+
+[NOTE]
+====
+Para más información sobre la administración de instancias con Horizon consulta la https://docs.openstack.org/ocata/admin-guide/dashboard-manage-instances.html[Guía del administrador para gestión de instancias].
+
+Para más información sobre la administración de imágenes OpenStack con CLI consulta la https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/server.html[página de comandos de administración de instancias] y la https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/server-image.html[guía para la creación de imágenes].
+====
+
+## Administración de sabores
+
+To Do
+
+[NOTE]
+====
+Para más información sobre la administración de sabores con Horizon consulta la https://docs.openstack.org/ocata/admin-guide/dashboard-manage-flavors.html[Guía del administrador para gestión de sabores].
+
+Para más información sobre la administración de sabores OpenStack con CLI consulta la https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/flavor.html[página de comandos de administración de sabores].
+====
 __
 
 Cloud-DI Team, 2019
