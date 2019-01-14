@@ -436,6 +436,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#trueconfiguraci-n-de-las-interfaces-de-red">2.1. Configuración de las interfaces de red</a></li>
 </ul>
 </li>
+<li><a href="#truepreparaci-n-de-las-m-quinas">3. Preparación de las máquinas</a></li>
+<li><a href="#trueinstalaci-n-de-keystone">4. Instalación de Keystone</a></li>
 </ul>
 </div>
 </div>
@@ -484,7 +486,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="truecomponentes-de-openstack"><a class="anchor" href="#truecomponentes-de-openstack"></a>1. Componentes de OpenStack</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>OpenStack es un proyecto formado por distintos componentes. Cada uno de ellos añade una función a nuestro cloud. Podemos clasificar estos componentes en básicos y opcionales.</p>
+<p>OpenStack es un proyecto formado por distintos componentes. Cada uno de ellos añade una función a nuestro cloud (networking, almacenamiento, máquinas virtuales, orquestación, &#8230;&#8203;). Podemos clasificar estos componentes en básicos y opcionales.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -570,6 +572,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <img src="./images/ComponentesOpenStack.png" alt="ComponentesOpenStack.png">
 </div>
+<div class="title">Figure 1. Componentes de OpenStack-DI</div>
 </div>
 <div class="ulist">
 <ul>
@@ -630,6 +633,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <img src="./images/configuracionDeseable.png" alt="configuracionDeseable.png">
 </div>
+<div class="title">Figure 2. Configuración y conexión de servidores</div>
 </div>
 <div class="paragraph">
 <p>Como se observa en la figura, todos los servidores están conectados a las redes de mantenimiento y túnel. Además, los servidores siguientes están contectados al exterior:</p>
@@ -674,10 +678,771 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="truepreparaci-n-de-las-m-quinas"><a class="anchor" href="#truepreparaci-n-de-las-m-quinas"></a>3. Preparación de las máquinas</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>En cada máquina crear un archivo <code>/etc/hosts</code> con las direcciones IP de la red de mantenimiento y los nombres que vayamos a dar a las máquinas:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">10.0.0.51 testcontroller
+
+10.0.0.52 testnetwork
+
+10.0.0.53 testcompute01
+10.0.0.54 testcompute02
+10.0.0.55 testcompute03
+10.0.0.56 testcompute04
+
+10.0.0.61 testobject01
+10.0.0.62 testobject02
+
+10.0.0.63 testshared</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Instalar <code>chrony</code> en todas las máquinas</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt-get install chrony</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Modificar en la máquina de control el archivo <code>/etc/chrony/chrony.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Archivo <code>/etc/chrony/chrony.conf</code> en el nodo de control</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">pool 2.debian.pool.ntp.org offline iburst
+
+server 1.es.pool.ntp.org iburst <i class="conum" data-value="1"></i><b>(1)</b>
+allow 10.0.0.0/24 <i class="conum" data-value="2"></i><b>(2)</b>
+
+keyfile /etc/chrony/chrony.keys
+
+commandkey 1
+
+driftfile /var/lib/chrony/chrony.drift
+
+log tracking measurements statistics
+logdir /var/log/chrony
+
+maxupdateskew 100.0
+
+dumponexit
+
+dumpdir /var/lib/chrony
+
+logchange 0.5
+
+hwclockfile /etc/adjtime
+
+rtcsync</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Servidor NTP</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Red de mantenimiento</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Modificar en el resto de máquinas el archivo <code>/etc/chrony/chrony.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Archivo <code>/etc/chrony/chrony.conf</code> en el resto de nodos</div>
+<hr>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">server {{ nodes.controller.name }} iburst <i class="conum" data-value="1"></i><b>(1)</b>
+
+keyfile /etc/chrony/chrony.keys
+
+commandkey 1
+
+driftfile /var/lib/chrony/chrony.drift
+
+log tracking measurements statistics
+logdir /var/log/chrony
+
+maxupdateskew 100.0
+
+dumponexit
+
+dumpdir /var/lib/chrony
+
+logchange 0.5
+
+hwclockfile /etc/adjtime
+
+rtcsync</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Nombre del servidor de control</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Reiniciar <code>chrony</code> en todos los nodos</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service chrony restart</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Añadir el repositorio de OpenStack Ocata en todos los nodos</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt-get install software-properties-common
+# add-apt-repository cloud-archive:ocata
+# apt update &amp;&amp; apt dist-upgrade</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Instalar el cliente Python para OpenStack en todos los nodos</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt install python-openstackclient</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Instalar la base de datos en el nodo de control</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt-get install mariadb-server python-pymysql libmysqlclient-dev</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Modificar el archivo <code>/etc/mysql/mariadb.conf.d/99-openstack.cnf</code> en el nodo de control</p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Archivo <code>/etc/mysql/mariadb.conf.d/99-openstack.cnf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[mysqld]
+bind-address = {{ nodes.controller.management_ip }} <i class="conum" data-value="1"></i><b>(1)</b>
+
+default-storage-engine = innodb
+innodb_file_per_table = on
+max_connections = 4096
+collation-server = utf8_general_ci
+character-set-server = utf8</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Dirección IP de mantenimiento del nodo de control</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Modificar el archivo <code>/root/my.cnf</code> en el nodo de control</p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Archivo <code>/root/my.cnf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[client]
+user=root
+password={{ mysql_root_password }} <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Contraseña del usuario <code>root</code> de MySQL</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service mysql restart
+# mysql_secure_installation</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Instalar la cola de mensajes en el nodo de control</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt install rabbitmq-server
+# rabbitmqctl add_user openstack {{ RABBIT_PASS }} <i class="conum" data-value="1"></i><b>(1)</b>
+# rabbitmqctl set_permissions openstack ".*" ".*" ".*"</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Contraseña de RabbitMQ</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Instalar Memcached en el nodo de control</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt install memcached python-memcache</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Modificar el archivo <code>/etc/memcached.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Archivo <code>/etc/memcached.conf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">-d
+
+logfile /var/log/memcached.log
+
+-m 64
+
+-p 11211
+
+-u memcache
+
+-l {{ nodes.controller.management_ip }} <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Dirección IP de mantenimiento del nodo de control</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Reiniciar Memcached</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service memcached restart</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueinstalaci-n-de-keystone"><a class="anchor" href="#trueinstalaci-n-de-keystone"></a>4. Instalación de Keystone</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>La instalación de Keystone se realiza en el nodo de control</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Creación y configuración de la base de datos <code>keystone</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">MariaDB [(none)]&gt; CREATE DATABASE keystone;
+Grant proper access to the keystone database:
+
+MariaDB [(none)]&gt; GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'localhost' \
+IDENTIFIED BY {{ 'KEYSTONE_DBPASS' }}; <i class="conum" data-value="1"></i><b>(1)</b>
+MariaDB [(none)]&gt; GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'%' \
+IDENTIFIED BY {{ 'KEYSTONE_DBPASS' }}; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Contraseña del usuario Keystone</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contraseña del usuario Keystone</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Instalar los paquetes de Keystone</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt install keystone</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configurar el archivo <code>/etc/keystone.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/keystone.conf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[DEFAULT]
+
+[assignment]
+
+[auth]
+
+[cache]
+
+[catalog]
+
+[cors]
+
+[cors.subdomain]
+
+[credential]
+
+[database]
+
+connection = mysql+pymysql://keystone:{{ keystone_dbpass }}@{{ nodes.controller.name }}/keystone <i class="conum" data-value="1"></i><b>(1)</b>
+
+[domain_config]
+
+[endpoint_filter]
+
+[endpoint_policy]
+
+[eventlet_server]
+
+[extra_headers]
+
+[federation]
+
+[fernet_tokens]
+
+[healthcheck]
+
+[identity]
+
+[identity_mapping]
+
+[kvs]
+
+[ldap]
+
+[matchmaker_redis]
+
+[memcache]
+
+[oauth1]
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_middleware]
+
+[oslo_policy]
+
+[paste_deploy]
+
+[policy]
+
+[profiler]
+
+[resource]
+
+[revoke]
+
+[role]
+
+[saml]
+
+[security_compliance]
+
+[shadow_users]
+
+[signing]
+
+[token]
+
+provider = fernet
+
+[tokenless_auth]
+
+[trust]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Contraseña del usuario Keystone y nombre del nodo de control</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Reiniciar MySQL</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service mysql restart</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Inicializar la base de datos Keystone:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># su -s /bin/sh -c "keystone-manage db_sync" keystone</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Inicializar los repositorios de claves Fernet</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
+# keystone-manage credential_setup --keystone-user keystone --keystone-group keystone</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Iniciar los servicios de Keystone</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">keystone-manage bootstrap --bootstrap-password {{ admin_pass}} --bootstrap-admin-url http://{{ nodes_by_name.controller.management_ip }}:35357/v3/ --bootstrap-internal-url http://{{ nodes_by_name.controller.tunnel_ip }}:5000/v3/ --bootstrap-public-url http://{{ nodes_by_name.controller.provider_ip}}:5000/v3/ --bootstrap-region-id {{ region }} <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Completar con la contraseña de <code>admin</code>, las direcciones IP del nodo de control y el nombre de la región (p.e. <code>RegionOne</code>)</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Configurar el archivo <code>/etc/apache2/apache2.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/apache2/apache2.conf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">Mutex file:${APACHE_LOCK_DIR} default
+
+PidFile ${APACHE_PID_FILE}
+
+Timeout 300
+
+KeepAlive On
+
+MaxKeepAliveRequests 100
+
+KeepAliveTimeout 5
+
+User ${APACHE_RUN_USER}
+Group ${APACHE_RUN_GROUP}
+
+HostnameLookups Off
+
+ErrorLog ${APACHE_LOG_DIR}/error.log
+
+LogLevel warn
+
+IncludeOptional mods-enabled/*.load
+IncludeOptional mods-enabled/*.conf
+
+Include ports.conf
+
+&lt;Directory /&gt;
+	Options FollowSymLinks
+	AllowOverride None
+	Require all denied
+&lt;/Directory&gt;
+
+&lt;Directory /usr/share&gt;
+	AllowOverride None
+	Require all granted
+&lt;/Directory&gt;
+
+&lt;Directory /var/www/&gt;
+	Options Indexes FollowSymLinks
+	AllowOverride None
+	Require all granted
+&lt;/Directory&gt;
+
+AccessFileName .htaccess
+
+&lt;FilesMatch "^\.ht"&gt;
+	Require all denied
+&lt;/FilesMatch&gt;
+
+LogFormat "%v:%p %h %l %u %t \"%r\" %&gt;s %O \"%{Referer}i\" \"%{User-Agent}i\"" vhost_combined
+LogFormat "%h %l %u %t \"%r\" %&gt;s %O \"%{Referer}i\" \"%{User-Agent}i\"" combined
+LogFormat "%h %l %u %t \"%r\" %&gt;s %O" common
+LogFormat "%{Referer}i -&gt; %U" referer
+LogFormat "%{User-agent}i" agent
+
+IncludeOptional conf-enabled/*.conf
+
+IncludeOptional sites-enabled/*.conf
+
+ServerName {{ nodes.controller.name }} <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Configurar <code>ServerName</code> con el nombre del nodo de control</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Reiniciar Apache</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service apache2 restart</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Eliminar la base de datos SQLite predetermianda</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># rm -rf /var/lib/keystone/keystone.db</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configurar el archivo de credenciales del usuario <code>admin</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">export OS_USERNAME=admin
+export OS_PASSWORD={{ admin_pass }} <i class="conum" data-value="1"></i><b>(1)</b>
+export OS_PROJECT_NAME=admin
+export OS_USER_DOMAIN_NAME=Default
+export OS_PROJECT_DOMAIN_NAME=Default
+export OS_AUTH_URL=http://{{ nodes.controller.name }}:35357/v3 <i class="conum" data-value="2"></i><b>(2)</b>
+export OS_IDENTITY_API_VERSION=3
+export OS_IMAGE_API_VERSION=2
+export OS_AUTH_TYPE=password</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Contraseña de <code>admin</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Configurar el archivo de credenciales del usuario <code>demo</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">export OS_USERNAME=demo
+export OS_PASSWORD={{ demo_pass }} <i class="conum" data-value="1"></i><b>(1)</b>
+export OS_PROJECT_NAME=demo
+export OS_USER_DOMAIN_NAME=Default
+export OS_PROJECT_DOMAIN_NAME=Default
+export OS_AUTH_URL=http://{{ nodes.controller.name }}:5000/v3 <i class="conum" data-value="2"></i><b>(2)</b>
+export OS_IDENTITY_API_VERSION=3
+export OS_IMAGE_API_VERSION=2
+export OS_AUTH_TYPE=password</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Contraseña de <code>demo</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Realizar la configuración de Keystone (dominio <code>default</code>, proyectos <code>service</code> y <code>demo</code>, usuario <code>demo</code>, rol <code>user</code> y añadir el usuario <code>demo</code> al proyecto <code>demo</code> con el rol <code>user</code>)</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># source openrc-admin <i class="conum" data-value="1"></i><b>(1)</b>
+
+# openstack domain create --description "Default Domain" default
+# openstack project create --domain default --description "Service Project" service
+# openstack project create --domain default --description "Demo Project" demo
+# openstack user create --domain default demo --password {{ demo_pass }} <i class="conum" data-value="2"></i><b>(2)</b>
+# openstack role create user
+# openstack role add --project demo --user demo user</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Cargar las credenciales de <code>admin</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contraseña del usuario <code>demo</code></td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Configurar el archivo <code>/etc/keystone/keystone-paste.ini</code></p>
+</li>
+</ol>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/keystone/keystone-paste.ini</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[filter:debug]
+use = egg:oslo.middleware#debug
+
+[filter:request_id]
+use = egg:oslo.middleware#request_id
+
+[filter:build_auth_context]
+use = egg:keystone#build_auth_context
+
+[filter:token_auth]
+use = egg:keystone#token_auth
+
+[filter:admin_token_auth]
+use = egg:keystone#admin_token_auth
+
+[filter:json_body]
+use = egg:keystone#json_body
+
+[filter:cors]
+use = egg:oslo.middleware#cors
+oslo_config_project = keystone
+
+[filter:http_proxy_to_wsgi]
+use = egg:oslo.middleware#http_proxy_to_wsgi
+
+[filter:healthcheck]
+use = egg:oslo.middleware#healthcheck
+
+[filter:ec2_extension]
+use = egg:keystone#ec2_extension
+
+[filter:ec2_extension_v3]
+use = egg:keystone#ec2_extension_v3
+
+[filter:s3_extension]
+use = egg:keystone#s3_extension
+
+[filter:url_normalize]
+use = egg:keystone#url_normalize
+
+[filter:sizelimit]
+use = egg:oslo.middleware#sizelimit
+
+[filter:osprofiler]
+use = egg:osprofiler#osprofiler
+
+[app:public_service]
+use = egg:keystone#public_service
+
+[app:service_v3]
+use = egg:keystone#service_v3
+
+[app:admin_service]
+use = egg:keystone#admin_service
+
+[pipeline:public_api]
+pipeline = healthcheck cors sizelimit http_proxy_to_wsgi osprofiler url_normalize request_id build_auth_context token_auth json_body ec2_extension public_service
+
+[pipeline:admin_api]
+pipeline = healthcheck cors sizelimit http_proxy_to_wsgi osprofiler url_normalize request_id build_auth_context token_auth json_body ec2_extension s3_extension admin_service
+
+[pipeline:api_v3]
+pipeline = healthcheck cors sizelimit http_proxy_to_wsgi osprofiler url_normalize request_id build_auth_context token_auth json_body ec2_extension_v3 s3_extension service_v3
+
+[app:public_version_service]
+use = egg:keystone#public_version_service
+
+[app:admin_version_service]
+use = egg:keystone#admin_version_service
+
+[pipeline:public_version_api]
+pipeline = healthcheck cors sizelimit osprofiler url_normalize public_version_service
+
+[pipeline:admin_version_api]
+pipeline = healthcheck cors sizelimit osprofiler url_normalize admin_version_service
+
+[composite:main]
+use = egg:Paste#urlmap
+/v2.0 = public_api
+/v3 = api_v3
+/ = public_version_api
+
+[composite:admin]
+use = egg:Paste#urlmap
+/v2.0 = admin_api
+/v3 = api_v3
+/ = admin_version_api</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-01-14 14:21:36 CET
+Last updated 2019-01-14 23:17:26 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
