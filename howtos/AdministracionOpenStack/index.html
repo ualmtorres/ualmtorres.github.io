@@ -469,28 +469,28 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#trueautomatizar-la-creaci-n-de-proyectos">6. Automatizar la creación de proyectos</a></li>
-<li><a href="#truedescarga-de-credenciales">7. Descarga de credenciales</a></li>
-<li><a href="#trueadministraci-n-de-redes">8. Administración de redes</a></li>
-<li><a href="#truecreaci-n-de-una-red">9. Creación de una red</a>
+<li><a href="#trueadministraci-n-de-redes">7. Administración de redes</a></li>
+<li><a href="#truecreaci-n-de-una-red">8. Creación de una red</a>
 <ul class="sectlevel2">
-<li><a href="#trueconexi-n-a-varias-redes">9.1. Conexión a varias redes</a></li>
+<li><a href="#trueconexi-n-a-varias-redes">8.1. Conexión a varias redes</a></li>
 </ul>
 </li>
-<li><a href="#trueconfiguracion-b-sica-de-un-proyecto-de-usuario-final">10. Configuracion básica de un proyecto de usuario final</a></li>
-<li><a href="#trueadministraci-n-de-im-genes">11. Administración de imágenes</a>
+<li><a href="#trueconfiguracion-b-sica-de-un-proyecto-de-usuario-final">9. Configuracion básica de un proyecto de usuario final</a></li>
+<li><a href="#trueadministraci-n-de-im-genes">10. Administración de imágenes</a>
 <ul class="sectlevel2">
-<li><a href="#truesubida-de-im-genes">11.1. Subida de imágenes</a></li>
-<li><a href="#truemodificaci-n-de-im-genes">11.2. Modificación de imágenes</a></li>
-<li><a href="#truecreaci-n-de-im-genes-propias">11.3. Creación de imágenes propias</a></li>
-<li><a href="#truebajada-de-im-genes">11.4. Bajada de imágenes</a></li>
+<li><a href="#truesubida-de-im-genes">10.1. Subida de imágenes</a></li>
+<li><a href="#truemodificaci-n-de-im-genes">10.2. Modificación de imágenes</a></li>
+<li><a href="#truecreaci-n-de-im-genes-propias">10.3. Creación de imágenes propias</a></li>
+<li><a href="#truebajada-de-im-genes">10.4. Bajada de imágenes</a></li>
 </ul>
 </li>
-<li><a href="#trueadministraci-n-de-snapshots">12. Administración de snapshots</a>
+<li><a href="#trueadministraci-n-de-snapshots">11. Administración de snapshots</a>
 <ul class="sectlevel2">
-<li><a href="#truecreaci-n-de-snapshots">12.1. Creación de snapshots</a></li>
-<li><a href="#trueetiquetar-un-snapshot-como-imagen">12.2. Etiquetar un snapshot como imagen</a></li>
+<li><a href="#truecreaci-n-de-snapshots">11.1. Creación de snapshots</a></li>
+<li><a href="#trueetiquetar-un-snapshot-como-imagen">11.2. Etiquetar un snapshot como imagen</a></li>
 </ul>
 </li>
+<li><a href="#truedescarga-de-credenciales">12. Descarga de credenciales</a></li>
 <li><a href="#truecreaci-n-de-instancias">13. Creación de instancias</a>
 <ul class="sectlevel2">
 <li><a href="#truecreaci-n-b-sica-de-una-instancia">13.1. Creación básica de una instancia</a></li>
@@ -1742,23 +1742,7 @@ done &lt; usuarios.csv <i class="conum" data-value="5"></i><b>(5)</b></code></pr
 </div>
 </div>
 <div class="sect1">
-<h2 id="truedescarga-de-credenciales"><a class="anchor" href="#truedescarga-de-credenciales"></a>7. Descarga de credenciales</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Hasta ahora hemos estado usando las credenciales de <code>admin</code> disponibles en el archivo <code>openrc-admin</code>. Podemos descargar nuestro archivo credenciales disponible en Horizon. Seleccionar <code>Project | Compute | API Access</code>. Pulsar el botón <code>Download OpenStack RC File v3</code>.</p>
-</div>
-<div class="paragraph">
-<p>Colocaremos ese archivo de credenciales en nuestro <code>home</code> de forma que podamos usarlo fácilmente. Lo cargaremos con</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ source &lt;archivoCredenciales&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="trueadministraci-n-de-redes"><a class="anchor" href="#trueadministraci-n-de-redes"></a>8. Administración de redes</h2>
+<h2 id="trueadministraci-n-de-redes"><a class="anchor" href="#trueadministraci-n-de-redes"></a>7. Administración de redes</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>La plataforma OpenStack que estamos usando cuenta con un rango de direcciones IP facilitadas por el STIC. Durante la instalación de OpenStack se define una <em>red externa</em> a la que asignaremos dicho rango o una parte de él (si es que necesitamos las otras direcciones para otras cuestiones).</p>
@@ -1772,7 +1756,7 @@ done &lt; usuarios.csv <i class="conum" data-value="5"></i><b>(5)</b></code></pr
 </div>
 </div>
 <div class="sect1">
-<h2 id="truecreaci-n-de-una-red"><a class="anchor" href="#truecreaci-n-de-una-red"></a>9. Creación de una red</h2>
+<h2 id="truecreaci-n-de-una-red"><a class="anchor" href="#truecreaci-n-de-una-red"></a>8. Creación de una red</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><strong>Horizon</strong></p>
@@ -1953,7 +1937,7 @@ done &lt; usuarios.csv <i class="conum" data-value="5"></i><b>(5)</b></code></pr
 </div>
 </div>
 <div class="sect2">
-<h3 id="trueconexi-n-a-varias-redes"><a class="anchor" href="#trueconexi-n-a-varias-redes"></a>9.1. Conexión a varias redes</h3>
+<h3 id="trueconexi-n-a-varias-redes"><a class="anchor" href="#trueconexi-n-a-varias-redes"></a>8.1. Conexión a varias redes</h3>
 <div class="paragraph">
 <p>Una situación común y útil es contar con una serie de máquinas virtuales accesibles desde el exterior y otro conjunto de máquinas aisladas en una segunda red, la cual incluye máquinas virtuales no accesibles desde el exterior.</p>
 </div>
@@ -2055,7 +2039,7 @@ $ openstack subnet create \
 </div>
 </div>
 <div class="sect1">
-<h2 id="trueconfiguracion-b-sica-de-un-proyecto-de-usuario-final"><a class="anchor" href="#trueconfiguracion-b-sica-de-un-proyecto-de-usuario-final"></a>10. Configuracion básica de un proyecto de usuario final</h2>
+<h2 id="trueconfiguracion-b-sica-de-un-proyecto-de-usuario-final"><a class="anchor" href="#trueconfiguracion-b-sica-de-un-proyecto-de-usuario-final"></a>9. Configuracion básica de un proyecto de usuario final</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>En la sección <a href="#trueautomatizar-la-creaci-n-de-proyectos">Automatizar la creación de proyectos</a> creamos un script para la creación de proyectos y usuarios. Podríamos extender el script anterior añadiendo la creación y configuración de la red inicial. De esta forma, cuando los usuarios creen sus máquinas virtuales, éstas ya quedarán conectadas de forma predeterminada a dicha red. Esto reduce la posibilidad de aparición de problemas y quejas debidos a fallos en la creación de la infraestrucutra de red de cada proyecto, sobre todo en usuarios poco experimentados.</p>
@@ -2078,7 +2062,7 @@ done &lt; usuarios.csv</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="trueadministraci-n-de-im-genes"><a class="anchor" href="#trueadministraci-n-de-im-genes"></a>11. Administración de imágenes</h2>
+<h2 id="trueadministraci-n-de-im-genes"><a class="anchor" href="#trueadministraci-n-de-im-genes"></a>10. Administración de imágenes</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Las imágenes nos permiten crear instancias. OpenStack mantiene una lista de imágenes preparadas para la ejecución en un cloud. La mayoría de las imágenes contienen el paquete <code>cloud-init</code> que soporta la inyección de pares de claves y de datos de usuario.</p>
@@ -2087,7 +2071,7 @@ done &lt; usuarios.csv</code></pre>
 <p>En la página de <a href="https://docs.openstack.org/image-guide/obtain-images.html">imágenes disponibles preparadas para cloud</a> podemos encontrar imágenes CentOS, CirrOS, Debian, Fedora, Ubuntu, OpenSUSE, SUSE Enterprise Server, Red Hat Enterprise (se requiere una suscripción válida) y una versión de evalación de 6 meses de duración de Microsoft Windows Server 2012.</p>
 </div>
 <div class="sect2">
-<h3 id="truesubida-de-im-genes"><a class="anchor" href="#truesubida-de-im-genes"></a>11.1. Subida de imágenes</h3>
+<h3 id="truesubida-de-im-genes"><a class="anchor" href="#truesubida-de-im-genes"></a>10.1. Subida de imágenes</h3>
 <div class="paragraph">
 <p>Para poder crear instancias de una imagen, la imagen debe estar subida a OpenStack y accesible desde nuestro proyecto, bien porque sea pública o bien, porque pertenezca a nuestro proyecto.</p>
 </div>
@@ -2207,7 +2191,7 @@ $ openstack image create \
 </div>
 </div>
 <div class="sect2">
-<h3 id="truemodificaci-n-de-im-genes"><a class="anchor" href="#truemodificaci-n-de-im-genes"></a>11.2. Modificación de imágenes</h3>
+<h3 id="truemodificaci-n-de-im-genes"><a class="anchor" href="#truemodificaci-n-de-im-genes"></a>10.2. Modificación de imágenes</h3>
 <div class="paragraph">
 <p>De forma predeterminada, los <em>snapshots</em> creados por los usuarios son privados. Por tanto, otros usuarios no podrán tener acceso a dichas imágenes. Sólo el administrador puede hacer público un snapshot. Esta operación se realiza modificando una imagen.</p>
 </div>
@@ -2221,7 +2205,7 @@ $ openstack image create \
 </div>
 </div>
 <div class="sect2">
-<h3 id="truecreaci-n-de-im-genes-propias"><a class="anchor" href="#truecreaci-n-de-im-genes-propias"></a>11.3. Creación de imágenes propias</h3>
+<h3 id="truecreaci-n-de-im-genes-propias"><a class="anchor" href="#truecreaci-n-de-im-genes-propias"></a>10.3. Creación de imágenes propias</h3>
 <div class="paragraph">
 <p>Pese a que OpenStack mantiene una <a href="https://docs.openstack.org/image-guide/obtain-images.html">página de imágenes cloud</a>, puede que la imagen que necesitemos no esté disponible en ese catálogo. En tal caso debemos crear una imagen propia habilitada para ejecutarse en cloud. Esta situación es particularmente habitual en imágenes de Microsoft Windows.</p>
 </div>
@@ -2233,7 +2217,7 @@ $ openstack image create \
 </div>
 </div>
 <div class="sect2">
-<h3 id="truebajada-de-im-genes"><a class="anchor" href="#truebajada-de-im-genes"></a>11.4. Bajada de imágenes</h3>
+<h3 id="truebajada-de-im-genes"><a class="anchor" href="#truebajada-de-im-genes"></a>10.4. Bajada de imágenes</h3>
 <div class="paragraph">
 <p>Podemos descargar las imágenes a nuestro sistema de archivos. Esto es especialmente útil en el caso de los <em>snapshots</em>, copias hechas a partir de una instancia que posteriormente pueden volver a ser instanciadas.</p>
 </div>
@@ -2279,7 +2263,7 @@ $ openstack image create \
 </div>
 </div>
 <div class="sect1">
-<h2 id="trueadministraci-n-de-snapshots"><a class="anchor" href="#trueadministraci-n-de-snapshots"></a>12. Administración de snapshots</h2>
+<h2 id="trueadministraci-n-de-snapshots"><a class="anchor" href="#trueadministraci-n-de-snapshots"></a>11. Administración de snapshots</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Un snapshot es una imagen creada a partir de una instancia. Una vez creado el snapshot, éste puede ser usado como base (imagen) para la creación de nuevas instancias. Esto es especialmente útil para distribuir imágenes con una configuración específica.</p>
@@ -2303,7 +2287,7 @@ $ openstack image create \
 </div>
 </div>
 <div class="sect2">
-<h3 id="truecreaci-n-de-snapshots"><a class="anchor" href="#truecreaci-n-de-snapshots"></a>12.1. Creación de snapshots</h3>
+<h3 id="truecreaci-n-de-snapshots"><a class="anchor" href="#truecreaci-n-de-snapshots"></a>11.1. Creación de snapshots</h3>
 <div class="paragraph">
 <p><strong>Horizon</strong></p>
 </div>
@@ -2343,7 +2327,7 @@ $ openstack image create \
 </div>
 </div>
 <div class="sect2">
-<h3 id="trueetiquetar-un-snapshot-como-imagen"><a class="anchor" href="#trueetiquetar-un-snapshot-como-imagen"></a>12.2. Etiquetar un snapshot como imagen</h3>
+<h3 id="trueetiquetar-un-snapshot-como-imagen"><a class="anchor" href="#trueetiquetar-un-snapshot-como-imagen"></a>11.2. Etiquetar un snapshot como imagen</h3>
 <div class="paragraph">
 <p>Al crear un snapshot a partir de una imagen son etiquetados como snapshots. Esto se debe a que al crear un snapshot se almacenan una serie de propiedades. Dos de ellas (<code>image_location</code> y <code>image_type</code>) indican que se trata de un snapshot. Podemos comprobarlo si mostramos los datos del snapshot.</p>
 </div>
@@ -2433,8 +2417,24 @@ $ openstack image create \
 </div>
 </div>
 <div class="sect1">
+<h2 id="truedescarga-de-credenciales"><a class="anchor" href="#truedescarga-de-credenciales"></a>12. Descarga de credenciales</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Hasta ahora hemos estado usando las credenciales de <code>admin</code> disponibles en el archivo <code>openrc-admin</code>. Sin embargo, hay ocasiones en que tendremos que realizar operaciones con nuestras propias credenciales. Esto es especialmente aplicable a aquellos usuarios que no sean administradores. Para ello, tendremos que descargar nuestro archivo credenciales disponible en Horizon. La descarga de credenciales la encontramos en el menú <code>Project | Compute | API Access</code>. Después, pulsar el botón <code>Download OpenStack RC File v3</code>. Colocaremos ese archivo de credenciales en nuestro <code>home</code> de forma que podamos usarlo fácilmente. Lo cargaremos con</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ source &lt;archivoCredenciales&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="truecreaci-n-de-instancias"><a class="anchor" href="#truecreaci-n-de-instancias"></a>13. Creación de instancias</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>La creación de instancias la realizará un miembro del proyecto al que pertenecerán las instancias creadas. Necesitaremos entonces usar las credenciales de usuario tal y como se ha descrito en <a href="#truedescarga-de-credenciales">Descarga de credenciales</a></p>
+</div>
 <div class="sect2">
 <h3 id="truecreaci-n-b-sica-de-una-instancia"><a class="anchor" href="#truecreaci-n-b-sica-de-una-instancia"></a>13.1. Creación básica de una instancia</h3>
 <div class="paragraph">
@@ -2625,7 +2625,7 @@ exit 0</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-01-10 22:08:52 CET
+Last updated 2019-01-14 08:49:27 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

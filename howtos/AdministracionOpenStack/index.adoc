@@ -787,17 +787,6 @@ Crear un archivo denominado `usuariosFicticios.csv` con usuarios ficticios que i
 Usar el archivo anterior para crear un script que cree un proyecto a cada usuario. El nombre de proyecto será el login de usuario y la descripción será `Proyecto de <nombre> <apellidos>`. Crear también el usuario y añadir el usuario al proyecto con el rol `admin`.
 ====
 
-## Descarga de credenciales
-
-Hasta ahora hemos estado usando las credenciales de `admin` disponibles en el archivo `openrc-admin`. Podemos descargar nuestro archivo credenciales disponible en Horizon. Seleccionar `Project | Compute | API Access`. Pulsar el botón `Download OpenStack RC File v3`.
-
-Colocaremos ese archivo de credenciales en nuestro `home` de forma que podamos usarlo fácilmente. Lo cargaremos con 
-
-[source, bash]
-----
-$ source <archivoCredenciales>
-----
-
 ## Administración de redes
 
 La plataforma OpenStack que estamos usando cuenta con un rango de direcciones IP facilitadas por el STIC. Durante la instalación de OpenStack se define una _red externa_ a la que asignaremos dicho rango o una parte de él (si es que necesitamos las otras direcciones para otras cuestiones).
@@ -1252,7 +1241,18 @@ openstack image set \
 Para más información sobre la administración de imágenes OpenStack con CLI consulta la https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/server-image.html[página de comandos de creación de snapshots] y la https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/image.html[página de comandos de administración de imágenes].
 ====
 
+## Descarga de credenciales
+
+Hasta ahora hemos estado usando las credenciales de `admin` disponibles en el archivo `openrc-admin`. Sin embargo, hay ocasiones en que tendremos que realizar operaciones con nuestras propias credenciales. Esto es especialmente aplicable a aquellos usuarios que no sean administradores. Para ello, tendremos que descargar nuestro archivo credenciales disponible en Horizon. La descarga de credenciales la encontramos en el menú `Project | Compute | API Access`. Después, pulsar el botón `Download OpenStack RC File v3`. Colocaremos ese archivo de credenciales en nuestro `home` de forma que podamos usarlo fácilmente. Lo cargaremos con 
+
+[source, bash]
+----
+$ source <archivoCredenciales>
+----
+
 ## Creación de instancias
+
+La creación de instancias la realizará un miembro del proyecto al que pertenecerán las instancias creadas. Necesitaremos entonces usar las credenciales de usuario tal y como se ha descrito en <<Descarga de credenciales>>
 
 ### Creación básica de una instancia
 
