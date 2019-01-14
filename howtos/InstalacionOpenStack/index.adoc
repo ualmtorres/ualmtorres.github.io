@@ -1,0 +1,118 @@
+////
+NO CAMBIAR!!
+Codificación, idioma, tabla de contenidos, tipo de documento
+////
+:encoding: utf-8
+:lang: es
+:toc: right
+:toc-title: Tabla de contenidos
+:doctype: book
+:imagesdir: ./images
+
+
+////
+Nombre y título del trabajo
+////
+# Instalación de OpenStack
+Cloud-DI
+Cloud-DI Team <clouddi@ual.es>
+
+image::di.png[]
+
+// NO CAMBIAR!! (Entrar en modo no numerado de apartados)
+:numbered!: 
+
+
+[abstract]
+## Resumen
+
+OpenStack es un software para la creación de clouds. El proyecto OpenStack ofrece gran cantidad de componentes para implementar los diferentes servicios que se quieran desplegar en nuestro cloud (máquinas virtuales, infraestructura de red, almacenamiento de bloques, almacenamiento de archivos compartidos, almacenamiento de objetos, orquestación, monitorización, por citar algunos). OpenStack tiene una arquitectura totalmente modular en la que partiendo de los componentes básicos (_Keystone_ para autenticación, _Glance_ para imágenes, _Neutron_ para redes y _Nova_ para instancias) podemos ir añadiendo los componentes adecuados para poder desplegar los servicios que queremos ofrecer.
+
+En este tutorial se describen los pasos de instalación de los componentes que actualmente están disponibles en https://openstack.di.ual.es/horizon[OpenStack-DI].
+
+[IMPORTANT]
+====
+El acceso a OpenStack-DI y a otros recursos más de Cloud-DI se puede hacer directamente desde https://openstack.di.ual.es/horizon[https://openstack.di.ual.es/horizon] o desde la web de servicios de Cloud-DI https://cloud.di.ual.es[https://cloud.di.ual.es]. Allí además hay disponible una lista de respuestas a preguntas frecuentes y los https://cloud.di.ual.es/TerminosServicio.html[Términos de servicio de Cloud-DI].
+
+En https://moodle.di.ual.es[https://moodle.di.ual.es] se encuentran disponibles una serie de videos ilustrativos sobre los sevicios ofrecidos por Cloud-DI y sobre las operaciones básicas para el uso de OpenStack-DI.
+
+Para realizar operaciones repetitivas o avanzadas es conveniente utilizar el CLI. Aquí está disponible la https://docs.openstack.org/python-openstackclient/pike/cli/command-list.html#command-list[Lista de comandos CLI].
+====
+
+// Entrar en modo numerado de apartados
+:numbered:
+
+//// 
+COLOCA A CONTINUACION EL TITULO DEL APARTADO
+////
+
+## Componentes de OpenStack
+
+OpenStack es un proyecto formado por distintos componentes. Cada uno de ellos añade una función a nuestro cloud. Podemos clasificar estos componentes en básicos y opcionales.
+
+* Componentes básicos 
+** _Keystone_: Servicio de Identidad (*)
+** _Neutron_: Servicio de redes (*)
+** _Glance_: Servicio de imágenes (*)
+** _Nova_: Servicio de cómputo (máquinas virtuales) (*)
+
+* Componentes opcionales
+** _Horizon_: Interfaz web (*)
+** _Cinder_: Almacenamiento de bloques (*)
+** _Manila_: Servicio de sistemas de archivos compartidos (*)
+** _Swift_: Servicio de almacenamiento de objetos (*)
+** _Sahara_: Servicio de procesamiento de datos (*)
+** _Ceilometer_: Servicio de recolección de datos de telemetría
+** _Aodh_: Servicio de alerta de telemetría
+** _Heat_: Servicio de orquestación (*)
+** _Barbican_: Servicio de gestión de claves (*)
+** _Ironic_: Aprovisionamiento en máquinas físicas
+** _Cloudkitty_: Servicio de tarificación
+
+[NOTE]
+====
+Los componentes marcardos con asterisco (*) están disponibles actualmente en https://openstack.di.ual.es/horizon[OpenStack-DI].
+====
+
+La figura siguiente ilustra los componentes instalados en OpenStack-DI y su interacción básica. Los componentes en rojo son los componentes básicos.
+
+image::ComponentesOpenStack.png[]
+
+* _Keystone_ proporciona servicios de identificación a todos los componentes OpenStack
+* _Horizon_ proporciona un portal web de acceso al resto de componentes salvo a _Keystone_.
+* _Glance_ proporciona las imágenes al crear las máquinas virtuales.
+* _Neutron_ proporciona los servicios de networking a las máquinas virtuales
+* _Cinder_ propociona almacenamiento de bloques a las máquinas virtuales. _Cinder_ también puede guardar snapshots de volumen.
+* _Manila_ propociona servicios de almacenamiento compartido de archivos a las máquinas virtuales
+* _Swift_ propociona almacenamiento de objetos a las máquinas virtuales y a _Sahara_. Opcionalmente se puede configurar _Nova_ para almacenar las imágenes en _Swift_.
+* _Ceilometer_ recoge medidas de uso de los componentes de networking, imágenes, cómputo, almacenamiento y procesamiento de datos.
+* _Heat_ permite la creación de stacks para la creación de infraestructura mediante código. Opcionalmente se puede combinar con _Ceilometer_ par ajustar dinánicamente la infraestructura en función del uso de recursos (RAM, cores, almacenamiento) recopilado por _Ceilometer_.
+
+## Preparación del entorno
+
+Para la instalación de los componentes de este tutorial partimos del siguiente escenario en el que contaremos con servidores dedicados para Control, Red y Cómputo. Los servicios de almacenamiento tienen los requisitos siguientes:
+
+* _Cinder_: Almacenamiento en un NAS Synology y servicios ejecutándose en el nodo de Control.
+* _Manila_: Servidor independiente.
+* _Swift_: Dos servidores para proporcionar tolerancia a fallos.
+
+La figura siguiente ilustra la arquitectura de referencia que usaremos en este tutorial. Tal y como aparece en la https://docs.openstack.org/ocata/install-guide-ubuntu/environment-networking.html[Guía de networking en la instalación de OpenStack] dispondremos de una red de mantenimiento, una red de túnel y la red externa. 
+
+image::configuracionDeseable.png[]
+
+Como se observa en la figura, todos los servidores están conectados a las redes de mantenimiento y túnel. Además, los servidores siguientes están contectados al exterior:
+
+* Control: Proporciona acceso a la consola de _Horizon_ en la red de la UAL.
+* Red: Ofrece conectividad a la red de la UAL a las máquinas virtuales.
+* Almacenamiento compartido: Permite ofrecer sistemas de archivos de compartidos en la red de la UAL.
+
+Los requisitos hardware mínimos de cada servidor son los que aparecen el la https://docs.openstack.org/ocata/install-guide-ubuntu/overview.html#example-architecture[arquitectura de ejemplo de la guía de instalación de OpenStack].
+
+### Configuración de las interfaces de red
+
+Es recomendable, aunque no necesario, una nomenclatura uniforme de las interfaces de red de los servidores que ofrecen la infraestructura a OpenStack. Si hay diferencias, recomendamos seguir la denominación clásica `eth0`, `eth1`, ... Sigue como `root` estos pasos cambiar los nombres de la interfaces de red a `eth0`, `eth1`, ...
+
+1. Editar `/etc/default/grub` y cambiar la línea `GRUB_CMDLINE_LINUX=""` por  `GRUB_CMDLINE_LINUX="net.ifnames=0 biosdevname=0"`.
+2. Actualizar GRUB con `update-grub`.
+3. Actualizar el archivo `/etc/network/interfaces` con las interfaces de red ya a `eth0`, `eth1`, ...
+4. Reiniciar el sistema con `reboot`
