@@ -438,6 +438,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#truepreparaci-n-de-las-m-quinas">3. Preparación de las máquinas</a></li>
 <li><a href="#trueinstalaci-n-de-keystone">4. Instalación de Keystone</a></li>
+<li><a href="#trueinstalaci-n-de-glance">5. Instalación de Glance</a></li>
 </ul>
 </div>
 </div>
@@ -1439,10 +1440,303 @@ use = egg:Paste#urlmap
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="trueinstalaci-n-de-glance"><a class="anchor" href="#trueinstalaci-n-de-glance"></a>5. Instalación de Glance</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>La instalación de Glance se realiza en el nodo de control.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Creación y configuración de la base de datos <code>glance</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">MariaDB [(none)]&gt; CREATE DATABASE glance;
+
+MariaDB [(none)]&gt; GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'localhost' \
+  IDENTIFIED BY 'GLANCE_DBPASS'; <i class="conum" data-value="1"></i><b>(1)</b>
+MariaDB [(none)]&gt; GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'%' \
+  IDENTIFIED BY 'GLANCE_DBPASS'; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Contraseña del usuario Glance</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contraseña del usuario Glance</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Realizar la configuración de Glance (usuario <code>glance</code>, añadir el usuario <code>glance</code> al proyecto <code>service</code> con el rol <code>admin</code> y crear el servicio <code>glance</code>)</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># source openrc-admin <i class="conum" data-value="1"></i><b>(1)</b>
+
+# openstack user create --domain default glance --password {{ glance_dbpass }} <i class="conum" data-value="1"></i><b>(1)</b>
+# openstack role add --project service --user glance admin
+# openstack service create --name glance --description "OpenStack Image" image</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Cargar las credenciales de <code>admin</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contraseña del usuario <code>glance</code></td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Crear los endpoints de la API</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># openstack endpoint create --region {{region}} image public http://{{ nodes_by_name.controller.provider_ip }}:9292 <i class="conum" data-value="1"></i><b>(1)</b>
+# openstack endpoint create --region {{region}} image internal http://{{ nodes_by_name.controller.tunnel_ip }}:9292 <i class="conum" data-value="2"></i><b>(2)</b>
+# openstack endpoint create --region {{region}} image admin http://{{ nodes_by_name.controller.management_ip }}:9292 <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP externa del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de túnel del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de mantenimiento del nodo de control</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Instalar los paquetes de Glance</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt install glance</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configurar el archivo <code>/etc/glance/glance-api.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/glance/glance-api.conf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[DEFAULT]
+
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <i class="conum" data-value="1"></i><b>(1)</b>
+
+[cors]
+
+[cors.subdomain]
+
+[database]
+
+sqlite_db = /var/lib/glance/glance.sqlite
+
+backend = sqlalchemy
+
+connection = mysql+pymysql://glance:{{ glance_dbpass }}@{{ nodes.controller.name }}/glance <i class="conum" data-value="2"></i><b>(2)</b>
+
+[glance_store]
+
+stores = file,http
+default_store = file
+filesystem_store_datadir = {{ glance_image_dir }} <i class="conum" data-value="3"></i><b>(3)</b>
+
+[image_format]
+
+disk_formats = ami,ari,aki,vhd,vhdx,vmdk,raw,qcow2,vdi,iso,ploop.root-tar
+
+[keystone_authtoken]
+
+auth_uri = http://{{ nodes.controller.name }}:5000 <i class="conum" data-value="4"></i><b>(4)</b>
+auth_url = http://{{ nodes.controller.name }}:35357 <i class="conum" data-value="5"></i><b>(5)</b>
+memcached_servers = {{ nodes.controller.name }}:11211 <i class="conum" data-value="6"></i><b>(6)</b>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = glance
+password = {{ glance_dbpass }} <i class="conum" data-value="7"></i><b>(7)</b>
+
+[matchmaker_redis]
+
+[oslo_concurrency]
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+driver = messagingv2
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_middleware]
+
+[oslo_policy]
+
+[paste_deploy]
+
+flavor = keystone
+
+[profiler]
+
+[store_type_location_strategy]
+
+[task]
+
+[taskflow_executor]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Contraseña de RabbitMQ y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contraseña de Glance y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Directorio donde se vayan a almacenar las imágenes (p.e. <code>/var/lib/glance/images</code>)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Contraseña de Glance</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Modificar el archivo <code>/etc/glance/glance-registry.conf</code></p>
+</li>
+</ol>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/glance/glance-registry.conf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[DEFAULT]
+
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <i class="conum" data-value="1"></i><b>(1)</b>
+
+[database]
+
+sqlite_db = /var/lib/glance/glance.sqlite
+
+backend = sqlalchemy
+
+connection = mysql+pymysql://glance:{{ glance_dbpass }}@{{ nodes.controller.name }}/glance <i class="conum" data-value="2"></i><b>(2)</b>
+
+[keystone_authtoken]
+
+auth_uri = http://{{ nodes.controller.name }}:5000 <i class="conum" data-value="3"></i><b>(3)</b>
+auth_url = http://{{ nodes.controller.name }}:35357 <i class="conum" data-value="4"></i><b>(4)</b>
+memcached_servers = {{ nodes.controller.name }}:11211 <i class="conum" data-value="5"></i><b>(5)</b>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = glance
+password = {{ glance_dbpass }}
+
+[matchmaker_redis]
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+driver = messagingv2
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_policy]
+
+[paste_deploy]
+
+flavor = keystone
+
+[profiler]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Contraseña de RabbitMQ y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contraseña de Glance y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Contraseña de Glance</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-01-14 23:17:26 CET
+Last updated 2019-01-14 23:52:49 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

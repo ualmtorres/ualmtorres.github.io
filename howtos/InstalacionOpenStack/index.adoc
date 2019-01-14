@@ -755,3 +755,206 @@ use = egg:Paste#urlmap
 
 ----
 ****
+
+## Instalación de Glance
+
+La instalación de Glance se realiza en el nodo de control.
+
+. Creación y configuración de la base de datos `glance`
+
++
+[source, bash]
+----
+MariaDB [(none)]> CREATE DATABASE glance;
+
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'localhost' \
+  IDENTIFIED BY 'GLANCE_DBPASS'; <1>
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'%' \
+  IDENTIFIED BY 'GLANCE_DBPASS'; <2>
+----
+<1> Contraseña del usuario Glance
+<2> Contraseña del usuario Glance
+
+
+. Realizar la configuración de Glance (usuario `glance`, añadir el usuario `glance` al proyecto `service` con el rol `admin` y crear el servicio `glance`)
+
++
+[source, bash]
+----
+# source openrc-admin <1>
+
+# openstack user create --domain default glance --password {{ glance_dbpass }} <1>
+# openstack role add --project service --user glance admin
+# openstack service create --name glance --description "OpenStack Image" image
+----
+<1> Cargar las credenciales de `admin`
+<2> Contraseña del usuario `glance`
+
+. Crear los endpoints de la API
+
++
+[source, bash]
+----
+# openstack endpoint create --region {{region}} image public http://{{ nodes_by_name.controller.provider_ip }}:9292 <1>
+# openstack endpoint create --region {{region}} image internal http://{{ nodes_by_name.controller.tunnel_ip }}:9292 <2>
+# openstack endpoint create --region {{region}} image admin http://{{ nodes_by_name.controller.management_ip }}:9292 <3>
+----
+<1> Región (p.e, `RegionOne`) e IP externa del nodo de control
+<2> Región (p.e, `RegionOne`) e IP de túnel del nodo de control
+<3> Región (p.e, `RegionOne`) e IP de mantenimiento del nodo de control
+
+
+. Instalar los paquetes de Glance 
+
++
+[source, bash]
+----
+# apt install glance
+----
+
+. Configurar el archivo `/etc/glance/glance-api.conf`
+
++
+.El archivo `/etc/glance/glance-api.conf`
+****
+[source, bash]
+----
+[DEFAULT]
+
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <1>
+
+[cors]
+
+[cors.subdomain]
+
+[database]
+
+sqlite_db = /var/lib/glance/glance.sqlite
+
+backend = sqlalchemy
+
+connection = mysql+pymysql://glance:{{ glance_dbpass }}@{{ nodes.controller.name }}/glance <2>
+
+[glance_store]
+
+stores = file,http
+default_store = file
+filesystem_store_datadir = {{ glance_image_dir }} <3>
+
+[image_format]
+
+disk_formats = ami,ari,aki,vhd,vhdx,vmdk,raw,qcow2,vdi,iso,ploop.root-tar
+
+[keystone_authtoken]
+
+auth_uri = http://{{ nodes.controller.name }}:5000 <4>
+auth_url = http://{{ nodes.controller.name }}:35357 <5>
+memcached_servers = {{ nodes.controller.name }}:11211 <6>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = glance
+password = {{ glance_dbpass }} <7>
+
+[matchmaker_redis]
+
+[oslo_concurrency]
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+driver = messagingv2
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_middleware]
+
+[oslo_policy]
+
+[paste_deploy]
+
+flavor = keystone
+
+[profiler]
+
+[store_type_location_strategy]
+
+[task]
+
+[taskflow_executor]
+----
+<1> Contraseña de RabbitMQ y nombre del nodo de control
+<2> Contraseña de Glance y nombre del nodo de control
+<3> Directorio donde se vayan a almacenar las imágenes (p.e. `/var/lib/glance/images`)
+<4> Nombre del nodo de control
+<5> Nombre del nodo de control
+<6> Nombre del nodo de control
+<7> Contraseña de Glance
+
+****
+
+. Modificar el archivo `/etc/glance/glance-registry.conf`
+
+.El archivo `/etc/glance/glance-registry.conf`
+****
+[source, bash]
+----
+[DEFAULT]
+
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <1>
+
+[database]
+
+sqlite_db = /var/lib/glance/glance.sqlite
+
+backend = sqlalchemy
+
+connection = mysql+pymysql://glance:{{ glance_dbpass }}@{{ nodes.controller.name }}/glance <2>
+
+[keystone_authtoken]
+
+auth_uri = http://{{ nodes.controller.name }}:5000 <3>
+auth_url = http://{{ nodes.controller.name }}:35357 <4>
+memcached_servers = {{ nodes.controller.name }}:11211 <5>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = glance
+password = {{ glance_dbpass }}
+
+[matchmaker_redis]
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+driver = messagingv2
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_policy]
+
+[paste_deploy]
+
+flavor = keystone
+
+[profiler]
+----
+<1> Contraseña de RabbitMQ y nombre del nodo de control
+<2> Contraseña de Glance y nombre del nodo de control
+<3> Nombre del nodo de control
+<4> Nombre del nodo de control
+<5> Nombre del nodo de control
+<6> Contraseña de Glance
+****
