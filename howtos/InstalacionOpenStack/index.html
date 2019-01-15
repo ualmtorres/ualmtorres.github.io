@@ -439,6 +439,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#truepreparaci-n-de-las-m-quinas">3. Preparación de las máquinas</a></li>
 <li><a href="#trueinstalaci-n-de-keystone">4. Instalación de Keystone</a></li>
 <li><a href="#trueinstalaci-n-de-glance">5. Instalación de Glance</a></li>
+<li><a href="#trueinstalaci-n-de-nova">6. Instalación de Nova</a>
+<ul class="sectlevel2">
+<li><a href="#trueinstalaci-n-de-nova-en-el-nodo-de-control">6.1. Instalación de Nova en el nodo de control</a></li>
+<li><a href="#trueinstalaci-n-de-nova-en-los-nodos-de-c-mputo">6.2. Instalación de Nova en los nodos de cómputo</a></li>
+<li><a href="#trueconfiguraci-n-de-nova-en-el-nodo-de-control">6.3. Configuración de Nova en el nodo de control</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -1733,10 +1740,821 @@ flavor = keystone
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="trueinstalaci-n-de-nova"><a class="anchor" href="#trueinstalaci-n-de-nova"></a>6. Instalación de Nova</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="trueinstalaci-n-de-nova-en-el-nodo-de-control"><a class="anchor" href="#trueinstalaci-n-de-nova-en-el-nodo-de-control"></a>6.1. Instalación de Nova en el nodo de control</h3>
+<div class="paragraph">
+<p>Realizar estar operaciones en el nodo de control</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Creación y configuración de la base de datos <code>nova</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">MariaDB [(none)]&gt; CREATE DATABASE nova_api;
+MariaDB [(none)]&gt; CREATE DATABASE nova;
+MariaDB [(none)]&gt; CREATE DATABASE nova_cell0;
+
+MariaDB [(none)]&gt; GRANT ALL PRIVILEGES ON nova_api.* TO 'nova'@'localhost' \
+  IDENTIFIED BY 'NOVA_DBPASS'; <i class="conum" data-value="1"></i><b>(1)</b>
+MariaDB [(none)]&gt; GRANT ALL PRIVILEGES ON nova_api.* TO 'nova'@'%' \
+  IDENTIFIED BY 'NOVA_DBPASS'; <i class="conum" data-value="2"></i><b>(2)</b>
+
+MariaDB [(none)]&gt; GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'localhost' \
+  IDENTIFIED BY 'NOVA_DBPASS'; <i class="conum" data-value="3"></i><b>(3)</b>
+MariaDB [(none)]&gt; GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'%' \
+  IDENTIFIED BY 'NOVA_DBPASS'; <i class="conum" data-value="4"></i><b>(4)</b>
+
+MariaDB [(none)]&gt; GRANT ALL PRIVILEGES ON nova_cell0.* TO 'nova'@'localhost' \
+  IDENTIFIED BY 'NOVA_DBPASS'; <i class="conum" data-value="5"></i><b>(5)</b>
+MariaDB [(none)]&gt; GRANT ALL PRIVILEGES ON nova_cell0.* TO 'nova'@'%' \
+  IDENTIFIED BY 'NOVA_DBPASS'; <i class="conum" data-value="6"></i><b>(6)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Contraseña del usuario Nova</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contraseña del usuario Nova</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Contraseña del usuario Nova</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Contraseña del usuario Nova</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Contraseña del usuario Nova</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Contraseña del usuario Nova</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Realizar la configuración de Nova (usuario <code>nova</code>, añadir el usuario <code>nova</code> al proyecto <code>service</code> con el rol <code>admin</code> y crear el servicio <code>nova</code>)</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># source openrc-admin <i class="conum" data-value="1"></i><b>(1)</b>
+
+# openstack user create --domain default nova --password {{ nova_dbpass }} <i class="conum" data-value="2"></i><b>(2)</b>
+# openstack role add --project service --user nova admin
+# openstack service create --name nova --description "OpenStack Compute" compute</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Cargar las credenciales de <code>admin</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contraseña del usuario <code>nova</code></td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Crear los endpoints de la API</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># openstack endpoint create --region {{ region }} compute public http://{{ nodes_by_name.controller.provider_ip }}:8774/v2.1 <i class="conum" data-value="1"></i><b>(1)</b>
+# openstack endpoint create --region {{ region }} compute internal http://{{ nodes_by_name.controller.tunnel_ip }}:8774/v2.1 <i class="conum" data-value="2"></i><b>(2)</b>
+# openstack endpoint create --region {{ region }} compute admin http://{{ nodes_by_name.controller.management_ip }}:8774/v2.1 <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP externa del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de túnel del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de mantenimiento del nodo de control</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Realizar la configuración del servicio Placement (usuario <code>nova</code>, añadir el usuario <code>nova</code> al proyecto <code>service</code> con el rol <code>admin</code> y crear el servicio <code>nova</code>)</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># source openrc-admin <i class="conum" data-value="1"></i><b>(1)</b>
+
+# openstack user create --domain default placement --password {{ placement_pass }} <i class="conum" data-value="2"></i><b>(2)</b>
+# openstack role add --project service --user placement admin
+# openstack service create --name placement --description "Placement API" placement</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Cargar las credenciales de <code>admin</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contraseña del usuario <code>placement</code></td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Crear los endpoints de la API</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># openstack endpoint create --region {{ region }} placement public http://{{ nodes_by_name.controller.provider_ip }}:8778 <i class="conum" data-value="1"></i><b>(1)</b>
+# openstack endpoint create --region {{ region }} placement internal http://{{ nodes_by_name.controller.tunnel_ip }}:8778 <i class="conum" data-value="2"></i><b>(2)</b>
+# openstack endpoint create --region {{ region }} placement admin http://{{ nodes_by_name.controller.management_ip }}:8778 <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP externa del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de túnel del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de mantenimiento del nodo de control</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Instalar los paquetes de Nova</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt install nova-api nova-conductor nova-consoleauth \
+  nova-novncproxy nova-scheduler nova-placement-api</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configurar el archivo <code>/etc/nova/nova.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/nova/nova.conf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">my_ip = {{ nodes.controller.management_ip }} <i class="conum" data-value="1"></i><b>(1)</b>
+
+use_neutron = True
+firewall_driver = nova.virt.firewall.NoopFirewallDriver
+
+dhcpbridge_flagfile=/etc/nova/nova.conf
+
+dhcpbridge=/usr/bin/nova-dhcpbridge
+
+linuxnet_interface_driver = nova.network.linux_net.LinuxOVSInterfaceDriver
+
+force_dhcp_release=true
+
+state_path=/var/lib/nova
+
+enabled_apis=osapi_compute,metadata
+
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <i class="conum" data-value="2"></i><b>(2)</b>
+
+[api]
+
+auth_strategy = keystone
+
+[api_database]
+
+connection = mysql+pymysql://nova:{{ nova_dbpass }}@{{ nodes.controller.name }}/nova_api <i class="conum" data-value="3"></i><b>(3)</b>
+
+[barbican]
+
+[cache]
+
+[cells]
+
+enable=False
+
+[cinder]
+
+os_region_name = {{region}} <i class="conum" data-value="4"></i><b>(4)</b>
+
+[cloudpipe]
+
+[conductor]
+
+[console]
+
+[consoleauth]
+
+[cors]
+
+[cors.subdomain]
+
+[crypto]
+
+[database]
+
+connection = mysql+pymysql://nova:{{ nova_dbpass }}@{{ nodes.controller.name }}/nova <i class="conum" data-value="5"></i><b>(5)</b>
+
+[ephemeral_storage_encryption]
+
+[filter_scheduler]
+
+[glance]
+
+api_servers = http://{{ nodes.controller.name }}:9292 <i class="conum" data-value="6"></i><b>(6)</b>
+
+[guestfs]
+
+[healthcheck]
+
+[hyperv]
+
+[image_file_url]
+
+[ironic]
+
+[key_manager]
+
+[keystone_authtoken]
+
+auth_uri = http://{{ nodes.controller.name }}:5000 <i class="conum" data-value="7"></i><b>(7)</b>
+auth_url = http://{{ nodes.controller.name }}:35357 <i class="conum" data-value="8"></i><b>(8)</b>
+memcached_servers = {{nodes.controller.name}}:11211 <i class="conum" data-value="9"></i><b>(9)</b>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = nova
+password = {{ nova_dbpass }} <i class="conum" data-value="10"></i><b>(10)</b>
+
+[libvirt]
+
+[matchmaker_redis]
+
+[metrics]
+
+[mks]
+
+[neutron]
+
+url = http://{{ nodes.controller.name }}:9696 <i class="conum" data-value="11"></i><b>(11)</b>
+auth_url = http://{{ nodes.controller.name }}:35357 <i class="conum" data-value="12"></i><b>(12)</b>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+region_name = {{ region }} <i class="conum" data-value="13"></i><b>(13)</b>
+project_name = service
+username = neutron
+password = {{ neutron_dbpass }} <i class="conum" data-value="14"></i><b>(14)</b>
+service_metadata_proxy = true
+metadata_proxy_shared_secret = {{ metadata_secret }} <i class="conum" data-value="15"></i><b>(15)</b>
+
+[notifications]
+
+[osapi_v21]
+
+[oslo_concurrency]
+
+lock_path = /var/lib/nova/tmp
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_middleware]
+
+[oslo_policy]
+
+[pci]
+
+[placement]
+
+os_region_name = {{ region }} <i class="conum" data-value="16"></i><b>(16)</b>
+project_domain_name = Default
+project_name = service
+auth_type = password
+user_domain_name = Default
+auth_url = http://{{ nodes.controller.name }}:35357/v3 <i class="conum" data-value="17"></i><b>(17)</b>
+username = placement
+password = {{ placement_pass }} <i class="conum" data-value="18"></i><b>(18)</b>
+
+[quota]
+
+[rdp]
+
+[remote_debug]
+
+[scheduler]
+
+periodic_task_interval=300
+
+[serial_console]
+
+[service_user]
+
+[spice]
+
+[ssl]
+
+[trusted_computing]
+
+[upgrade_levels]
+
+[vendordata_dynamic_auth]
+
+[vmware]
+
+[vnc]
+
+enabled = true
+vncserver_listen = $my_ip
+vncserver_proxyclient_address = $my_ip
+
+[workarounds]
+
+[wsgi]
+
+api_paste_config=/etc/nova/api-paste.ini
+
+[xenserver]
+
+[xvp]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>IP del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contraseña de RabbitMQ y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Contraseña de Nova y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Nombre de la región (p.e. <code>RegionOne</code>)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Contraseña de Nova y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>Contraseña de Nova</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="12"></i><b>12</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="13"></i><b>13</b></td>
+<td>Nombre de la región (p.e. <code>RegionOne</code>)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="14"></i><b>14</b></td>
+<td>Contraseña de Neutron</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="15"></i><b>15</b></td>
+<td>Metadatos para secretos</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="16"></i><b>16</b></td>
+<td>Nombre de la región (p.e. <code>RegionOne</code>)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="17"></i><b>17</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="18"></i><b>18</b></td>
+<td>Contraseña de Placement</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Crear las bases de datos y las celdas <code>cell0</code> y <code>cell1</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># su -s /bin/sh -c "nova-manage api_db sync" nova
+# su -s /bin/sh -c "nova-manage cell_v2 map_cell0" nova
+# su -s /bin/sh -c "nova-manage cell_v2 create_cell --name=cell1 --verbose" nova 109e1d4b-536a-40d0-83c6-5f121b82b650
+# su -s /bin/sh -c "nova-manage db sync" nova</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Reiniciar los servicios</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service nova-api restart
+# service nova-consoleauth restart
+# service nova-scheduler restart
+# service nova-conductor restart
+# service nova-novncproxy restart</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueinstalaci-n-de-nova-en-los-nodos-de-c-mputo"><a class="anchor" href="#trueinstalaci-n-de-nova-en-los-nodos-de-c-mputo"></a>6.2. Instalación de Nova en los nodos de cómputo</h3>
+<div class="paragraph">
+<p>Realizar estar operaciones en cada uno de los nodos de cómputo</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Instalar los paquetes de Nova</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt install nova-compute</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configurar el archivo <code>/etc/nova/nova.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/nova/nova.conf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[DEFAULT]
+
+my_ip = {{ ansible_eth0.ipv4.address }} <i class="conum" data-value="1"></i><b>(1)</b>
+use_neutron = True
+firewall_driver = nova.virt.firewall.NoopFirewallDriver
+
+network_api_class = nova.network.neutronv2.api.API
+security_group_api = neutron
+
+instance_usage_audit_period=hour
+
+instance_usage_audit=True
+
+dhcpbridge_flagfile=/etc/nova/nova.conf
+
+dhcpbridge=/usr/bin/nova-dhcpbridge
+
+linuxnet_interface_driver = nova.network.linux_net.LinuxOVSInterfaceDriver
+
+force_dhcp_release=true
+
+state_path=/var/lib/nova
+
+enabled_apis=osapi_compute,metadata
+
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <i class="conum" data-value="2"></i><b>(2)</b>
+
+[api]
+
+auth_strategy = keystone
+
+[api_database]
+
+connection = mysql+pymysql://nova:{{ nova_dbpass }}@{{ nodes.controller.name }}/nova_api <i class="conum" data-value="3"></i><b>(3)</b>
+
+[barbican]
+
+[cache]
+
+[cells]
+
+enable=False
+
+[cinder]
+
+[cloudpipe]
+
+[conductor]
+
+[console]
+
+[consoleauth]
+
+[cors]
+
+[cors.subdomain]
+
+[crypto]
+
+[database]
+
+connection = mysql+pymysql://nova:{{ nova_dbpass }}@{{ nodes.controller.name }}/nova <i class="conum" data-value="4"></i><b>(4)</b>
+
+[ephemeral_storage_encryption]
+
+[filter_scheduler]
+
+[glance]
+
+api_servers = http://{{ nodes.controller.name }}:9292 <i class="conum" data-value="5"></i><b>(5)</b>
+
+[guestfs]
+
+[healthcheck]
+
+[hyperv]
+
+[image_file_url]
+
+[ironic]
+
+[key_manager]
+
+[keystone_authtoken]
+
+auth_uri = http://{{ nodes.controller.name }}:5000 <i class="conum" data-value="6"></i><b>(6)</b>
+auth_url = http://{{ nodes.controller.name }}:35357 <i class="conum" data-value="7"></i><b>(7)</b>
+memcached_servers = {{ nodes.controller.name }}:11211 <i class="conum" data-value="8"></i><b>(8)</b>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = nova
+password = {{ nova_dbpass }} <i class="conum" data-value="9"></i><b>(9)</b>
+
+[libvirt]
+
+cpu_mode=custom
+
+cpu_model=kvm64
+
+[matchmaker_redis]
+
+[metrics]
+
+[mks]
+
+[neutron]
+
+url = http://{{ nodes.controller.name }}:9696 <i class="conum" data-value="10"></i><b>(10)</b>
+auth_url = http://{{ nodes.controller.name }}:35357 <i class="conum" data-value="11"></i><b>(11)</b>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+region_name = {{ region }} <i class="conum" data-value="12"></i><b>(12)</b>
+project_name = service
+username = neutron
+password = {{ neutron_dbpass }} <i class="conum" data-value="13"></i><b>(13)</b>
+
+[notifications]
+
+notify_on_state_change=vm_and_task_state
+
+[osapi_v21]
+
+[oslo_concurrency]
+
+lock_path = /var/lib/nova/tmp
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+driver = messagingv2
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_middleware]
+
+[oslo_policy]
+
+[pci]
+
+[placement]
+
+os_region_name = {{ region }} <i class="conum" data-value="14"></i><b>(14)</b>
+project_domain_name = Default
+project_name = service
+auth_type = password
+user_domain_name = Default
+auth_url = http://{{ nodes.controller.name }}:35357/v3 <i class="conum" data-value="15"></i><b>(15)</b>
+username = placement
+password = {{ placement_pass }} <i class="conum" data-value="16"></i><b>(16)</b>
+
+[quota]
+
+[rdp]
+
+[remote_debug]
+
+[scheduler]
+
+[serial_console]
+
+[service_user]
+
+[spice]
+
+[ssl]
+
+[trusted_computing]
+
+[upgrade_levels]
+
+[vendordata_dynamic_auth]
+
+[vmware]
+
+[vnc]
+
+enabled = True
+vncserver_listen = 0.0.0.0
+vncserver_proxyclient_address = $my_ip
+novncproxy_base_url = http://{{ nodes_by_name.controller.provider_ip }}:6080/vnc_auto.html <i class="conum" data-value="17"></i><b>(17)</b>
+
+[workarounds]
+
+[wsgi]
+
+api_paste_config=/etc/nova/api-paste.ini
+
+[xenserver]
+
+[xvp]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>IP del nodo de cómputo</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contraseña de RabbitMQ y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Contraseña de Nova y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Contraseña de Nova y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>Contraseña de Nova</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="12"></i><b>12</b></td>
+<td>Nombre de la región (p.e. <code>RegionOne</code>)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="13"></i><b>13</b></td>
+<td>Contraseña de Neutron</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="14"></i><b>14</b></td>
+<td>Nombre de la región (p.e. <code>RegionOne</code>)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="15"></i><b>15</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="16"></i><b>16</b></td>
+<td>IP externa del nodo de control</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueconfiguraci-n-de-nova-en-el-nodo-de-control"><a class="anchor" href="#trueconfiguraci-n-de-nova-en-el-nodo-de-control"></a>6.3. Configuración de Nova en el nodo de control</h3>
+<div class="paragraph">
+<p>Realizar estar operaciones en el nodo de control</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Crear los sabores</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># source openrc-admin <i class="conum" data-value="1"></i><b>(1)</b>
+
+# openstack flavor create --vcpus 1 --ram 512 --disk 1 tiny
+# openstack flavor create --vcpus 1 --ram 2048 --disk 20 small
+# openstack flavor create --vcpus 2 --ram 4096 --disk 40 medium
+# openstack flavor create --vcpus 4 --ram 8192 --disk 80 large
+# openstack flavor create --vcpus 8 --ram 16384 --disk 160 xlarge</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Cargar las credenciales de <code>admin</code></td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Descubrir los servidores de cómputo</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova'</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-01-14 23:52:49 CET
+Last updated 2019-01-15 09:08:55 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

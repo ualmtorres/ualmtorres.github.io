@@ -958,3 +958,608 @@ flavor = keystone
 <5> Nombre del nodo de control
 <6> Contraseña de Glance
 ****
+
+## Instalación de Nova
+
+### Instalación de Nova en el nodo de control
+
+Realizar estar operaciones en el nodo de control
+
+. Creación y configuración de la base de datos `nova`
+
++
+[source, bash]
+----
+MariaDB [(none)]> CREATE DATABASE nova_api;
+MariaDB [(none)]> CREATE DATABASE nova;
+MariaDB [(none)]> CREATE DATABASE nova_cell0;
+
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON nova_api.* TO 'nova'@'localhost' \
+  IDENTIFIED BY 'NOVA_DBPASS'; <1>
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON nova_api.* TO 'nova'@'%' \
+  IDENTIFIED BY 'NOVA_DBPASS'; <2>
+
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'localhost' \
+  IDENTIFIED BY 'NOVA_DBPASS'; <3>
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'%' \
+  IDENTIFIED BY 'NOVA_DBPASS'; <4>
+
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON nova_cell0.* TO 'nova'@'localhost' \
+  IDENTIFIED BY 'NOVA_DBPASS'; <5>
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON nova_cell0.* TO 'nova'@'%' \
+  IDENTIFIED BY 'NOVA_DBPASS'; <6>
+
+----
+<1> Contraseña del usuario Nova
+<2> Contraseña del usuario Nova
+<3> Contraseña del usuario Nova
+<4> Contraseña del usuario Nova
+<5> Contraseña del usuario Nova
+<6> Contraseña del usuario Nova
+
+. Realizar la configuración de Nova (usuario `nova`, añadir el usuario `nova` al proyecto `service` con el rol `admin` y crear el servicio `nova`)
+
++
+[source, bash]
+----
+# source openrc-admin <1>
+
+# openstack user create --domain default nova --password {{ nova_dbpass }} <2>
+# openstack role add --project service --user nova admin
+# openstack service create --name nova --description "OpenStack Compute" compute
+----
+<1> Cargar las credenciales de `admin`
+<2> Contraseña del usuario `nova`
+
+. Crear los endpoints de la API
+
++
+[source, bash]
+----
+# openstack endpoint create --region {{ region }} compute public http://{{ nodes_by_name.controller.provider_ip }}:8774/v2.1 <1>
+# openstack endpoint create --region {{ region }} compute internal http://{{ nodes_by_name.controller.tunnel_ip }}:8774/v2.1 <2>
+# openstack endpoint create --region {{ region }} compute admin http://{{ nodes_by_name.controller.management_ip }}:8774/v2.1 <3>
+----
+<1> Región (p.e, `RegionOne`) e IP externa del nodo de control
+<2> Región (p.e, `RegionOne`) e IP de túnel del nodo de control
+<3> Región (p.e, `RegionOne`) e IP de mantenimiento del nodo de control
+
+. Realizar la configuración del servicio Placement (usuario `nova`, añadir el usuario `nova` al proyecto `service` con el rol `admin` y crear el servicio `nova`)
+
++
+[source, bash]
+----
+# source openrc-admin <1>
+
+# openstack user create --domain default placement --password {{ placement_pass }} <2>
+# openstack role add --project service --user placement admin
+# openstack service create --name placement --description "Placement API" placement
+----
+<1> Cargar las credenciales de `admin`
+<2> Contraseña del usuario `placement`
+
+. Crear los endpoints de la API
+
++
+[source, bash]
+----
+# openstack endpoint create --region {{ region }} placement public http://{{ nodes_by_name.controller.provider_ip }}:8778 <1>
+# openstack endpoint create --region {{ region }} placement internal http://{{ nodes_by_name.controller.tunnel_ip }}:8778 <2>
+# openstack endpoint create --region {{ region }} placement admin http://{{ nodes_by_name.controller.management_ip }}:8778 <3>
+----
+<1> Región (p.e, `RegionOne`) e IP externa del nodo de control
+<2> Región (p.e, `RegionOne`) e IP de túnel del nodo de control
+<3> Región (p.e, `RegionOne`) e IP de mantenimiento del nodo de control
+
+. Instalar los paquetes de Nova 
+
++
+[source, bash]
+----
+# apt install nova-api nova-conductor nova-consoleauth \
+  nova-novncproxy nova-scheduler nova-placement-api
+----
+
+. Configurar el archivo `/etc/nova/nova.conf`
+
++
+.El archivo `/etc/nova/nova.conf`
+****
+[source, bash]
+----
+my_ip = {{ nodes.controller.management_ip }} <1>
+
+use_neutron = True
+firewall_driver = nova.virt.firewall.NoopFirewallDriver
+
+dhcpbridge_flagfile=/etc/nova/nova.conf
+
+dhcpbridge=/usr/bin/nova-dhcpbridge
+
+linuxnet_interface_driver = nova.network.linux_net.LinuxOVSInterfaceDriver
+
+force_dhcp_release=true
+
+state_path=/var/lib/nova
+
+enabled_apis=osapi_compute,metadata
+
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <2>
+
+[api]
+
+auth_strategy = keystone
+
+[api_database]
+
+connection = mysql+pymysql://nova:{{ nova_dbpass }}@{{ nodes.controller.name }}/nova_api <3>
+
+[barbican]
+
+[cache]
+
+[cells]
+
+enable=False
+
+[cinder]
+
+os_region_name = {{region}} <4>
+
+[cloudpipe]
+
+[conductor]
+
+[console]
+
+[consoleauth]
+
+[cors]
+
+[cors.subdomain]
+
+[crypto]
+
+[database]
+
+connection = mysql+pymysql://nova:{{ nova_dbpass }}@{{ nodes.controller.name }}/nova <5>
+
+[ephemeral_storage_encryption]
+
+[filter_scheduler]
+
+[glance]
+
+api_servers = http://{{ nodes.controller.name }}:9292 <6>
+
+[guestfs]
+
+[healthcheck]
+
+[hyperv]
+
+[image_file_url]
+
+[ironic]
+
+[key_manager]
+
+[keystone_authtoken]
+
+auth_uri = http://{{ nodes.controller.name }}:5000 <7>
+auth_url = http://{{ nodes.controller.name }}:35357 <8>
+memcached_servers = {{nodes.controller.name}}:11211 <9>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = nova
+password = {{ nova_dbpass }} <10>
+
+[libvirt]
+
+[matchmaker_redis]
+
+[metrics]
+
+[mks]
+
+[neutron]
+
+url = http://{{ nodes.controller.name }}:9696 <11>
+auth_url = http://{{ nodes.controller.name }}:35357 <12>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+region_name = {{ region }} <13>
+project_name = service
+username = neutron
+password = {{ neutron_dbpass }} <14>
+service_metadata_proxy = true
+metadata_proxy_shared_secret = {{ metadata_secret }} <15>
+
+[notifications]
+
+[osapi_v21]
+
+[oslo_concurrency]
+
+lock_path = /var/lib/nova/tmp
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_middleware]
+
+[oslo_policy]
+
+[pci]
+
+[placement]
+
+os_region_name = {{ region }} <16>
+project_domain_name = Default
+project_name = service
+auth_type = password
+user_domain_name = Default
+auth_url = http://{{ nodes.controller.name }}:35357/v3 <17>
+username = placement
+password = {{ placement_pass }} <18>
+
+[quota]
+
+[rdp]
+
+[remote_debug]
+
+[scheduler]
+
+periodic_task_interval=300
+
+[serial_console]
+
+[service_user]
+
+[spice]
+
+[ssl]
+
+[trusted_computing]
+
+[upgrade_levels]
+
+[vendordata_dynamic_auth]
+
+[vmware]
+
+[vnc]
+
+enabled = true
+vncserver_listen = $my_ip
+vncserver_proxyclient_address = $my_ip
+
+[workarounds]
+
+[wsgi]
+
+api_paste_config=/etc/nova/api-paste.ini
+
+[xenserver]
+
+[xvp]
+
+----
+<1> IP del nodo de control
+<2> Contraseña de RabbitMQ y nombre del nodo de control
+<3> Contraseña de Nova y nombre del nodo de control
+<4> Nombre de la región (p.e. `RegionOne`)
+<5> Contraseña de Nova y nombre del nodo de control
+<6> Nombre del nodo de control
+<7> Nombre del nodo de control
+<8> Nombre del nodo de control
+<9> Nombre del nodo de control
+<10> Contraseña de Nova
+<11> Nombre del nodo de control
+<12> Nombre del nodo de control
+<13> Nombre de la región (p.e. `RegionOne`)
+<14> Contraseña de Neutron
+<15> Metadatos para secretos
+<16> Nombre de la región (p.e. `RegionOne`)
+<17> Nombre del nodo de control
+<18> Contraseña de Placement
+****
+
+. Crear las bases de datos y las celdas `cell0` y `cell1`
+
++
+[source, bash]
+----
+# su -s /bin/sh -c "nova-manage api_db sync" nova
+# su -s /bin/sh -c "nova-manage cell_v2 map_cell0" nova
+# su -s /bin/sh -c "nova-manage cell_v2 create_cell --name=cell1 --verbose" nova 109e1d4b-536a-40d0-83c6-5f121b82b650
+# su -s /bin/sh -c "nova-manage db sync" nova
+----
+
+. Reiniciar los servicios
+
++
+[source, bash]
+----
+# service nova-api restart
+# service nova-consoleauth restart
+# service nova-scheduler restart
+# service nova-conductor restart
+# service nova-novncproxy restart
+----
+
+
+### Instalación de Nova en los nodos de cómputo
+
+Realizar estar operaciones en cada uno de los nodos de cómputo
+
+. Instalar los paquetes de Nova 
+
++
+[source, bash]
+----
+# apt install nova-compute
+----
+
+. Configurar el archivo `/etc/nova/nova.conf`
+
++
+.El archivo `/etc/nova/nova.conf`
+****
+[source, bash]
+----
+[DEFAULT]
+
+my_ip = {{ ansible_eth0.ipv4.address }} <1>
+use_neutron = True
+firewall_driver = nova.virt.firewall.NoopFirewallDriver
+
+network_api_class = nova.network.neutronv2.api.API
+security_group_api = neutron
+
+instance_usage_audit_period=hour
+
+instance_usage_audit=True
+
+dhcpbridge_flagfile=/etc/nova/nova.conf
+
+dhcpbridge=/usr/bin/nova-dhcpbridge
+
+linuxnet_interface_driver = nova.network.linux_net.LinuxOVSInterfaceDriver
+
+force_dhcp_release=true
+
+state_path=/var/lib/nova
+
+enabled_apis=osapi_compute,metadata
+
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <2>
+
+[api]
+
+auth_strategy = keystone
+
+[api_database]
+
+connection = mysql+pymysql://nova:{{ nova_dbpass }}@{{ nodes.controller.name }}/nova_api <3>
+
+[barbican]
+
+[cache]
+
+[cells]
+
+enable=False
+
+[cinder]
+
+[cloudpipe]
+
+[conductor]
+
+[console]
+
+[consoleauth]
+
+[cors]
+
+[cors.subdomain]
+
+[crypto]
+
+[database]
+
+connection = mysql+pymysql://nova:{{ nova_dbpass }}@{{ nodes.controller.name }}/nova <4>
+
+[ephemeral_storage_encryption]
+
+[filter_scheduler]
+
+[glance]
+
+api_servers = http://{{ nodes.controller.name }}:9292 <5>
+
+[guestfs]
+
+[healthcheck]
+
+[hyperv]
+
+[image_file_url]
+
+[ironic]
+
+[key_manager]
+
+[keystone_authtoken]
+
+auth_uri = http://{{ nodes.controller.name }}:5000 <6>
+auth_url = http://{{ nodes.controller.name }}:35357 <7>
+memcached_servers = {{ nodes.controller.name }}:11211 <8>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = nova
+password = {{ nova_dbpass }} <9>
+
+[libvirt]
+
+cpu_mode=custom
+
+cpu_model=kvm64
+
+[matchmaker_redis]
+
+[metrics]
+
+[mks]
+
+[neutron]
+
+url = http://{{ nodes.controller.name }}:9696 <10>
+auth_url = http://{{ nodes.controller.name }}:35357 <11>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+region_name = {{ region }} <12>
+project_name = service
+username = neutron
+password = {{ neutron_dbpass }} <13>
+
+[notifications]
+
+notify_on_state_change=vm_and_task_state
+
+[osapi_v21]
+
+[oslo_concurrency]
+
+lock_path = /var/lib/nova/tmp
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+driver = messagingv2
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_middleware]
+
+[oslo_policy]
+
+[pci]
+
+[placement]
+
+os_region_name = {{ region }} <14>
+project_domain_name = Default
+project_name = service
+auth_type = password
+user_domain_name = Default
+auth_url = http://{{ nodes.controller.name }}:35357/v3 <15>
+username = placement
+password = {{ placement_pass }} <16>
+
+[quota]
+
+[rdp]
+
+[remote_debug]
+
+[scheduler]
+
+[serial_console]
+
+[service_user]
+
+[spice]
+
+[ssl]
+
+[trusted_computing]
+
+[upgrade_levels]
+
+[vendordata_dynamic_auth]
+
+[vmware]
+
+[vnc]
+
+enabled = True
+vncserver_listen = 0.0.0.0
+vncserver_proxyclient_address = $my_ip
+novncproxy_base_url = http://{{ nodes_by_name.controller.provider_ip }}:6080/vnc_auto.html <17>
+
+[workarounds]
+
+[wsgi]
+
+api_paste_config=/etc/nova/api-paste.ini
+
+[xenserver]
+
+[xvp]
+----
+<1> IP del nodo de cómputo
+<2> Contraseña de RabbitMQ y nombre del nodo de control
+<3> Contraseña de Nova y nombre del nodo de control
+<4> Contraseña de Nova y nombre del nodo de control
+<5> Nombre del nodo de control
+<6> Nombre del nodo de control
+<7> Nombre del nodo de control
+<8> Nombre del nodo de control
+<9> Contraseña de Nova
+<10> Nombre del nodo de control
+<11> Nombre del nodo de control
+<12> Nombre de la región (p.e. `RegionOne`)
+<13> Contraseña de Neutron
+<14> Nombre de la región (p.e. `RegionOne`)
+<15> Nombre del nodo de control
+<16> IP externa del nodo de control
+****
+
+### Configuración de Nova en el nodo de control
+
+Realizar estar operaciones en el nodo de control
+
+. Crear los sabores
+
++
+[source, bash]
+----
+# source openrc-admin <1>
+
+# openstack flavor create --vcpus 1 --ram 512 --disk 1 tiny
+# openstack flavor create --vcpus 1 --ram 2048 --disk 20 small
+# openstack flavor create --vcpus 2 --ram 4096 --disk 40 medium
+# openstack flavor create --vcpus 4 --ram 8192 --disk 80 large
+# openstack flavor create --vcpus 8 --ram 16384 --disk 160 xlarge
+----
+<1> Cargar las credenciales de `admin`
+
+. Descubrir los servidores de cómputo
+
++
+[source, bash]
+----
+# su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova'
+----
+
