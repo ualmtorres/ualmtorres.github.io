@@ -461,6 +461,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#trueinstalaci-n-de-neutron-lbaas-en-el-nodo-de-red">9.2. Instalación de Neutron LBaaS en el nodo de red</a></li>
 </ul>
 </li>
+<li><a href="#truecinder">10. Cinder</a>
+<ul class="sectlevel2">
+<li><a href="#trueinstalaci-n-de-cinder-en-el-nodo-de-control">10.1. Instalación de Cinder en el nodo de control</a></li>
+</ul>
+</li>
 <li><a href="#trueanexo-paquetes-y-archivos-de-configuraci-n">Anexo. Paquetes y archivos de configuración</a></li>
 </ul>
 </div>
@@ -4346,6 +4351,333 @@ service_provider = LOADBALANCERV2:Haproxy:neutron_lbaas.drivers.haproxy.plugin_d
 </div>
 </div>
 <div class="sect1">
+<h2 id="truecinder"><a class="anchor" href="#truecinder"></a>10. Cinder</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="trueinstalaci-n-de-cinder-en-el-nodo-de-control"><a class="anchor" href="#trueinstalaci-n-de-cinder-en-el-nodo-de-control"></a>10.1. Instalación de Cinder en el nodo de control</h3>
+<div class="paragraph">
+<p>Realizar estar operaciones en el nodo de control</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Creación y configuración de la base de datos <code>cinder</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">MariaDB [(none)]&gt; CREATE DATABASE cinder;
+
+MariaDB [(none)]&gt; GRANT ALL PRIVILEGES ON cinder.* TO 'cinder'@'localhost' \
+  IDENTIFIED BY 'CINDER_DBPASS'; <i class="conum" data-value="1"></i><b>(1)</b>
+MariaDB [(none)]&gt; GRANT ALL PRIVILEGES ON cinder.* TO 'cinder'@'%' \
+  IDENTIFIED BY 'CINDER_DBPASS'; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Contraseña del usuario Cinder</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contraseña del usuario Cinder</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Realizar la configuración de Cinder (usuario <code>cinder</code>, añadir el usuario <code>cinder</code> al proyecto <code>service</code> con el rol <code>admin</code> y crear los servicios <code>cinder</code>, <code>cinderv2</code> y <code>cinderv3</code>).</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># source openrc-admin <i class="conum" data-value="1"></i><b>(1)</b>
+
+# openstack user create --domain default cinder --password {{ cinder_dbpass }} <i class="conum" data-value="2"></i><b>(2)</b>
+# openstack role add --project service --user cinder admin
+# openstack service create --name cinder --description "OpenStack Block Storage" volume
+# openstack service create --name cinderv2 --description "OpenStack Block Storage" volumev2
+# openstack service create --name cinderv3 --description "OpenStack Block Storage" volumev3</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Credenciales del usuario <code>cinder</code></td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Crear los endpoints de la API</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># openstack endpoint create --region {{region}} cinder public http://{{ nodes_by_name.controller.provider_ip }}:8776/v1/%(project_id)s <i class="conum" data-value="1"></i><b>(1)</b>
+# openstack endpoint create --region {{region}} cinder internal http://{{ nodes_by_name.controller.tunnel_ip }}:8776/v1/%(project_id)s <i class="conum" data-value="2"></i><b>(2)</b>
+# openstack endpoint create --region {{region}} cinder admin http://{{ nodes_by_name.controller.management_ip }}:8776/v1/%(project_id)s <i class="conum" data-value="3"></i><b>(3)</b>
+
+# openstack endpoint create --region {{region}} cinderv2 public http://{{ nodes_by_name.controller.provider_ip }}:8776/v2/%(project_id)s <i class="conum" data-value="4"></i><b>(4)</b>
+# openstack endpoint create --region {{region}} cinderv2 internal http://{{ nodes_by_name.controller.tunnel_ip }}:8776/v2/%(project_id)s <i class="conum" data-value="5"></i><b>(5)</b>
+# openstack endpoint create --region {{region}} cinderv3 admin http://{{ nodes_by_name.controller.management_ip }}:8776/v2/%(project_id)s <i class="conum" data-value="6"></i><b>(6)</b>
+
+# openstack endpoint create --region {{region}} cinderv3 public http://{{ nodes_by_name.controller.provider_ip }}:8776/v3/%(project_id)s <i class="conum" data-value="7"></i><b>(7)</b>
+# openstack endpoint create --region {{region}} cinderv3 internal http://{{ nodes_by_name.controller.tunnel_ip }}:8776/v3/%(project_id)s <i class="conum" data-value="8"></i><b>(8)</b>
+# openstack endpoint create --region {{region}} cinderv3 admin http://{{ nodes_by_name.controller.management_ip }}:8776/v3/%(project_id)s <i class="conum" data-value="9"></i><b>(9)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP externa del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de túnel del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de mantenimiento del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP externa del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de túnel del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de mantenimiento del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP externa del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de túnel del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de mantenimiento del nodo de control</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Instalar los paquetes de Cinder</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt install cinder-api cinder-scheduler</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configurar el archivo <code>/etc/cinder/cinder.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/cinder/cinder.conf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[DEFAULT]
+my_ip = {{ nodes.controller.management_ip }} <i class="conum" data-value="1"></i><b>(1)</b>
+glance_api_servers = http://{{ nodes.controller.name }}:9292 <i class="conum" data-value="2"></i><b>(2)</b>
+auth_strategy = keystone
+enabled_backends = ds1515pV1 <i class="conum" data-value="3"></i><b>(3)</b>
+iscsi_helper = tgtadm
+iscsi_protocol = iscsi
+rpc_backends = rabbit
+
+rabbit_durable_queues = true
+
+[BACKEND]
+[BRCD_FABRIC_EXAMPLE]
+[CISCO_FABRIC_EXAMPLE]
+[COORDINATION]
+[FC-ZONE-MANAGER]
+[KEY_MANAGER]
+[barbican]
+[cors]
+[cors.subdomain]
+[database]
+connection = mysql+pymysql://cinder:{{cinder_dbpass}}@{{ nodes.controller.name }}/cinder <i class="conum" data-value="4"></i><b>(4)</b>
+[key_manager]
+[keystone_authtoken]
+auth_uri = http://{{ nodes.controller.name }}:5000 <i class="conum" data-value="5"></i><b>(5)</b>
+auth_url = http://{{ nodes.controller.name }}:35357 <i class="conum" data-value="6"></i><b>(6)</b>
+memcached_servers = {{ nodes.controller.name }}:11211 <i class="conum" data-value="7"></i><b>(7)</b>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = cinder
+password = {{ cinder_dbpass}} <i class="conum" data-value="8"></i><b>(8)</b>
+[matchmaker_redis]
+[oslo_concurrency]
+lock_path = /var/lock/cinder
+[oslo_messaging_amqp]
+[oslo_messaging_notifications]
+driver = messagingv2
+[oslo_messaging_rabbit]
+rabbit_host = {{ nodes.controller.name }} <i class="conum" data-value="9"></i><b>(9)</b>
+rabbit_userid = openstack
+rabbit_password = {{RABBIT_PASS}} <i class="conum" data-value="10"></i><b>(10)</b>
+[oslo_messaging_zmq]
+[oslo_middleware]
+[oslo_policy]
+[oslo_reports]
+[oslo_versionedobjects]
+[ssl]
+
+[ds1515pV1] <i class="conum" data-value="11"></i><b>(11)</b>
+volume_backend_name = {{ nas_backend_name }} <i class="conum" data-value="12"></i><b>(12)</b>
+volume_driver = cinder.volume.drivers.synology.synology_iscsi.SynoISCSIDriver
+iscs_protocol = iscsi
+iscsi_ip_address = {{ nas_private_ip }} <i class="conum" data-value="13"></i><b>(13)</b>
+synology_admin_port = {{nas_port}} <i class="conum" data-value="14"></i><b>(14)</b>
+synology_username = {{nas_user}} <i class="conum" data-value="15"></i><b>(15)</b>
+synology_password = {{nas_password}} <i class="conum" data-value="16"></i><b>(16)</b>
+synology_pool_name = {{nas_volume}} <i class="conum" data-value="17"></i><b>(17)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>IP de mantenimiento del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Salto a etiqueta personalizada de configuración del NAS para almacenamiento de los volúmenes</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Contraseña de Cinder y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>Contraseña de Cinder</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>Contraseña de RabbitMQ</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
+<td>Etiqueta de bloque personalizada para la configuración del NAS</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="12"></i><b>12</b></td>
+<td>Nombre que se da al tipo de volúmenes del NAS en Horizon</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="13"></i><b>13</b></td>
+<td>IP de mantenimiento del NAS</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="14"></i><b>14</b></td>
+<td>Puerto de acceso al NAS</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="15"></i><b>15</b></td>
+<td>Usuario del NAS</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="16"></i><b>16</b></td>
+<td>Contraseña del usuario del NAS</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="17"></i><b>17</b></td>
+<td>Nombre del volumen usado en el NAS</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Inicializar la base de datos <code>cinder</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># su -s /bin/sh -c "cinder-manage db sync" cinder</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Reiniciar los servicios <code>cinder-scheduler</code> y Apache</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service cinder-scheduler restart
+# service apache2 restart</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Instalar LVM y <code>cinder-volume</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt install lvm2
+# apt install cinder-volume</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Reiniciar los servicios <code>tgt</code> y <code>cinder-volume</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service tgt restart
+# service cinder-volume restart</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Crear el tipo de volumen para el NAS</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># openstack volume type create --public {{ nas_volume_type_name }} <i class="conum" data-value="1"></i><b>(1)</b>
+# openstack volume type set --property volume_backend_name={{ nas_backend_name }} {{ nas_volume_type_name }} <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Tipo de volumen (p.e. <code>NAS</code>)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Nombre asignado al tipo de volumen (p.e. <code>VOL_NAS</code>)</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="trueanexo-paquetes-y-archivos-de-configuraci-n"><a class="anchor" href="#trueanexo-paquetes-y-archivos-de-configuraci-n"></a>Anexo. Paquetes y archivos de configuración</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -4355,20 +4687,20 @@ service_provider = LOADBALANCERV2:Haproxy:neutron_lbaas.drivers.haproxy.plugin_d
 <div class="content">
 <img src="./images/OpenStackPackagesAndFilesController.png" alt="OpenStackPackagesAndFilesController.png">
 </div>
-<div class="title">Figure 3. Paquetes y archivos a configura en el nodo de control</div>
+<div class="title">Figure 3. Paquetes y archivos a configurar en el nodo de control</div>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="./images/OpenStackPackagesAndFilesRemainder.png" alt="OpenStackPackagesAndFilesRemainder.png">
 </div>
-<div class="title">Figure 4. Paquetes y archivos a configura en el resto de nodos</div>
+<div class="title">Figure 4. Paquetes y archivos a configurar en el resto de nodos</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-01-15 14:24:54 CET
+Last updated 2019-01-15 22:04:25 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

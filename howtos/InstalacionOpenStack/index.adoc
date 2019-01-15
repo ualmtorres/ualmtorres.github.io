@@ -1803,6 +1803,7 @@ net.ipv4.conf.default.rp_filter=0
 
 . Instalar Neutron
 
++
 [source, bash]
 ----
 # apt install neutron-openvswitch-agent neutron-l3-agent neutron-dhcp-agent neutron-metadata-agent
@@ -2965,14 +2966,217 @@ service_provider = LOADBALANCERV2:Haproxy:neutron_lbaas.drivers.haproxy.plugin_d
 # service neutron-lbaasv2-agent restart
 ----
 
+## Cinder
+
+### Instalación de Cinder en el nodo de control
+
+Realizar estar operaciones en el nodo de control
+
+. Creación y configuración de la base de datos `cinder`
+
++
+[source, bash]
+----
+MariaDB [(none)]> CREATE DATABASE cinder;
+
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON cinder.* TO 'cinder'@'localhost' \
+  IDENTIFIED BY 'CINDER_DBPASS'; <1>
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON cinder.* TO 'cinder'@'%' \
+  IDENTIFIED BY 'CINDER_DBPASS'; <2> 
+----
+<1> Contraseña del usuario Cinder
+<2> Contraseña del usuario Cinder
+
+. Realizar la configuración de Cinder (usuario `cinder`, añadir el usuario `cinder` al proyecto `service` con el rol `admin` y crear los servicios `cinder`, `cinderv2` y `cinderv3`).
+
++
+[source, bash]
+----
+# source openrc-admin <1>
+
+# openstack user create --domain default cinder --password {{ cinder_dbpass }} <2>
+# openstack role add --project service --user cinder admin
+# openstack service create --name cinder --description "OpenStack Block Storage" volume
+# openstack service create --name cinderv2 --description "OpenStack Block Storage" volumev2
+# openstack service create --name cinderv3 --description "OpenStack Block Storage" volumev3
+----
+<2> Credenciales del usuario `cinder`
+
+. Crear los endpoints de la API
+
++
+[source, bash]
+----
+# openstack endpoint create --region {{region}} cinder public http://{{ nodes_by_name.controller.provider_ip }}:8776/v1/%(project_id)s <1>
+# openstack endpoint create --region {{region}} cinder internal http://{{ nodes_by_name.controller.tunnel_ip }}:8776/v1/%(project_id)s <2> 
+# openstack endpoint create --region {{region}} cinder admin http://{{ nodes_by_name.controller.management_ip }}:8776/v1/%(project_id)s <3>
+
+# openstack endpoint create --region {{region}} cinderv2 public http://{{ nodes_by_name.controller.provider_ip }}:8776/v2/%(project_id)s <4>
+# openstack endpoint create --region {{region}} cinderv2 internal http://{{ nodes_by_name.controller.tunnel_ip }}:8776/v2/%(project_id)s <5>
+# openstack endpoint create --region {{region}} cinderv3 admin http://{{ nodes_by_name.controller.management_ip }}:8776/v2/%(project_id)s <6>
+
+# openstack endpoint create --region {{region}} cinderv3 public http://{{ nodes_by_name.controller.provider_ip }}:8776/v3/%(project_id)s <7>
+# openstack endpoint create --region {{region}} cinderv3 internal http://{{ nodes_by_name.controller.tunnel_ip }}:8776/v3/%(project_id)s <8>
+# openstack endpoint create --region {{region}} cinderv3 admin http://{{ nodes_by_name.controller.management_ip }}:8776/v3/%(project_id)s <9>
+----
+<1> Región (p.e, `RegionOne`) e IP externa del nodo de control
+<2> Región (p.e, `RegionOne`) e IP de túnel del nodo de control
+<3> Región (p.e, `RegionOne`) e IP de mantenimiento del nodo de control
+<4> Región (p.e, `RegionOne`) e IP externa del nodo de control
+<5> Región (p.e, `RegionOne`) e IP de túnel del nodo de control
+<6> Región (p.e, `RegionOne`) e IP de mantenimiento del nodo de control
+<7> Región (p.e, `RegionOne`) e IP externa del nodo de control
+<8> Región (p.e, `RegionOne`) e IP de túnel del nodo de control
+<9> Región (p.e, `RegionOne`) e IP de mantenimiento del nodo de control
+
+. Instalar los paquetes de Cinder 
+
++
+[source, bash]
+----
+# apt install cinder-api cinder-scheduler
+----
+
+. Configurar el archivo `/etc/cinder/cinder.conf`
+
++
+.El archivo `/etc/cinder/cinder.conf`
+****
+[source, bash]
+----
+[DEFAULT]
+my_ip = {{ nodes.controller.management_ip }} <1>
+glance_api_servers = http://{{ nodes.controller.name }}:9292 <2>
+auth_strategy = keystone
+enabled_backends = ds1515pV1 <3>
+iscsi_helper = tgtadm
+iscsi_protocol = iscsi
+rpc_backends = rabbit
+
+rabbit_durable_queues = true
+
+[BACKEND]
+[BRCD_FABRIC_EXAMPLE]
+[CISCO_FABRIC_EXAMPLE]
+[COORDINATION]
+[FC-ZONE-MANAGER]
+[KEY_MANAGER]
+[barbican]
+[cors]
+[cors.subdomain]
+[database]
+connection = mysql+pymysql://cinder:{{cinder_dbpass}}@{{ nodes.controller.name }}/cinder <4>
+[key_manager]
+[keystone_authtoken]
+auth_uri = http://{{ nodes.controller.name }}:5000 <5>
+auth_url = http://{{ nodes.controller.name }}:35357 <6>
+memcached_servers = {{ nodes.controller.name }}:11211 <7>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = cinder
+password = {{ cinder_dbpass}} <8>
+[matchmaker_redis]
+[oslo_concurrency]
+lock_path = /var/lock/cinder
+[oslo_messaging_amqp]
+[oslo_messaging_notifications]
+driver = messagingv2
+[oslo_messaging_rabbit]
+rabbit_host = {{ nodes.controller.name }} <9>
+rabbit_userid = openstack
+rabbit_password = {{RABBIT_PASS}} <10>
+[oslo_messaging_zmq]
+[oslo_middleware]
+[oslo_policy]
+[oslo_reports]
+[oslo_versionedobjects]
+[ssl]
+
+[ds1515pV1] <11>
+volume_backend_name = {{ nas_backend_name }} <12>
+volume_driver = cinder.volume.drivers.synology.synology_iscsi.SynoISCSIDriver
+iscs_protocol = iscsi
+iscsi_ip_address = {{ nas_private_ip }} <13>
+synology_admin_port = {{nas_port}} <14>
+synology_username = {{nas_user}} <15>
+synology_password = {{nas_password}} <16>
+synology_pool_name = {{nas_volume}} <17>
+----
+<1> IP de mantenimiento del nodo de control
+<2> Nombre del nodo de control
+<3> Salto a etiqueta personalizada de configuración del NAS para almacenamiento de los volúmenes
+<4> Contraseña de Cinder y nombre del nodo de control
+<5> Nombre del nodo de control
+<6> Nombre del nodo de control
+<7> Nombre del nodo de control
+<8> Contraseña de Cinder
+<9> Nombre del nodo de control
+<10> Contraseña de RabbitMQ
+<11> Etiqueta de bloque personalizada para la configuración del NAS
+<12> Nombre que se da al tipo de volúmenes del NAS en Horizon
+<13> IP de mantenimiento del NAS
+<14> Puerto de acceso al NAS
+<15> Usuario del NAS
+<16> Contraseña del usuario del NAS
+<17> Nombre del volumen usado en el NAS
+****
+
+. Inicializar la base de datos `cinder`
+
++
+[source, bash]
+----
+# su -s /bin/sh -c "cinder-manage db sync" cinder
+----
+
+. Reiniciar los servicios `cinder-scheduler` y Apache
+
++
+[source, bash]
+----
+# service cinder-scheduler restart
+# service apache2 restart
+----
+
+. Instalar LVM y `cinder-volume`
+
++
+[source, bash]
+----
+# apt install lvm2
+# apt install cinder-volume
+----
+
+. Reiniciar los servicios `tgt` y `cinder-volume` 
+
++
+[source, bash]
+----
+# service tgt restart
+# service cinder-volume restart
+----
+
+. Crear el tipo de volumen para el NAS
+
++
+[source, bash]
+----
+# openstack volume type create --public {{ nas_volume_type_name }} <1>
+# openstack volume type set --property volume_backend_name={{ nas_backend_name }} {{ nas_volume_type_name }} <2>
+----
+<1> Tipo de volumen (p.e. `NAS`)
+<2> Nombre asignado al tipo de volumen (p.e. `VOL_NAS`)
+
 :numbered!: 
 
 ## Anexo. Paquetes y archivos de configuración
 
 La instalación de OpenStack es un proceso farragoso en cuanto a la cantidad de paquetes y archivos de configuración que hay que instalar y configuirar en cada tipo de nodo. A continuación se muestran dos figuras que ilustran los paquetes a instalar y los archivos a configurar en cada nodo.
 
-.Paquetes y archivos a configura en el nodo de control
+.Paquetes y archivos a configurar en el nodo de control
 image::OpenStackPackagesAndFilesController.png[]
 
-.Paquetes y archivos a configura en el resto de nodos
+.Paquetes y archivos a configurar en el resto de nodos
 image::OpenStackPackagesAndFilesRemainder.png[]
