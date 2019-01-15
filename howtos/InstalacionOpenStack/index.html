@@ -446,6 +446,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#trueconfiguraci-n-de-nova-en-el-nodo-de-control">6.3. Configuración de Nova en el nodo de control</a></li>
 </ul>
 </li>
+<li><a href="#trueneutron">7. Neutron</a>
+<ul class="sectlevel2">
+<li><a href="#trueinstalaci-n-de-neutron-en-el-nodo-de-control">7.1. Instalación de Neutron en el nodo de control</a></li>
+<li><a href="#trueinstalaci-n-de-neutron-en-el-nodo-de-red">7.2. Instalación de Neutron en el nodo de red</a></li>
+<li><a href="#trueinstalaci-n-de-neutron-en-los-nodos-de-c-mputo">7.3. Instalación de Neutron en los nodos de cómputo</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -2168,7 +2175,7 @@ api_paste_config=/etc/nova/api-paste.ini
 </tr>
 <tr>
 <td><i class="conum" data-value="15"></i><b>15</b></td>
-<td>Metadatos para secretos</td>
+<td>Secreto para metadatos</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="16"></i><b>16</b></td>
@@ -2551,10 +2558,1083 @@ api_paste_config=/etc/nova/api-paste.ini
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="trueneutron"><a class="anchor" href="#trueneutron"></a>7. Neutron</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="trueinstalaci-n-de-neutron-en-el-nodo-de-control"><a class="anchor" href="#trueinstalaci-n-de-neutron-en-el-nodo-de-control"></a>7.1. Instalación de Neutron en el nodo de control</h3>
+<div class="paragraph">
+<p>Realizar estar operaciones en el nodo de control</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Creación y configuración de la base de datos <code>neutron</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">MariaDB [(none)]&gt; CREATE DATABASE neutron;
+
+MariaDB [(none)]&gt; GRANT ALL PRIVILEGES ON neutron.* TO 'neutron'@'localhost' \
+  IDENTIFIED BY 'NEUTRON_DBPASS'; <i class="conum" data-value="1"></i><b>(1)</b>
+MariaDB [(none)]&gt; GRANT ALL PRIVILEGES ON neutron.* TO 'neutron'@'%' \
+  IDENTIFIED BY 'NEUTRON_DBPASS'; <i class="conum" data-value="2"></i><b>(2)</b>
+Exit</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Contraseña del usuario Neutron</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contraseña del usuario Neutron</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Realizar la configuración de Neutron (usuario <code>neutron</code>, añadir el usuario <code>neutron</code> al proyecto <code>service</code> con el rol <code>admin</code> y crear el servicio <code>neutron</code>)</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># source openrc-admin <i class="conum" data-value="1"></i><b>(1)</b>
+
+# openstack user create --domain default neutron --password {{ neutron_dbpass }} <i class="conum" data-value="2"></i><b>(2)</b>
+# openstack role add --project service --user neutron admin
+# openstack service create --name neutron --description "OpenStack Networking" network</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Cargar las credenciales de <code>admin</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contraseña del usuario <code>nova</code></td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Crear los endpoints de la API</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># openstack endpoint create --region {{region}} neutron public http://{{ nodes_by_name.controller.provider_ip }}:9696 <i class="conum" data-value="1"></i><b>(1)</b>
+# openstack endpoint create --region {{region}} neutron internal http://{{ nodes_by_name.controller.tunnel_ip }}:9696 <i class="conum" data-value="2"></i><b>(2)</b>
+# openstack endpoint create --region {{region}} neutron admin http://{{ nodes_by_name.controller.management_ip }}:9696 <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP externa del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de túnel del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de mantenimiento del nodo de control</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Instalar los paquetes de Neutron</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt install neutron-server neutron-plugin-ml2</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configurar el archivo <code>/etc/neutron/neutron.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/neutron/neutron.conf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[DEFAULT]
+
+auth_strategy = keystone
+
+core_plugin = ml2
+service_plugins = router,neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2
+allow_overlapping_ips = true
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <i class="conum" data-value="1"></i><b>(1)</b>
+
+notify_nova_on_port_status_changes = true
+
+notify_nova_on_port_data_changes = true
+
+dhcp_agents_per_network = {{ compute_nodes_quantity }} <i class="conum" data-value="2"></i><b>(2)</b>
+
+[agent]
+
+root_helper = sudo /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf
+
+[cors]
+
+[cors.subdomain]
+
+[database]
+
+connection = mysql+pymysql://neutron:{{ neutron_dbpass }}@{{ nodes.controller.name }}/neutron <i class="conum" data-value="3"></i><b>(3)</b>
+
+[keystone_authtoken]
+
+auth_uri = http://{{ nodes.controller.name }}:5000 <i class="conum" data-value="4"></i><b>(4)</b>
+auth_url = http://{{ nodes.controller.name }}:35357 <i class="conum" data-value="5"></i><b>(5)</b>
+memcached_servers = {{ nodes.controller.name }}:11211 <i class="conum" data-value="6"></i><b>(6)</b>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = neutron
+password = {{ neutron_dbpass }} <i class="conum" data-value="7"></i><b>(7)</b>
+
+[matchmaker_redis]
+
+[nova]
+
+auth_url = http://{{ nodes.controller.name }}:35357 <i class="conum" data-value="8"></i><b>(8)</b>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+region_name = {{ region }} <i class="conum" data-value="9"></i><b>(9)</b>
+project_name = service
+username = nova
+password = {{ nova_dbpass }} <i class="conum" data-value="10"></i><b>(10)</b>
+
+[oslo_concurrency]
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+driver = messagingv2
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_middleware]
+
+[oslo_policy]
+
+[qos]
+
+[quotas]
+
+[ssl]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Contraseña de RabbitMQ y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Cantidad de servidores de cómputo</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Contraseña de Neutron y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Contraseña de Neutron</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>Nombre de la región (p.e. <code>RegionOne</code>)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>Contraseña de Nova</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Modificar el archivo <code>/etc/neutron/plugins/ml2/ml2_conf.ini</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/neutron/plugins/ml2/ml2_conf.ini</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[DEFAULT]
+
+[ml2]
+
+type_drivers = flat,vlan,vxlan
+
+tenant_network_types = vxlan
+
+mechanism_drivers = openvswitch,l2population
+
+extension_drivers = port_security
+
+[ml2_type_flat]
+
+[ml2_type_geneve]
+
+[ml2_type_gre]
+
+[ml2_type_vlan]
+
+[ml2_type_vxlan]
+
+vni_ranges = 1:1000
+
+[securitygroup]
+
+firewall_driver = iptables_hybrid
+
+enable_security_group = true
+
+enable_ipset = true</code></pre>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Poblar la base de datos de Neutron</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># su -s /bin/sh -c "neutron-db-manage --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini upgrade head" neutron</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Reiniciar Neutron</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service neutron-server restart</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueinstalaci-n-de-neutron-en-el-nodo-de-red"><a class="anchor" href="#trueinstalaci-n-de-neutron-en-el-nodo-de-red"></a>7.2. Instalación de Neutron en el nodo de red</h3>
+<div class="paragraph">
+<p>Realizar estos pasos en el nodo de red</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>En este tutorial seguimos el <a href="https://docs.openstack.org/kilo/networking-guide/scenario_provider_ovs.html">escenario de <em>provider networks</em> con OpenvSwich</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Configurar el kernel para desactivar el <em>reverse path filtering</em>. Añadir estas líneas el archivo <code>/etc/sysctl.conf</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">net.ipv4.ip_forward=1
+net.ipv4.conf.all.rp_filter=0
+net.ipv4.conf.default.rp_filter=0</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Cargar la nueva configuración del kernel</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># systcl -p</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Instalar Neutron</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt install neutron-openvswitch-agent neutron-l3-agent neutron-dhcp-agent neutron-metadata-agent</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Configurar el archivo <code>/etc/neutron/neutron.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/neutron/neutron.conf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[DEFAULT]
+
+auth_strategy = keystone
+
+core_plugin = ml2
+service_plugins = router,neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2
+allow_overlapping_ips = true
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <i class="conum" data-value="1"></i><b>(1)</b>
+
+notify_nova_on_port_status_changes = true
+
+notify_nova_on_port_data_changes = true
+
+dhcp_agents_per_network = {{ compute_nodes_quantity }} <i class="conum" data-value="2"></i><b>(2)</b>
+
+[agent]
+
+root_helper = sudo /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf
+
+[cors]
+
+[cors.subdomain]
+
+[database]
+
+connection = mysql+pymysql://neutron:{{ neutron_dbpass }}@{{ nodes.controller.name }}/neutron <i class="conum" data-value="3"></i><b>(3)</b>
+
+[keystone_authtoken]
+
+auth_uri = http://{{ nodes.controller.name }}:5000 <i class="conum" data-value="4"></i><b>(4)</b>
+auth_url = http://{{ nodes.controller.name }}:35357 <i class="conum" data-value="5"></i><b>(5)</b>
+memcached_servers = {{ nodes.controller.name }}:11211 <i class="conum" data-value="6"></i><b>(6)</b>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = neutron
+password = {{ neutron_dbpass }} <i class="conum" data-value="7"></i><b>(7)</b>
+
+[matchmaker_redis]
+
+[nova]
+
+auth_url = http://{{ nodes.controller.name }}:35357 <i class="conum" data-value="8"></i><b>(8)</b>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+region_name = {{ region }} <i class="conum" data-value="9"></i><b>(9)</b>
+project_name = service
+username = nova
+password = {{ nova_dbpass }} <i class="conum" data-value="10"></i><b>(10)</b>
+
+[oslo_concurrency]
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+driver = messagingv2
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_middleware]
+
+[oslo_policy]
+
+[qos]
+
+[quotas]
+
+[ssl]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Contraseña de RabbitMQ y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Cantidad de servidores de cómputo</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Contraseña de Neutron y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Contraseña de Neutron</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>Nombre de la región (p.e. <code>RegionOne</code>)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>Contraseña de Nova</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Modificar el archivo <code>/etc/neutron/l3_agent.ini</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/neutron/l3_agent.ini</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[DEFAULT]
+
+interface_driver = openvswitch
+
+agent_mode = legacy
+
+handle_internal_only_routers = true
+
+enable_metadata_proxy = true
+
+external_network_bridge =
+
+[agent]
+
+[ovs]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Modificar el archivo <code>/etc/neutron/dhcp_agent.ini</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/neutron/dhcp_agent.ini</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[DEFAULT]
+
+ovs_integration_bridge = br-int
+
+interface_driver = openvswitch
+
+dhcp_driver = neutron.agent.linux.dhcp.Dnsmasq
+
+enable_isolated_metadata = true
+
+dnsmasq_config_file = /etc/neutron/dnsmasq-neutron.conf
+
+[agent]
+
+[ovs]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Modificar el archivo <code>/etc/neutron/dnsmasq-neutron.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/neutron/dnsmasq-neutron.conf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"> -s
+dhcp-option-force=26,1450</code></pre>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Modificar el archivo <code>/etc/neutron/metadata_agent.ini</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/neutron/metadata_agent.ini</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[DEFAULT]
+
+auth_uri = http://{{ nodes.controller.name }}:5000 <i class="conum" data-value="1"></i><b>(1)</b>
+auth_url = http://{{ nodes.controller.name }}:35357 <i class="conum" data-value="2"></i><b>(2)</b>
+auth_region = {{ region }} <i class="conum" data-value="3"></i><b>(3)</b>
+auth_plugin = password
+project_domain_id = default
+user_domain_id = default
+project_name = service
+username = neutron
+password = {{ neutron_dbpass }} <i class="conum" data-value="4"></i><b>(4)</b>
+
+nova_metadata_ip = {{ nodes.controller.management_ip }} <i class="conum" data-value="5"></i><b>(5)</b>
+
+nova_metadata_port = 8775
+
+metadata_proxy_shared_secret = {{ metadata_secret }} <i class="conum" data-value="6"></i><b>(6)</b>
+
+nova_metadata_protocol = http
+
+[agent]
+
+[cache]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Nombre de la región (p.e. <code>RegionOne</code>)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Contraseña de Neutron</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>IP de mantenimiento del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Secreto para metadatos</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Modificar el archivo <code>/etc/neutron/plugins/ml2/openvswitch_agent.ini</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/neutron/plugins/ml2/openvswitch_agent.ini</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[ovs]
+integration_bridge = br-int
+
+int_peer_patch_port = patch-tun
+
+local_ip = {{ ansible_eth1.ipv4.address }} <i class="conum" data-value="1"></i><b>(1)</b>
+
+bridge_mappings = provider:br-ex
+
+[agent]
+
+polling_interval = 15
+
+tunnel_types = vxlan
+
+l2_population = True
+
+arp_responder = False
+
+enable_distributed_routing = False
+
+[securitygroup]
+firewall_driver = iptables_hybrid
+
+enable_security_group = True</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>IP de la red de túnel del nodo de red</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Reiniciar el servicio <code>openvswitch-switch</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service openvswitch-switch restart</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Añadir el bridge externo</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># ovs-vsctl add-br br-ex</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Añadir puerto al bridge externo</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># ovs-vsctl add-port br-ex {{ provider_interface }} <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Nombre de la interfaz de red externa en el nodo de red</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Añadir el bridge interno</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># ovs-vsctl add-br br-int</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Crear el siguiente script en <code>/root/br-ex_setup.sh</code> para configurar la interfaz externa en el nodo de red. Ejecutar el script.</p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo  <code>/root/br-ex_setup.sh</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">/sbin/ip route |grep default |grep br-ex
+
+if [ $? -ne 0 ]; then
+    /sbin/ip route del default
+    /sbin/ip addr del {{ nodes_by_name.network.provider_ip }}/24 dev {{ provider_interface }}
+    /sbin/ip link set br-ex up
+    /sbin/ip link set {{ provider_interface }} promisc on
+    /sbin/ip addr add {{ nodes_by_name.network.provider_ip }}/24 dev br-ex
+    /sbin/ip route add default via {{ provider_gateway }}
+fi</code></pre>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Configurar el archivo <code>/etc/network/interfaces</code> para añadir el bridge externo</p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/network/interfaces</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The management network interface
+auto {{management_interface}} <i class="conum" data-value="1"></i><b>(1)</b>
+iface {{management_interface}} inet static <i class="conum" data-value="2"></i><b>(2)</b>
+  address {{ nodes_by_name.network.management_ip }} <i class="conum" data-value="3"></i><b>(3)</b>
+  netmask {{ management_mask }} <i class="conum" data-value="4"></i><b>(4)</b>
+  network {{management_network}} <i class="conum" data-value="5"></i><b>(5)</b>
+  mtu {{ MTU }} <i class="conum" data-value="6"></i><b>(6)</b>
+
+# The tunnel network interface
+auto {{tunnel_interface}} <i class="conum" data-value="7"></i><b>(7)</b>
+iface {{tunnel_interface}} inet static <i class="conum" data-value="8"></i><b>(8)</b>
+  address {{ nodes_by_name.network.tunnel_ip }} <i class="conum" data-value="9"></i><b>(9)</b>
+  netmask {{ tunnel_mask }} <i class="conum" data-value="10"></i><b>(10)</b>
+  network {{tunnel_network}} <i class="conum" data-value="11"></i><b>(11)</b>
+  mtu {{ MTU }} <i class="conum" data-value="12"></i><b>(12)</b>
+
+auto br-ex
+allow-ovs br-ex
+iface br-ex inet static
+  address {{ nodes_by_name.network.provider_ip }} <i class="conum" data-value="13"></i><b>(13)</b>
+  netmask {{ provider_mask }} <i class="conum" data-value="14"></i><b>(14)</b>
+  gateway {{ provider_gateway }} <i class="conum" data-value="15"></i><b>(15)</b>
+  dns-nameservers {{ dns }} <i class="conum" data-value="16"></i><b>(16)</b>
+  ovs_type OVSBridge
+  ovs_ports {{ provider_interface }} <i class="conum" data-value="17"></i><b>(17)</b>
+
+allow-br-ex {{ provider_interface }} <i class="conum" data-value="18"></i><b>(18)</b>
+iface {{ provider_interface }} inet manual <i class="conum" data-value="19"></i><b>(19)</b>
+   ovs_bridge br-ex
+  ovs_type OVSPort
+  up ip link set $IFACE promisc on
+  down ip link set $IFACE promisc off</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Nombre de la interfaz de mantenimiento del nodo de red</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Nombre de la interfaz de mantenimiento del nodo de red</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Dirección IP de mantenimiento del nodo de red</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Máscara de red la red de mantenimiento</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Red de mantenimiento</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>MTU</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Nombre de la interfaz de túnel del nodo de red</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>Nombre de la interfaz de túnel del nodo de red</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>Dirección IP de túnel del nodo de red</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>Máscara de red la red de túnel</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
+<td>Red de mantenimiento</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="12"></i><b>12</b></td>
+<td>MTU</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="13"></i><b>13</b></td>
+<td>Dirección IP externa del nodo de red</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="14"></i><b>14</b></td>
+<td>Máscara de red la red externa</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="15"></i><b>15</b></td>
+<td>Gateway de la red external</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="16"></i><b>16</b></td>
+<td>IP del DNS</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="17"></i><b>17</b></td>
+<td>Nombre de la interfaz de red externa</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="18"></i><b>18</b></td>
+<td>Nombre de la interfaz de red externa</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="19"></i><b>19</b></td>
+<td>Nombre de la interfaz de red externa</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Reiniciar los servicios de Neutron</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service neutron-openvswitch-agent restart
+# service neutron-dhcp-agent restart
+# service neutron-metadata-agent restart
+# service neutron-l3-agent restart</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueinstalaci-n-de-neutron-en-los-nodos-de-c-mputo"><a class="anchor" href="#trueinstalaci-n-de-neutron-en-los-nodos-de-c-mputo"></a>7.3. Instalación de Neutron en los nodos de cómputo</h3>
+<div class="paragraph">
+<p>Realizar estos pasos en cada uno de los nodos de cómputo</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Configurar el kernel para desactivar el <em>reverse path filtering</em>. Añadir estas líneas el archivo <code>/etc/sysctl.conf</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">net.ipv4.conf.all.rp_filter=0
+net.ipv4.conf.default.rp_filter=0</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Cargar la nueva configuración del kernel</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># systcl -p</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Instalar Neutron</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt install neutron-openvswitch-agent</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configurar el archivo <code>/etc/neutron/neutron.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/neutron/neutron.conf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[DEFAULT]
+
+auth_strategy = keystone
+
+core_plugin = ml2
+service_plugins = router,neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2
+allow_overlapping_ips = true
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <i class="conum" data-value="1"></i><b>(1)</b>
+
+notify_nova_on_port_status_changes = true
+
+notify_nova_on_port_data_changes = true
+
+dhcp_agents_per_network = {{ compute_nodes_quantity }} <i class="conum" data-value="2"></i><b>(2)</b>
+
+[agent]
+
+root_helper = sudo /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf
+
+[cors]
+
+[cors.subdomain]
+
+[database]
+
+connection = mysql+pymysql://neutron:{{ neutron_dbpass }}@{{ nodes.controller.name }}/neutron <i class="conum" data-value="3"></i><b>(3)</b>
+
+[keystone_authtoken]
+
+auth_uri = http://{{ nodes.controller.name }}:5000 <i class="conum" data-value="4"></i><b>(4)</b>
+auth_url = http://{{ nodes.controller.name }}:35357 <i class="conum" data-value="5"></i><b>(5)</b>
+memcached_servers = {{ nodes.controller.name }}:11211 <i class="conum" data-value="6"></i><b>(6)</b>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = neutron
+password = {{ neutron_dbpass }} <i class="conum" data-value="7"></i><b>(7)</b>
+
+[matchmaker_redis]
+
+[nova]
+
+auth_url = http://{{ nodes.controller.name }}:35357 <i class="conum" data-value="8"></i><b>(8)</b>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+region_name = {{ region }} <i class="conum" data-value="9"></i><b>(9)</b>
+project_name = service
+username = nova
+password = {{ nova_dbpass }} <i class="conum" data-value="10"></i><b>(10)</b>
+
+[oslo_concurrency]
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+driver = messagingv2
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_middleware]
+
+[oslo_policy]
+
+[qos]
+
+[quotas]
+
+[ssl]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Contraseña de RabbitMQ y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Cantidad de servidores de cómputo</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Contraseña de Neutron y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Contraseña de Neutron</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>Nombre de la región (p.e. <code>RegionOne</code>)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>Contraseña de Nova</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Configurar el archivo <code>/etc/neutron/plugins/ml2/openvswitch_agent.ini</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/neutron/plugins/ml2/openvswitch_agent.ini</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[ovs]
+integration_bridge = br-int
+
+int_peer_patch_port = patch-tun
+
+local_ip = {{ ansible_eth0.ipv4.address }} <i class="conum" data-value="1"></i><b>(1)</b>
+
+bridge_mappings = provider:br-ex
+
+[agent]
+
+polling_interval = 15
+
+tunnel_types = vxlan
+
+l2_population = True
+
+arp_responder = False
+
+enable_distributed_routing = False
+
+[securitygroup]
+firewall_driver = iptables_hybrid
+
+enable_security_group = True</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>IP de mantenimiento del nodo de cómputo</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Reiniciar el agente OpenvSwitch</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service neutron-openvswitch-agent restart</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-01-15 09:08:55 CET
+Last updated 2019-01-15 12:19:10 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

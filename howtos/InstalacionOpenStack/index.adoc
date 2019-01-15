@@ -1270,7 +1270,7 @@ api_paste_config=/etc/nova/api-paste.ini
 <12> Nombre del nodo de control
 <13> Nombre de la región (p.e. `RegionOne`)
 <14> Contraseña de Neutron
-<15> Metadatos para secretos
+<15> Secreto para metadatos
 <16> Nombre de la región (p.e. `RegionOne`)
 <17> Nombre del nodo de control
 <18> Contraseña de Placement
@@ -1562,4 +1562,1212 @@ Realizar estar operaciones en el nodo de control
 ----
 # su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova'
 ----
+
+## Neutron
+
+### Instalación de Neutron en el nodo de control
+
+Realizar estar operaciones en el nodo de control
+
+. Creación y configuración de la base de datos `neutron`
+
++
+[source, bash]
+----
+MariaDB [(none)]> CREATE DATABASE neutron;
+
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON neutron.* TO 'neutron'@'localhost' \
+  IDENTIFIED BY 'NEUTRON_DBPASS'; <1>
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON neutron.* TO 'neutron'@'%' \
+  IDENTIFIED BY 'NEUTRON_DBPASS'; <2>
+Exit
+
+----
+<1> Contraseña del usuario Neutron
+<2> Contraseña del usuario Neutron
+
+. Realizar la configuración de Neutron (usuario `neutron`, añadir el usuario `neutron` al proyecto `service` con el rol `admin` y crear el servicio `neutron`)
+
++
+[source, bash]
+----
+# source openrc-admin <1>
+
+# openstack user create --domain default neutron --password {{ neutron_dbpass }} <2>
+# openstack role add --project service --user neutron admin
+# openstack service create --name neutron --description "OpenStack Networking" network
+----
+<1> Cargar las credenciales de `admin`
+<2> Contraseña del usuario `nova`
+
+. Crear los endpoints de la API
+
++
+[source, bash]
+----
+# openstack endpoint create --region {{region}} neutron public http://{{ nodes_by_name.controller.provider_ip }}:9696 <1>
+# openstack endpoint create --region {{region}} neutron internal http://{{ nodes_by_name.controller.tunnel_ip }}:9696 <2>
+# openstack endpoint create --region {{region}} neutron admin http://{{ nodes_by_name.controller.management_ip }}:9696 <3>
+----
+<1> Región (p.e, `RegionOne`) e IP externa del nodo de control
+<2> Región (p.e, `RegionOne`) e IP de túnel del nodo de control
+<3> Región (p.e, `RegionOne`) e IP de mantenimiento del nodo de control
+
+. Instalar los paquetes de Neutron 
+
++
+[source, bash]
+----
+# apt install neutron-server neutron-plugin-ml2
+----
+
+. Configurar el archivo `/etc/neutron/neutron.conf`
+
++
+.El archivo `/etc/neutron/neutron.conf`
+****
+[source, bash]
+----
+[DEFAULT]
+
+auth_strategy = keystone
+
+core_plugin = ml2
+service_plugins = router,neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2
+allow_overlapping_ips = true
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <1>
+
+notify_nova_on_port_status_changes = true
+
+notify_nova_on_port_data_changes = true
+
+dhcp_agents_per_network = {{ compute_nodes_quantity }} <2>
+
+[agent]
+
+root_helper = sudo /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf
+
+[cors]
+
+[cors.subdomain]
+
+[database]
+
+connection = mysql+pymysql://neutron:{{ neutron_dbpass }}@{{ nodes.controller.name }}/neutron <3>
+
+[keystone_authtoken]
+
+auth_uri = http://{{ nodes.controller.name }}:5000 <4>
+auth_url = http://{{ nodes.controller.name }}:35357 <5>
+memcached_servers = {{ nodes.controller.name }}:11211 <6>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = neutron
+password = {{ neutron_dbpass }} <7>
+
+[matchmaker_redis]
+
+[nova]
+
+auth_url = http://{{ nodes.controller.name }}:35357 <8>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+region_name = {{ region }} <9>
+project_name = service
+username = nova
+password = {{ nova_dbpass }} <10>
+
+[oslo_concurrency]
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+driver = messagingv2
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_middleware]
+
+[oslo_policy]
+
+[qos]
+
+[quotas]
+
+[ssl]
+
+----
+<1> Contraseña de RabbitMQ y nombre del nodo de control
+<2> Cantidad de servidores de cómputo
+<3> Contraseña de Neutron y nombre del nodo de control
+<4> Nombre del nodo de control
+<5> Nombre del nodo de control
+<6> Nombre del nodo de control
+<7> Contraseña de Neutron
+<8> Nombre del nodo de control
+<9> Nombre de la región (p.e. `RegionOne`)
+<10> Contraseña de Nova
+****
+
+. Modificar el archivo `/etc/neutron/plugins/ml2/ml2_conf.ini`
+
++
+.El archivo `/etc/neutron/plugins/ml2/ml2_conf.ini`
+****
+[source, bash]
+----
+[DEFAULT]
+
+[ml2]
+
+type_drivers = flat,vlan,vxlan
+
+tenant_network_types = vxlan
+
+mechanism_drivers = openvswitch,l2population
+
+extension_drivers = port_security
+
+[ml2_type_flat]
+
+[ml2_type_geneve]
+
+[ml2_type_gre]
+
+[ml2_type_vlan]
+
+[ml2_type_vxlan]
+
+vni_ranges = 1:1000
+
+[securitygroup]
+
+firewall_driver = iptables_hybrid
+
+enable_security_group = true
+
+enable_ipset = true
+
+----
+****
+
+. Poblar la base de datos de Neutron
+
++
+[source, bash]
+----
+# su -s /bin/sh -c "neutron-db-manage --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini upgrade head" neutron
+----
+
+. Reiniciar Neutron
+
+[source, bash]
+----
+# service neutron-server restart
+----
+
+### Instalación de Neutron en el nodo de red
+
+Realizar estos pasos en el nodo de red
+
+[NOTE]
+====
+En este tutorial seguimos el https://docs.openstack.org/kilo/networking-guide/scenario_provider_ovs.html[escenario de _provider networks_ con OpenvSwich].
+====
+
+. Configurar el kernel para desactivar el _reverse path filtering_. Añadir estas líneas el archivo `/etc/sysctl.conf`
+
++
+[source, bash]
+----
+net.ipv4.ip_forward=1
+net.ipv4.conf.all.rp_filter=0
+net.ipv4.conf.default.rp_filter=0
+----
+
+. Cargar la nueva configuración del kernel
+
++
+[source, bash]
+----
+# systcl -p
+----
+
+. Instalar Neutron
+
+[source, bash]
+----
+# apt install neutron-openvswitch-agent neutron-l3-agent neutron-dhcp-agent neutron-metadata-agent
+----
+
+. Configurar el archivo `/etc/neutron/neutron.conf`
+
++
+.El archivo `/etc/neutron/neutron.conf`
+****
+[source, bash]
+----
+[DEFAULT]
+
+auth_strategy = keystone
+
+core_plugin = ml2
+service_plugins = router,neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2
+allow_overlapping_ips = true
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <1>
+
+notify_nova_on_port_status_changes = true
+
+notify_nova_on_port_data_changes = true
+
+dhcp_agents_per_network = {{ compute_nodes_quantity }} <2>
+
+[agent]
+
+root_helper = sudo /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf
+
+[cors]
+
+[cors.subdomain]
+
+[database]
+
+connection = mysql+pymysql://neutron:{{ neutron_dbpass }}@{{ nodes.controller.name }}/neutron <3>
+
+[keystone_authtoken]
+
+auth_uri = http://{{ nodes.controller.name }}:5000 <4>
+auth_url = http://{{ nodes.controller.name }}:35357 <5>
+memcached_servers = {{ nodes.controller.name }}:11211 <6>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = neutron
+password = {{ neutron_dbpass }} <7>
+
+[matchmaker_redis]
+
+[nova]
+
+auth_url = http://{{ nodes.controller.name }}:35357 <8>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+region_name = {{ region }} <9>
+project_name = service
+username = nova
+password = {{ nova_dbpass }} <10>
+
+[oslo_concurrency]
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+driver = messagingv2
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_middleware]
+
+[oslo_policy]
+
+[qos]
+
+[quotas]
+
+[ssl]
+
+----
+<1> Contraseña de RabbitMQ y nombre del nodo de control
+<2> Cantidad de servidores de cómputo
+<3> Contraseña de Neutron y nombre del nodo de control
+<4> Nombre del nodo de control
+<5> Nombre del nodo de control
+<6> Nombre del nodo de control
+<7> Contraseña de Neutron
+<8> Nombre del nodo de control
+<9> Nombre de la región (p.e. `RegionOne`)
+<10> Contraseña de Nova
+****
+
+. Modificar el archivo `/etc/neutron/l3_agent.ini`
+
++
+.El archivo `/etc/neutron/l3_agent.ini`
+****
+[source, bash]
+----
+[DEFAULT]
+
+interface_driver = openvswitch
+
+agent_mode = legacy
+
+handle_internal_only_routers = true
+
+enable_metadata_proxy = true
+
+external_network_bridge =
+
+[agent]
+
+[ovs]
+----
+****
+
+. Modificar el archivo `/etc/neutron/dhcp_agent.ini`
+
++
+.El archivo `/etc/neutron/dhcp_agent.ini`
+****
+[source, bash]
+----
+[DEFAULT]
+
+ovs_integration_bridge = br-int
+
+interface_driver = openvswitch
+
+dhcp_driver = neutron.agent.linux.dhcp.Dnsmasq
+
+enable_isolated_metadata = true
+
+dnsmasq_config_file = /etc/neutron/dnsmasq-neutron.conf
+
+[agent]
+
+[ovs]
+
+----
+****
+
+. Modificar el archivo `/etc/neutron/dnsmasq-neutron.conf`
+
++
+.El archivo `/etc/neutron/dnsmasq-neutron.conf`
+****
+[source, bash]
+----
+ -s
+dhcp-option-force=26,1450
+----
+****
+
+. Modificar el archivo `/etc/neutron/metadata_agent.ini`
+
++
+.El archivo `/etc/neutron/metadata_agent.ini`
+****
+[source, bash]
+----
+[DEFAULT]
+
+auth_uri = http://{{ nodes.controller.name }}:5000 <1>
+auth_url = http://{{ nodes.controller.name }}:35357 <2>
+auth_region = {{ region }} <3>
+auth_plugin = password
+project_domain_id = default
+user_domain_id = default
+project_name = service
+username = neutron
+password = {{ neutron_dbpass }} <4>
+
+nova_metadata_ip = {{ nodes.controller.management_ip }} <5>
+
+nova_metadata_port = 8775
+
+metadata_proxy_shared_secret = {{ metadata_secret }} <6>
+
+nova_metadata_protocol = http
+
+[agent]
+
+[cache]
+----
+<1> Nombre del nodo de control
+<2> Nombre del nodo de control
+<3> Nombre de la región (p.e. `RegionOne`)
+<4> Contraseña de Neutron
+<5> IP de mantenimiento del nodo de control
+<6> Secreto para metadatos
+
+****
+
+
+
+
+
+. Modificar el archivo `/etc/neutron/plugins/ml2/openvswitch_agent.ini`
+
++
+.El archivo `/etc/neutron/plugins/ml2/openvswitch_agent.ini`
+****
+[source, bash]
+----
+[ovs]
+integration_bridge = br-int
+
+int_peer_patch_port = patch-tun
+
+local_ip = {{ ansible_eth1.ipv4.address }} <1>
+
+bridge_mappings = provider:br-ex
+
+[agent]
+
+polling_interval = 15
+
+tunnel_types = vxlan
+
+l2_population = True
+
+arp_responder = False
+
+enable_distributed_routing = False
+
+[securitygroup]
+firewall_driver = iptables_hybrid
+
+enable_security_group = True
+
+----
+<1> IP de la red de túnel del nodo de red
+****
+
+. Reiniciar el servicio `openvswitch-switch`
+
++
+[source, bash]
+----
+# service openvswitch-switch restart
+----
+
+. Añadir el bridge externo
+
++
+[source, bash]
+----
+# ovs-vsctl add-br br-ex
+----
+
+. Añadir puerto al bridge externo
+
++
+[source, bash]
+----
+# ovs-vsctl add-port br-ex {{ provider_interface }} <1>
+----
+<1> Nombre de la interfaz de red externa en el nodo de red
+
+. Añadir el bridge interno
+
++
+[source, bash]
+----
+# ovs-vsctl add-br br-int
+----
+
+. Crear el siguiente script en `/root/br-ex_setup.sh` para configurar la interfaz externa en el nodo de red. Ejecutar el script.
+
++
+.El archivo  `/root/br-ex_setup.sh`
+****
+[source, bash]
+----
+/sbin/ip route |grep default |grep br-ex
+
+if [ $? -ne 0 ]; then
+    /sbin/ip route del default
+    /sbin/ip addr del {{ nodes_by_name.network.provider_ip }}/24 dev {{ provider_interface }}
+    /sbin/ip link set br-ex up
+    /sbin/ip link set {{ provider_interface }} promisc on
+    /sbin/ip addr add {{ nodes_by_name.network.provider_ip }}/24 dev br-ex
+    /sbin/ip route add default via {{ provider_gateway }}
+fi
+----
+****
+
+. Configurar el archivo `/etc/network/interfaces` para añadir el bridge externo
+
++
+.El archivo `/etc/network/interfaces`
+****
+[source, bash]
+----
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The management network interface
+auto {{management_interface}} <1>
+iface {{management_interface}} inet static <2>
+  address {{ nodes_by_name.network.management_ip }} <3>
+  netmask {{ management_mask }} <4>
+  network {{management_network}} <5>
+  mtu {{ MTU }} <6>
+
+# The tunnel network interface
+auto {{tunnel_interface}} <7>
+iface {{tunnel_interface}} inet static <8>
+  address {{ nodes_by_name.network.tunnel_ip }} <9>
+  netmask {{ tunnel_mask }} <10>
+  network {{tunnel_network}} <11>
+  mtu {{ MTU }} <12>
+
+auto br-ex
+allow-ovs br-ex
+iface br-ex inet static
+  address {{ nodes_by_name.network.provider_ip }} <13>
+  netmask {{ provider_mask }} <14>
+  gateway {{ provider_gateway }} <15>
+  dns-nameservers {{ dns }} <16>
+  ovs_type OVSBridge
+  ovs_ports {{ provider_interface }} <17>
+
+allow-br-ex {{ provider_interface }} <18>
+iface {{ provider_interface }} inet manual <19>
+   ovs_bridge br-ex
+  ovs_type OVSPort
+  up ip link set $IFACE promisc on
+  down ip link set $IFACE promisc off
+----
+<1> Nombre de la interfaz de mantenimiento del nodo de red
+<2> Nombre de la interfaz de mantenimiento del nodo de red
+<3> Dirección IP de mantenimiento del nodo de red
+<4> Máscara de red la red de mantenimiento
+<5> Red de mantenimiento
+<6> MTU
+<7> Nombre de la interfaz de túnel del nodo de red
+<8> Nombre de la interfaz de túnel del nodo de red
+<9> Dirección IP de túnel del nodo de red
+<10> Máscara de red la red de túnel
+<11> Red de mantenimiento
+<12> MTU
+<13> Dirección IP externa del nodo de red
+<14> Máscara de red la red externa
+<15> Gateway de la red external
+<16> IP del DNS
+<17> Nombre de la interfaz de red externa
+<18> Nombre de la interfaz de red externa
+<19> Nombre de la interfaz de red externa
+****
+
+. Reiniciar los servicios de Neutron
+
++
+[source, bash]
+----
+# service neutron-openvswitch-agent restart
+# service neutron-dhcp-agent restart
+# service neutron-metadata-agent restart
+# service neutron-l3-agent restart
+----
+
+### Instalación de Neutron en los nodos de cómputo
+
+Realizar estos pasos en cada uno de los nodos de cómputo
+
+. Configurar el kernel para desactivar el _reverse path filtering_. Añadir estas líneas el archivo `/etc/sysctl.conf`
+
++
+[source, bash]
+----
+net.ipv4.conf.all.rp_filter=0
+net.ipv4.conf.default.rp_filter=0
+----
+
+. Cargar la nueva configuración del kernel
+
++
+[source, bash]
+----
+# systcl -p
+----
+
+. Instalar Neutron
+
++
+[source, bash]
+----
+# apt install neutron-openvswitch-agent
+----
+
+. Configurar el archivo `/etc/neutron/neutron.conf`
+
++
+.El archivo `/etc/neutron/neutron.conf`
+****
+[source, bash]
+----
+[DEFAULT]
+
+auth_strategy = keystone
+
+core_plugin = ml2
+service_plugins = router,neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2
+allow_overlapping_ips = true
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <1>
+
+notify_nova_on_port_status_changes = true
+
+notify_nova_on_port_data_changes = true
+
+dhcp_agents_per_network = {{ compute_nodes_quantity }} <2>
+
+[agent]
+
+root_helper = sudo /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf
+
+[cors]
+
+[cors.subdomain]
+
+[database]
+
+connection = mysql+pymysql://neutron:{{ neutron_dbpass }}@{{ nodes.controller.name }}/neutron <3>
+
+[keystone_authtoken]
+
+auth_uri = http://{{ nodes.controller.name }}:5000 <4>
+auth_url = http://{{ nodes.controller.name }}:35357 <5>
+memcached_servers = {{ nodes.controller.name }}:11211 <6>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = neutron
+password = {{ neutron_dbpass }} <7>
+
+[matchmaker_redis]
+
+[nova]
+
+auth_url = http://{{ nodes.controller.name }}:35357 <8>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+region_name = {{ region }} <9>
+project_name = service
+username = nova
+password = {{ nova_dbpass }} <10>
+
+[oslo_concurrency]
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+driver = messagingv2
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_middleware]
+
+[oslo_policy]
+
+[qos]
+
+[quotas]
+
+[ssl]
+
+----
+<1> Contraseña de RabbitMQ y nombre del nodo de control
+<2> Cantidad de servidores de cómputo
+<3> Contraseña de Neutron y nombre del nodo de control
+<4> Nombre del nodo de control
+<5> Nombre del nodo de control
+<6> Nombre del nodo de control
+<7> Contraseña de Neutron
+<8> Nombre del nodo de control
+<9> Nombre de la región (p.e. `RegionOne`)
+<10> Contraseña de Nova
+****
+
+. Configurar el archivo `/etc/neutron/plugins/ml2/openvswitch_agent.ini`
+
++
+.El archivo `/etc/neutron/plugins/ml2/openvswitch_agent.ini`
+****
+[source, bash]
+----
+[ovs]
+integration_bridge = br-int
+
+int_peer_patch_port = patch-tun
+
+local_ip = {{ ansible_eth0.ipv4.address }} <1>
+
+bridge_mappings = provider:br-ex
+
+[agent]
+
+polling_interval = 15
+
+tunnel_types = vxlan
+
+l2_population = True
+
+arp_responder = False
+
+enable_distributed_routing = False
+
+[securitygroup]
+firewall_driver = iptables_hybrid
+
+enable_security_group = True
+
+----
+<1> IP de mantenimiento del nodo de cómputo
+****
+
+. Reiniciar el agente OpenvSwitch
+
++
+[source, bash]
+----
+# service neutron-openvswitch-agent restart
+----
+
+## Horizon
+
+Realizar estos pasos en el nodo de control.
+
+. Instalar Neutron
+
++
+[source, bash]
+----
+# apt install openstack-dashboard
+----
+
+. Configurar el archivo `/etc/openstack-dashboard/local_settings.py`
+
++
+.El archivo `/etc/openstack-dashboard/local_settings.py`
+****
+[source, bash]
+----
+import os
+
+from django.utils.translation import ugettext_lazy as _
+
+from horizon.utils import secret_key
+
+from openstack_dashboard.settings import HORIZON_CONFIG
+
+DEBUG = False
+
+WEBROOT = '/'
+
+ALLOWED_HOSTS = ['*']
+
+OPENSTACK_API_VERSIONS = {
+    "identity": 3,
+    "image": 2,
+    "volume": 2,
+}
+
+OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = True
+
+OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = 'Default'
+
+LOCAL_PATH = os.path.dirname(os.path.abspath(__file__))
+
+SECRET_KEY = secret_key.generate_or_read_from_file('/var/lib/openstack-dashboard/secret_key')
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+
+CACHES = {
+    'default': {
+         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+         'LOCATION': '{{ nodes.controller.name }}:11211', <1>
+    }
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+OPENSTACK_HOST = "{{ nodes.controller.name }}" <2>
+OPENSTACK_KEYSTONE_URL = "http://%s:5000/v3" % OPENSTACK_HOST
+
+OPENSTACK_KEYSTONE_DEFAULT_ROLE = "user"
+
+OPENSTACK_KEYSTONE_BACKEND = {
+    'name': 'native',
+    'can_edit_user': True,
+    'can_edit_group': True,
+    'can_edit_project': True,
+    'can_edit_domain': True,
+    'can_edit_role': True,
+}
+
+OPENSTACK_HYPERVISOR_FEATURES = {
+    'can_set_mount_point': False,
+    'can_set_password': False,
+    'requires_keypair': False,
+    'enable_quotas': True
+}
+
+OPENSTACK_CINDER_FEATURES = {
+    'enable_backup': False,
+}
+
+OPENSTACK_NEUTRON_NETWORK = {
+    'enable_router': True,
+    'enable_quotas': True,
+    'enable_ipv6': True,
+    'enable_distributed_router': False,
+    'enable_ha_router': False,
+    'enable_lb': True,
+    'enable_firewall': True,
+    'enable_vpn': True,
+    'enable_fip_topology_check': True,
+
+    # Default dns servers you would like to use when a subnet is
+    # created.  This is only a default, users can still choose a different
+    # list of dns servers when creating a new subnet.
+    # The entries below are examples only, and are not appropriate for
+    # real deployments
+    # 'default_dns_nameservers': ["8.8.8.8", "8.8.4.4", "208.67.222.222"],
+
+    # The profile_support option is used to detect if an external router can be
+    # configured via the dashboard. When using specific plugins the
+    # profile_support can be turned on if needed.
+    'profile_support': None,
+    #'profile_support': 'cisco',
+
+    # Set which provider network types are supported. Only the network types
+    # in this list will be available to choose from when creating a network.
+    # Network types include local, flat, vlan, gre, vxlan and geneve.
+    # 'supported_provider_types': ['*'],
+
+    # You can configure available segmentation ID range per network type
+    # in your deployment.
+    # 'segmentation_id_range': {
+    #     'vlan': [1024, 2048],
+    #     'vxlan': [4094, 65536],
+    # },
+
+    # You can define additional provider network types here.
+    # 'extra_provider_types': {
+    #     'awesome_type': {
+    #         'display_name': 'Awesome New Type',
+    #         'require_physical_network': False,
+    #         'require_segmentation_id': True,
+    #     }
+    # },
+
+    # Set which VNIC types are supported for port binding. Only the VNIC
+    # types in this list will be available to choose from when creating a
+    # port.
+    # VNIC types include 'normal', 'macvtap' and 'direct'.
+    # Set to empty list or None to disable VNIC type selection.
+    'supported_vnic_types': ['*'],
+}
+
+OPENSTACK_HEAT_STACK = {
+    'enable_user_pass': True,
+}
+
+IMAGE_CUSTOM_PROPERTY_TITLES = {
+    "architecture": _("Architecture"),
+    "kernel_id": _("Kernel ID"),
+    "ramdisk_id": _("Ramdisk ID"),
+    "image_state": _("Euca2ools state"),
+    "project_id": _("Project ID"),
+    "image_type": _("Image Type"),
+}
+
+IMAGE_RESERVED_CUSTOM_PROPERTIES = []
+
+API_RESULT_LIMIT = 1000
+API_RESULT_PAGE_SIZE = 20
+
+SWIFT_FILE_TRANSFER_CHUNK_SIZE = 512 * 1024
+
+INSTANCE_LOG_LENGTH = 35
+
+DROPDOWN_MAX_ITEMS = 30
+
+TIME_ZONE = "Europe/Madrid"
+
+AVAILABLE_THEMES = [
+    ('default', 'Default', 'themes/default'),
+    ('material', 'Material', 'themes/material'),
+]
+
+LOGGING = {
+    'version': 1,
+    # When set to True this will disable all logging except
+    # for loggers specified in this configuration dictionary. Note that
+    # if nothing is specified here and disable_existing_loggers is True,
+    # django.db.backends will still log unless it is disabled explicitly.
+    'disable_existing_loggers': False,
+    'formatters': {
+        'operation': {
+            # The format of "%(message)s" is defined by
+            # OPERATION_LOG_OPTIONS['format']
+            'format': '%(asctime)s %(message)s'
+        },
+    },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        },
+        'console': {
+            # Set the level to "DEBUG" for verbose output logging.
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+        },
+        'operation': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'operation',
+        },
+    },
+    'loggers': {
+        # Logging from django.db.backends is VERY verbose, send to null
+        # by default.
+        'django.db.backends': {
+            'handlers': ['null'],
+            'propagate': False,
+        },
+        'requests': {
+            'handlers': ['null'],
+            'propagate': False,
+        },
+        'horizon': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'horizon.operation_log': {
+            'handlers': ['operation'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'openstack_dashboard': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'novaclient': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'cinderclient': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'keystoneclient': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'glanceclient': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'neutronclient': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'heatclient': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'swiftclient': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'openstack_auth': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'nose.plugins.manager': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'iso8601': {
+            'handlers': ['null'],
+            'propagate': False,
+        },
+        'scss': {
+            'handlers': ['null'],
+            'propagate': False,
+        },
+    },
+}
+
+SECURITY_GROUP_RULES = {
+    'all_tcp': {
+        'name': _('All TCP'),
+        'ip_protocol': 'tcp',
+        'from_port': '1',
+        'to_port': '65535',
+    },
+    'all_udp': {
+        'name': _('All UDP'),
+        'ip_protocol': 'udp',
+        'from_port': '1',
+        'to_port': '65535',
+    },
+    'all_icmp': {
+        'name': _('All ICMP'),
+        'ip_protocol': 'icmp',
+        'from_port': '-1',
+        'to_port': '-1',
+    },
+    'ssh': {
+        'name': 'SSH',
+        'ip_protocol': 'tcp',
+        'from_port': '22',
+        'to_port': '22',
+    },
+    'smtp': {
+        'name': 'SMTP',
+        'ip_protocol': 'tcp',
+        'from_port': '25',
+        'to_port': '25',
+    },
+    'dns': {
+        'name': 'DNS',
+        'ip_protocol': 'tcp',
+        'from_port': '53',
+        'to_port': '53',
+    },
+    'http': {
+        'name': 'HTTP',
+        'ip_protocol': 'tcp',
+        'from_port': '80',
+        'to_port': '80',
+    },
+    'pop3': {
+        'name': 'POP3',
+        'ip_protocol': 'tcp',
+        'from_port': '110',
+        'to_port': '110',
+    },
+    'imap': {
+        'name': 'IMAP',
+        'ip_protocol': 'tcp',
+        'from_port': '143',
+        'to_port': '143',
+    },
+    'ldap': {
+        'name': 'LDAP',
+        'ip_protocol': 'tcp',
+        'from_port': '389',
+        'to_port': '389',
+    },
+    'https': {
+        'name': 'HTTPS',
+        'ip_protocol': 'tcp',
+        'from_port': '443',
+        'to_port': '443',
+    },
+    'smtps': {
+        'name': 'SMTPS',
+        'ip_protocol': 'tcp',
+        'from_port': '465',
+        'to_port': '465',
+    },
+    'imaps': {
+        'name': 'IMAPS',
+        'ip_protocol': 'tcp',
+        'from_port': '993',
+        'to_port': '993',
+    },
+    'pop3s': {
+        'name': 'POP3S',
+        'ip_protocol': 'tcp',
+        'from_port': '995',
+        'to_port': '995',
+    },
+    'ms_sql': {
+        'name': 'MS SQL',
+        'ip_protocol': 'tcp',
+        'from_port': '1433',
+        'to_port': '1433',
+    },
+    'mysql': {
+        'name': 'MYSQL',
+        'ip_protocol': 'tcp',
+        'from_port': '3306',
+        'to_port': '3306',
+    },
+    'rdp': {
+        'name': 'RDP',
+        'ip_protocol': 'tcp',
+        'from_port': '3389',
+        'to_port': '3389',
+    },
+}
+
+REST_API_REQUIRED_SETTINGS = ['OPENSTACK_HYPERVISOR_FEATURES',
+                              'LAUNCH_INSTANCE_DEFAULTS',
+                              'OPENSTACK_IMAGE_FORMATS',
+                              'OPENSTACK_KEYSTONE_DEFAULT_DOMAIN']
+
+ # The default theme if no cookie is present
+DEFAULT_THEME = 'default'
+
+WEBROOT='/horizon/'
+
+ALLOWED_HOSTS = '*'
+
+COMPRESS_OFFLINE = True
+
+ALLOWED_PRIVATE_SUBNET_CIDR = {'ipv4': [], 'ipv6': []}
+----
+<1> Nombre del nodo de control
+<2> Nombre del nodo de control
+****
+
+. Reiniciar Apache y Memcached
+
++
+[source, bash]
+----
+# service apache2 reload
+# service apache2 restart
+# service memcached restart 
+----
+
+
 
