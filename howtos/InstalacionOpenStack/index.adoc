@@ -2964,3 +2964,15 @@ service_provider = LOADBALANCERV2:Haproxy:neutron_lbaas.drivers.haproxy.plugin_d
 ----
 # service neutron-lbaasv2-agent restart
 ----
+
+:numbered!: 
+
+## Anexo. Paquetes y archivos de configuración
+
+La instalación de OpenStack es un proceso farragoso en cuanto a la cantidad de paquetes y archivos de configuración que hay que instalar y configuirar en cada tipo de nodo. A continuación se muestran dos figuras que ilustran los paquetes a instalar y los archivos a configurar en cada nodo.
+
+.Paquetes y archivos a configura en el nodo de control
+image::OpenStackPackagesAndFilesController.png[]
+
+.Paquetes y archivos a configura en el resto de nodos
+image::OpenStackPackagesAndFilesRemainder.png[]
