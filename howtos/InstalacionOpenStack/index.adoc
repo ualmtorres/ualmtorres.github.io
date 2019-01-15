@@ -2968,9 +2968,12 @@ service_provider = LOADBALANCERV2:Haproxy:neutron_lbaas.drivers.haproxy.plugin_d
 
 ## Cinder
 
-### Instalación de Cinder en el nodo de control
+Realizar estar operaciones en el nodo de control.
 
-Realizar estar operaciones en el nodo de control
+[NOTE]
+====
+La instalación de Cinder descrita en este tutorial hace uso de un NAS como dispositivo de almacenamiento de volúmenes. Cinder mantiene una https://docs.openstack.org/cinder/ocata/drivers.html[serie de dispositivos compatibles] y que disponen de drivers para poder funcionar como nodo de almacenamiento. Esto permite contar con un nodo de almacenamiento a un coste menor que un servidor dedicado. Los paquetes y archivos de configuración quedan instalados en el nodo de control.
+====
 
 . Creación y configuración de la base de datos `cinder`
 
@@ -3168,6 +3171,252 @@ synology_pool_name = {{nas_volume}} <17>
 ----
 <1> Tipo de volumen (p.e. `NAS`)
 <2> Nombre asignado al tipo de volumen (p.e. `VOL_NAS`)
+
+## Heat
+
+La instalación de Heat se realiza en el nodo de control.
+
+. Creación y configuración de la base de datos `heat`
+
++
+[source, bash]
+----
+CREATE DATABASE heat;
+
+GRANT ALL PRIVILEGES ON heat.* TO 'heat'@'localhost' \
+  IDENTIFIED BY 'HEAT_DBPASS'; <1>
+GRANT ALL PRIVILEGES ON heat.* TO 'heat'@'%' \
+  IDENTIFIED BY 'HEAT_DBPASS'; <2>
+----
+<1> Contraseña del usuario Heat
+<2> Contraseña del usuario Heat
+
+. Realizar la configuración de Heat (usuario `heat`, añadir el usuario `heat` al proyecto `service` con el rol `admin` y crear los servicios `heat` y `heat-cfn`)
+
++
+[source, bash]
+----
+# source openrc-admin <1>
+
+# openstack user create --domain default heat --password {{ heat_dbpass }} <2>
+# openstack role add --project service --user heat admin
+# openstack service create --name heat --description "Orchestration" orchestration
+# openstack service create --name heat-cfn --description "Orchestration" cloudformation
+----
+
+. Crear los endpoints de la API
+
++
+[source, bash]
+----
+# openstack endpoint create --region {{region}} orchestration public http://{{ nodes_by_name.controller.provider_ip }}:8004/v1/%(tenant_id)s <1>
+# openstack endpoint create --region {{region}} orchestration internal http://{{ nodes_by_name.controller.tunnel_ip }}:8004/v1/%(tenant_id)s <2>
+# openstack endpoint create --region {{region}} orchestration admin http://{{ nodes_by_name.controller.management_ip }}:8004/v1/%(tenant_id)s <3>
+
+# openstack endpoint create --region {{region}} cloudformation public http://{{ nodes_by_name.controller.provider_ip }}:8000/v1 <4>
+# openstack endpoint create --region {{region}} cloudformation internal http://{{ nodes_by_name.controller.tunnel_ip }}:8000/v1 <5>
+# openstack endpoint create --region {{region}} cloudformation admin http://{{ nodes_by_name.controller.management_ip }}:8000/v1 <6>
+----
+<1> Región (p.e, `RegionOne`) e IP externa del nodo de control
+<2> Región (p.e, `RegionOne`) e IP de túnel del nodo de control
+<3> Región (p.e, `RegionOne`) e IP de mantenimiento del nodo de control
+<4> Región (p.e, `RegionOne`) e IP externa del nodo de control
+<5> Región (p.e, `RegionOne`) e IP de túnel del nodo de control
+<6> Región (p.e, `RegionOne`) e IP de mantenimiento del nodo de control
+
+
+. Crear roles, dominio y usuario en el dominio necesarios para Heat
+
++
+[source, bash]
+----
+# openstack domain create --description "Stack projects and users" heat
+# openstack user create --domain heat --password {{heat_dbpass}} heat_domain_admin
+# openstack role add --domain heat --user-domain heat --user heat_domain_admin admin
+# openstack role create heat_stack_owner
+# openstack role add --project demo --user demo heat_stack_owner
+# openstack role create heat_stack_user
+----
+
+. Instalar los paquetes de Heat 
+
++
+[source, bash]
+----
+# apt install heat-api heat-api-cfn heat-engine
+----
+
+. Configurar el archivo `/etc/heat/heat.conf`
+
++
+.El archivo `/etc/heat/heat.conf`
+****
+[source, bash]
+----
+[DEFAULT]
+
+heat_metadata_server_url = http://{{ nodes.controller.name }}:8000 <1>
+
+heat_waitcondition_server_url = http://{{ nodes.controller.name }}:8000/v1/waitcondition <2>
+
+stack_user_domain_name = heat
+
+stack_domain_admin = heat_domain_admin
+
+stack_domain_admin_password = {{ heat_dbpass }} <3>
+
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <4>
+
+[auth_password]
+
+[clients]
+
+[clients_aodh]
+
+[clients_barbican]
+
+[clients_ceilometer]
+
+[clients_cinder]
+
+[clients_designate]
+
+[clients_glance]
+
+[clients_heat]
+
+[clients_keystone]
+
+auth_uri =  http://{{ nodes.controller.name }}:35357 <5>
+
+[clients_magnum]
+
+[clients_manila]
+
+[clients_mistral]
+
+[clients_monasca]
+
+[clients_neutron]
+
+[clients_nova]
+
+[clients_sahara]
+
+[clients_senlin]
+
+[clients_swift]
+
+[clients_trove]
+
+[clients_zaqar]
+
+[cors]
+
+[cors.subdomain]
+
+[database]
+
+connection = mysql+pymysql://heat:{{ heat_dbpass }}@{{ nodes.controller.name }}/heat <6>
+
+[ec2authtoken]
+
+auth_uri = http://{{ nodes.controller.name }}:5000 <7>
+
+[eventlet_opts]
+
+[healthcheck]
+
+[heat_api]
+
+[heat_api_cfn]
+
+[heat_api_cloudwatch]
+
+[keystone_authtoken]
+
+auth_uri = http://{{ nodes.controller.name }}:5000 <8>
+auth_url = http://{{ nodes.controller.name }}:35357 <9>
+memcached_servers = {{ nodes.controller.name }}:11211 <10>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = heat
+password = {{ heat_dbpass}} <11>
+
+[matchmaker_redis]
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+driver = messagingv2
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_middleware]
+
+[oslo_policy]
+
+[paste_deploy]
+
+[profiler]
+
+[revision]
+
+[ssl]
+
+[trustee]
+
+auth_type = password
+
+auth_url = http://{{ nodes.controller.name }}:35357 <12>
+
+username = heat
+
+user_domain_name = default
+
+password = {{ heat_dbpass }} <13>
+
+[volumes]
+----
+<1> Nombre del nodo de control
+<2> Nombre del nodo de control
+<3> Contraseña de Heat
+<4> Contraseña de RabbitMQ y nombre del nodo de control
+<5> Nombre del nodo de control
+<6> Contraseña de Cinder y nombre del nodo de control
+<7> Nombre del nodo de control
+<8> Nombre del nodo de control
+<9> Nombre del nodo de control
+<10> Nombre del nodo de control
+<11> Contraseña de Heat
+<12> Nombre del nodo de control
+<13> Contraseña de Heat
+****
+
+. Inicializar la base de datos `heat`
+
++
+[source, bash]
+----
+su -s /bin/sh -c "heat-manage db_sync" heat
+----
+
+. Reiniciar servicios de Heat
+
++
+[source, bash]
+----
+# service heat-api restart
+# service heat-api-cfn restart
+# service heat-engine restart
+----
 
 :numbered!: 
 

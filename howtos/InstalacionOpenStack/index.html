@@ -461,11 +461,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#trueinstalaci-n-de-neutron-lbaas-en-el-nodo-de-red">9.2. Instalación de Neutron LBaaS en el nodo de red</a></li>
 </ul>
 </li>
-<li><a href="#truecinder">10. Cinder</a>
-<ul class="sectlevel2">
-<li><a href="#trueinstalaci-n-de-cinder-en-el-nodo-de-control">10.1. Instalación de Cinder en el nodo de control</a></li>
-</ul>
-</li>
+<li><a href="#truecinder">10. Cinder</a></li>
+<li><a href="#trueheat">11. Heat</a></li>
 <li><a href="#trueanexo-paquetes-y-archivos-de-configuraci-n">Anexo. Paquetes y archivos de configuración</a></li>
 </ul>
 </div>
@@ -2900,16 +2897,12 @@ net.ipv4.conf.default.rp_filter=0</code></pre>
 </li>
 <li>
 <p>Instalar Neutron</p>
-</li>
-</ol>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt install neutron-openvswitch-agent neutron-l3-agent neutron-dhcp-agent neutron-metadata-agent</code></pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p>Configurar el archivo <code>/etc/neutron/neutron.conf</code></p>
 <div class="sidebarblock">
@@ -4353,10 +4346,22 @@ service_provider = LOADBALANCERV2:Haproxy:neutron_lbaas.drivers.haproxy.plugin_d
 <div class="sect1">
 <h2 id="truecinder"><a class="anchor" href="#truecinder"></a>10. Cinder</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="trueinstalaci-n-de-cinder-en-el-nodo-de-control"><a class="anchor" href="#trueinstalaci-n-de-cinder-en-el-nodo-de-control"></a>10.1. Instalación de Cinder en el nodo de control</h3>
 <div class="paragraph">
-<p>Realizar estar operaciones en el nodo de control</p>
+<p>Realizar estar operaciones en el nodo de control.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>La instalación de Cinder descrita en este tutorial hace uso de un NAS como dispositivo de almacenamiento de volúmenes. Cinder mantiene una <a href="https://docs.openstack.org/cinder/ocata/drivers.html">serie de dispositivos compatibles</a> y que disponen de drivers para poder funcionar como nodo de almacenamiento. Esto permite contar con un nodo de almacenamiento a un coste menor que un servidor dedicado. Los paquetes y archivos de configuración quedan instalados en el nodo de control.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -4676,6 +4681,335 @@ synology_pool_name = {{nas_volume}} <i class="conum" data-value="17"></i><b>(17)
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="trueheat"><a class="anchor" href="#trueheat"></a>11. Heat</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>La instalación de Heat se realiza en el nodo de control.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Creación y configuración de la base de datos <code>heat</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">CREATE DATABASE heat;
+
+GRANT ALL PRIVILEGES ON heat.* TO 'heat'@'localhost' \
+  IDENTIFIED BY 'HEAT_DBPASS'; <i class="conum" data-value="1"></i><b>(1)</b>
+GRANT ALL PRIVILEGES ON heat.* TO 'heat'@'%' \
+  IDENTIFIED BY 'HEAT_DBPASS'; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Contraseña del usuario Heat</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contraseña del usuario Heat</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Realizar la configuración de Heat (usuario <code>heat</code>, añadir el usuario <code>heat</code> al proyecto <code>service</code> con el rol <code>admin</code> y crear los servicios <code>heat</code> y <code>heat-cfn</code>)</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># source openrc-admin <i class="conum" data-value="1"></i><b>(1)</b>
+
+# openstack user create --domain default heat --password {{ heat_dbpass }} <i class="conum" data-value="2"></i><b>(2)</b>
+# openstack role add --project service --user heat admin
+# openstack service create --name heat --description "Orchestration" orchestration
+# openstack service create --name heat-cfn --description "Orchestration" cloudformation</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Crear los endpoints de la API</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># openstack endpoint create --region {{region}} orchestration public http://{{ nodes_by_name.controller.provider_ip }}:8004/v1/%(tenant_id)s <i class="conum" data-value="1"></i><b>(1)</b>
+# openstack endpoint create --region {{region}} orchestration internal http://{{ nodes_by_name.controller.tunnel_ip }}:8004/v1/%(tenant_id)s <i class="conum" data-value="2"></i><b>(2)</b>
+# openstack endpoint create --region {{region}} orchestration admin http://{{ nodes_by_name.controller.management_ip }}:8004/v1/%(tenant_id)s <i class="conum" data-value="3"></i><b>(3)</b>
+
+# openstack endpoint create --region {{region}} cloudformation public http://{{ nodes_by_name.controller.provider_ip }}:8000/v1 <i class="conum" data-value="4"></i><b>(4)</b>
+# openstack endpoint create --region {{region}} cloudformation internal http://{{ nodes_by_name.controller.tunnel_ip }}:8000/v1 <i class="conum" data-value="5"></i><b>(5)</b>
+# openstack endpoint create --region {{region}} cloudformation admin http://{{ nodes_by_name.controller.management_ip }}:8000/v1 <i class="conum" data-value="6"></i><b>(6)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP externa del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de túnel del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de mantenimiento del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP externa del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de túnel del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de mantenimiento del nodo de control</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Crear roles, dominio y usuario en el dominio necesarios para Heat</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># openstack domain create --description "Stack projects and users" heat
+# openstack user create --domain heat --password {{heat_dbpass}} heat_domain_admin
+# openstack role add --domain heat --user-domain heat --user heat_domain_admin admin
+# openstack role create heat_stack_owner
+# openstack role add --project demo --user demo heat_stack_owner
+# openstack role create heat_stack_user</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Instalar los paquetes de Heat</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt install heat-api heat-api-cfn heat-engine</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configurar el archivo <code>/etc/heat/heat.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/heat/heat.conf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[DEFAULT]
+
+heat_metadata_server_url = http://{{ nodes.controller.name }}:8000 <i class="conum" data-value="1"></i><b>(1)</b>
+
+heat_waitcondition_server_url = http://{{ nodes.controller.name }}:8000/v1/waitcondition <i class="conum" data-value="2"></i><b>(2)</b>
+
+stack_user_domain_name = heat
+
+stack_domain_admin = heat_domain_admin
+
+stack_domain_admin_password = {{ heat_dbpass }} <i class="conum" data-value="3"></i><b>(3)</b>
+
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <i class="conum" data-value="4"></i><b>(4)</b>
+
+[auth_password]
+
+[clients]
+
+[clients_aodh]
+
+[clients_barbican]
+
+[clients_ceilometer]
+
+[clients_cinder]
+
+[clients_designate]
+
+[clients_glance]
+
+[clients_heat]
+
+[clients_keystone]
+
+auth_uri =  http://{{ nodes.controller.name }}:35357 <i class="conum" data-value="5"></i><b>(5)</b>
+
+[clients_magnum]
+
+[clients_manila]
+
+[clients_mistral]
+
+[clients_monasca]
+
+[clients_neutron]
+
+[clients_nova]
+
+[clients_sahara]
+
+[clients_senlin]
+
+[clients_swift]
+
+[clients_trove]
+
+[clients_zaqar]
+
+[cors]
+
+[cors.subdomain]
+
+[database]
+
+connection = mysql+pymysql://heat:{{ heat_dbpass }}@{{ nodes.controller.name }}/heat <i class="conum" data-value="6"></i><b>(6)</b>
+
+[ec2authtoken]
+
+auth_uri = http://{{ nodes.controller.name }}:5000 <i class="conum" data-value="7"></i><b>(7)</b>
+
+[eventlet_opts]
+
+[healthcheck]
+
+[heat_api]
+
+[heat_api_cfn]
+
+[heat_api_cloudwatch]
+
+[keystone_authtoken]
+
+auth_uri = http://{{ nodes.controller.name }}:5000 <i class="conum" data-value="8"></i><b>(8)</b>
+auth_url = http://{{ nodes.controller.name }}:35357 <i class="conum" data-value="9"></i><b>(9)</b>
+memcached_servers = {{ nodes.controller.name }}:11211 <i class="conum" data-value="10"></i><b>(10)</b>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = heat
+password = {{ heat_dbpass}} <i class="conum" data-value="11"></i><b>(11)</b>
+
+[matchmaker_redis]
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+driver = messagingv2
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_middleware]
+
+[oslo_policy]
+
+[paste_deploy]
+
+[profiler]
+
+[revision]
+
+[ssl]
+
+[trustee]
+
+auth_type = password
+
+auth_url = http://{{ nodes.controller.name }}:35357 <i class="conum" data-value="12"></i><b>(12)</b>
+
+username = heat
+
+user_domain_name = default
+
+password = {{ heat_dbpass }} <i class="conum" data-value="13"></i><b>(13)</b>
+
+[volumes]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Contraseña de Heat</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Contraseña de RabbitMQ y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Contraseña de Cinder y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
+<td>Contraseña de Heat</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="12"></i><b>12</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="13"></i><b>13</b></td>
+<td>Contraseña de Heat</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Inicializar la base de datos <code>heat</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">su -s /bin/sh -c "heat-manage db_sync" heat</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Reiniciar servicios de Heat</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service heat-api restart
+# service heat-api-cfn restart
+# service heat-engine restart</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
 </div>
 <div class="sect1">
 <h2 id="trueanexo-paquetes-y-archivos-de-configuraci-n"><a class="anchor" href="#trueanexo-paquetes-y-archivos-de-configuraci-n"></a>Anexo. Paquetes y archivos de configuración</h2>
@@ -4700,7 +5034,7 @@ synology_pool_name = {{nas_volume}} <i class="conum" data-value="17"></i><b>(17)
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-01-15 22:04:25 CET
+Last updated 2019-01-15 23:28:17 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
