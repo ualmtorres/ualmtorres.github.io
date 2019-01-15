@@ -2350,6 +2350,36 @@ enable_security_group = True
 # service neutron-openvswitch-agent restart
 ----
 
+### Configuración de la red
+
+Realizar estas operaciones en el nodo de control.
+
+. Crear la red externa
+
++
+[source, bash]
+----
+# openstack network create  --share --external --provider-physical-network provider --provider-network-type flat {{network_name}} <1>
+----
+<1> Nombre de la red externa
+
+. Crear la subred de la red externa
+
+[source, bash]
+----
+# openstack subnet create --network {{network_name}} \ <1>
+    --allocation-pool start={{allocation_pool_start}},end={{allocation_pool_end}} \ <2>
+    --dns-nameserver {{dns_name_servers}} \ <3>
+    --gateway {{provider_gateway}} \ <4>
+    --subnet-range {{subnet_range}} \ <5>
+    {{subnet_name}} <6>
+----
+<1> Nombre de la red externa
+<2> Direcciones IP inicial y final del pool de direcciones asignadas
+<4> IP de servidores DNS
+<5> Gateway de la red externa
+<6> Nombre de la subred
+
 ## Horizon
 
 Realizar estos pasos en el nodo de control.
@@ -2769,5 +2799,168 @@ ALLOWED_PRIVATE_SUBNET_CIDR = {'ipv4': [], 'ipv6': []}
 # service memcached restart 
 ----
 
+## Neutron LBaaS
 
+### Instalación de Neutron LBaaS en el nodo de control
 
+Realizar estos pasos en el nodo de control.
+
+. Instalar `python-neutron-lbaas`
++
+[source, bash]
+----
+# apt install python-neutron-lbaas
+----
+
+. Configurar el archivo `/etc/neutron/neutron_lbaas.conf`
+
++
+.El archivo `/etc/neutron/neutron_lbaas.conf`
+****
+[source, bash]
+----
+[DEFAULT]
+
+[certificates]
+
+[quotas]
+
+[service_auth]
+
+[service_providers]
+
+service_provider = LOADBALANCERV2:Haproxy:neutron_lbaas.drivers.haproxy.plugin_driver.HaproxyOnHostPluginDriver:default
+
+----
+****
+
+. Realizar la migración de la base de datos `neutron-lbaas`
+
++
+[source, bash]
+----
+# su -s /bin/sh -c "neutron-db-manage --subproject neutron-lbaas upgrade head"
+----
+
+. Reiniciar Neutron `neutron-server`
+
++
+[source, bash]
+----
+# service neutron-server restart
+----
+
+. Clonar el repositorio de `neutron-lbaas`
+
++
+[source, bash]
+----
+# git clone https://git.openstack.org/openstack/neutron-lbaas-dashboard /tmp/neutron-lbaas-dashboard
+----
+
++
+[NOTE]
+====
+Neutron LBaaS no tiene empaquetada la integración con Horizon. En estos casos descargaremos los fuentes, los procesaremos y los integraremos en Horizon.
+====
+
+. Instalar el dashboard de Neutron LBaaS desde `/tmp/neutron-lbaas-dashboard/`
+
++
+[source, bash]
+----
+# cd /tmp/neutron-lbaas-dashboard/
+# python setup.py install
+----
+
+. Copiar los archivos del dashboard de Neutron LBaaS
+
++
+[source, bash]
+----
+# cp /tmp/neutron-lbaas-dashboard/neutron_lbaas_dashboard/enabled/_1481_project_ng_loadbalancersv2_panel.py /usr/share/openstack-dashboard/openstack_dashboard/enabled/
+----
+
+. Instalar el módulo `pexpect` con `pip` 
+
++
+[source, bash]
+----
+pip install pexpect
+----
+
+. Realizar estos últimos pasos para terminar de integrar el dashboard en Horizon
+
++
+[source, bash]
+----
+# cd /usr/share/openstack-dashboard
+# python manage.py collectstatic <1>
+# python manage.py compress
+----
+<1> Responder `yes` a la pregunta
+
+. Reiniciar el servidor Apache
+
++
+[source, bash]
+----
+# service apache2 restart
+----
+
+### Instalación de Neutron LBaaS en el nodo de red
+
+Realizar estos pasos en el nodo de red.
+
+. Instalar `neutron-lbaasv2-agent`
++
+[source, bash]
+----
+# apt install neutron-lbaasv2-agent
+----
+
+. Configurar el archivo `/etc/neutron/lbaas_agent.ini`
+
++
+.El archivo `/etc/neutron/lbaas_agent.ini`
+****
+[source, bash]
+----
+[DEFAULT]
+
+device_driver = neutron_lbaas.drivers.haproxy.namespace_driver.HaproxyNSDriver
+interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
+
+[haproxy]  
+user_group = haproxy
+----
+****
+
+. Configurar el archivo `/etc/neutron/neutron_lbaas.conf`
+
++
+.El archivo `/etc/neutron/neutron_lbaas.conf`
+****
+[source, bash]
+----
+[DEFAULT]
+
+[certificates]
+
+[quotas]
+
+[service_auth]
+
+[service_providers]
+
+service_provider = LOADBALANCERV2:Haproxy:neutron_lbaas.drivers.haproxy.plugin_driver.HaproxyOnHostPluginDriver:default
+----
+****
+
+. Reiniciar el servicio neutron-lbaasv2-agent
+
++
+[source, bash]
+----
+# service neutron-lbaasv2-agent restart
+----
