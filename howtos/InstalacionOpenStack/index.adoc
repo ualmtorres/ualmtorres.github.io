@@ -2862,7 +2862,7 @@ service_provider = LOADBALANCERV2:Haproxy:neutron_lbaas.drivers.haproxy.plugin_d
 +
 [NOTE]
 ====
-Neutron LBaaS no tiene empaquetada la integración con Horizon. En estos casos descargaremos los fuentes, los procesaremos y los integraremos en Horizon.
+Neutron LBaaS no tiene empaquetada la integración con Horizon. En estos casos descargaremos los fuentes del dashboard, los procesaremos y los integraremos en Horizon.
 ====
 
 . Instalar el dashboard de Neutron LBaaS desde `/tmp/neutron-lbaas-dashboard/`
@@ -3587,7 +3587,7 @@ lock_path = /var/lib/manila/tmp
 +
 [NOTE]
 ====
-Manila no tiene empaquetada la integración con Horizon. En estos casos descargaremos los fuentes, los procesaremos y los integraremos en Horizon.
+Manila no tiene empaquetada la integración con Horizon. En estos casos descargaremos los fuentes del dashboard, los procesaremos y los integraremos en Horizon.
 ====
 
 . Instalar el dashboard de Manila desde `/tmp/manila-ui/`
@@ -3775,6 +3775,1065 @@ Realizar esta operación en el nodo de control.
 ----
 # manila type-create default_share_type False
 ----
+
+## Swift
+
+### Instalación de Swift en el nodo de control
+
+Realizar estas operaciones en el nodo de control.
+
+. Realizar la configuración de Cinder (usuario `cinder`, añadir el usuario `cinder` al proyecto `service` con el rol `admin` y crear los servicios `cinder`, `cinderv2` y `cinderv3`).
+
++
+[source, bash]
+----
+# source openrc-admin <1>
+
+# openstack user create --domain default swift --password {{ swift_dbpass }} <2>
+# openstack role add --project service --user swift admin
+# openstack service create --name swift --description "OpenStack Object Storage" object-store
+----
+<1> Cargar las credenciales de `admin`
+<2> Contraseña del usuario `swift`
+
+. Crear los endpoints de la API
+
++
+[source, bash]
+----
+# openstack endpoint create --region {{region}} object-store public http://{{ nodes_by_name.controller.provider_ip }}:8080/v1/AUTH_%\(tenant_id\)s <1>
+# openstack endpoint create --region {{region}} object-store internal http://{{ nodes_by_name.controller.tunnel_ip }}:8080/v1/AUTH_%\(tenant_id\)s <2>
+# openstack endpoint create --region {{region}} object-store admin http://{{ nodes_by_name.controller.management_ip }}:8080/v1/AUTH_%\(tenant_id\)s <3>
+----
+<1> Región (p.e, `RegionOne`) e IP externa del nodo de control
+<2> Región (p.e, `RegionOne`) e IP de túnel del nodo de control
+<3> Región (p.e, `RegionOne`) e IP de mantenimiento del nodo de control
+
+. Instalar los paquetes de Swift 
+
++
+[source, bash]
+----
+# apt install swift swift-proxy python-swiftclient python-keystoneclient python-keystonemiddleware
+----
+
+. Configurar el archivo `/etc/swift/proxy-server.conf`
+
++
+.El archivo `/etc/swift/proxy-server.conf`
+****
+[source, bash]
+----
+[DEFAULT]
+bind_port = 8080
+swift_dir = /etc/swift
+user = swift
+
+[pipeline:main]
+pipeline = catch_errors gatekeeper healthcheck proxy-logging cache container_sync bulk ratelimit authtoken keystoneauth container-quotas account-quotas slo dlo versioned_writes proxy-logging proxy-server
+
+[app:proxy-server]
+use = egg:swift#proxy
+account_autocreate = True
+
+[filter:tempauth]
+use = egg:swift#tempauth
+
+user_admin_admin = admin .admin .reseller_admin
+user_test_tester = testing .admin
+user_test2_tester2 = testing2 .admin
+user_test_tester3 = testing3
+user_test5_tester5 = testing5 service
+
+[filter:authtoken]
+paste.filter_factory = keystonemiddleware.auth_token:filter_factory
+
+auth_uri = http://{{ nodes.controller.name }}:5000 <1>
+auth_url = http://{{ nodes.controller.name }}:35357 <2>
+memcached_servers = {{ nodes.controller.name }}:11211 <3>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = swift
+password = {{ swift_dbpass}} <4>
+
+delay_auth_decision = True
+[filter:keystoneauth]
+use = egg:swift#keystoneauth
+operator_roles = admin, user
+
+[filter:healthcheck]
+use = egg:swift#healthcheck
+
+[filter:cache]
+use = egg:swift#memcache
+memcache_servers = {{ nodes.controller.name }}:11211 <5>
+
+[filter:ratelimit]
+use = egg:swift#ratelimit
+
+[filter:domain_remap]
+use = egg:swift#domain_remap
+
+[filter:catch_errors]
+use = egg:swift#catch_errors
+
+[filter:cname_lookup]
+use = egg:swift#cname_lookup
+
+[filter:staticweb]
+use = egg:swift#staticweb
+
+[filter:tempurl]
+use = egg:swift#tempurl
+
+[filter:formpost]
+use = egg:swift#formpost
+
+[filter:name_check]
+use = egg:swift#name_check
+
+[filter:list-endpoints]
+use = egg:swift#list_endpoints
+
+[filter:proxy-logging]
+use = egg:swift#proxy_logging
+
+[filter:bulk]
+use = egg:swift#bulk
+
+[filter:slo]
+use = egg:swift#slo
+
+[filter:dlo]
+use = egg:swift#dlo
+
+[filter:container-quotas]
+use = egg:swift#container_quotas
+
+[filter:account-quotas]
+use = egg:swift#account_quotas
+
+[filter:gatekeeper]
+use = egg:swift#gatekeeper
+
+[filter:container_sync]
+use = egg:swift#container_sync
+
+[filter:xprofile]
+use = egg:swift#xprofile
+
+[filter:versioned_writes]
+use = egg:swift#versioned_writes
+
+[filter:copy]
+use = egg:swift#copy
+
+[filter:keymaster]
+use = egg:swift#keymaster
+
+encryption_root_secret = changeme
+
+[filter:encryption]
+use = egg:swift#encryption
+
+[filter:ceilometer]
+paste.filter_factory = ceilometermiddleware.swift:filter_factory
+
+control_exchange = swift
+url = rabbit://openstack:{{ RABBIT_PASS }}@{{ short_controller_name }}:5672/ <6>
+driver = messagingv2
+topic = notifications
+log_level = WARN
+----
+<1> Nombre del nodo de control
+<2> Nombre del nodo de control
+<3> Nombre del nodo de control
+<4> Contraseña de Swift
+<5> Nombre del nodo de control
+<6> Contraseña de RabbitMQ y nombre del nodo de control
+****
+
+. Cambiar el propietario del directorio `/etc/swift`
+
++
+[source, bash]
+----
+# chown -R root:swift /etc/swift
+----
+
+### Instalar Swift en nodos de almacenamiento de objetos
+
+Realizar estas operaciones en los nodos de almacenamiento de objetos.
+
+. Instalar los paquetes de soporte
+
++
+[source, bash]
+----
+# apt install xfsprogs rsync
+----
+
+. Crear particiones
+
++
+[source, bash]
+----
+# fdisk /dev/sdb
+# fdisk /dev/sdc
+----
+
++
+[NOTE]
+====
+En este tutorial suponemos que cada uno de los servidores dedicados a almacenamiento de objetos cuentan con 2 discos (`sdb` y `sdc`).
+====
+
+. Formatear discos en formato `xfs`
+
++
+[source, bash]
+----
+# mkfs.xfs /dev/sdb1
+# mkfs.xfs /dev/sdc1
+----
+
+. Crear los puntos de montaje
+
++
+[source, bash]
+----
+# mkdir -p /srv/node/sdb
+# mkdir -p /srv/node/sdc
+----
+
+. Montar los discos
+
++
+[source, bash]
+----
+# mount /dev/sdb1 /srv/node/sdb
+# mount /dev/sdc1 /srv/node/sdc
+----
+
+. Configurar el archivo `/etc/rsyncd.conf`
+
++
+.El archivo `/etc/rsync.conf`
+****
+[source, bash]
+----
+uid = swift
+gid = swift
+log file = /var/log/rsyncd.log
+pid file = /var/run/rsyncd.pid
+address = {{ ansible_eth0.ipv4.address }} <1>
+
+[account]
+max connections = 2
+path = /srv/node/
+read only = False
+lock file = /var/lock/account.lock
+
+[container]
+max connections = 2
+path = /srv/node/
+read only = False
+lock file = /var/lock/container.lock
+
+[object]
+max connections = 2
+path = /srv/node/
+read only = False
+lock file = /var/lock/object.lock
+----
+<1> IP de mantenimiento del nodo de almacenamiento de objetos
+****
+
+. Activar `rsync` en `/etc/default/rsync`
+
++
+[source, bash]
+----
+RSYNC_ENABLE=true <1>
+----
+<1> Establecer este valor
+
+. Iniciar `rsync`
+
++
+[source, bash]
+----
+# service rsync start
+----
+
+. Instalar los paquetes de Swift en los nodos de almacenamiento de objetos
+
++
+[source, bash]
+----
+# apt install swift swift-account swift-container swift-object
+----
+
+. Configurar el archivo `/etc/swift/account-server.conf`
+
++
+.El archivo `/etc/swift/account-server.conf`
+****
+[source, bash]
+----
+[DEFAULT]
+bind_ip = {{ ansible_eth0.ipv4.address }} <1>
+bind_port = 6202
+user = swift
+swift_dir = /etc/swift
+devices = /srv/node
+mount_check = true
+
+[pipeline:main]
+pipeline = healthcheck recon account-server
+
+[app:account-server]
+use = egg:swift#account
+
+[filter:healthcheck]
+use = egg:swift#healthcheck
+
+[filter:recon]
+use = egg:swift#recon
+recon_cache_path = /var/cache/swift
+
+[account-replicator]
+
+[account-auditor]
+
+[account-reaper]
+
+[filter:xprofile]
+use = egg:swift#xprofile
+
+----
+<1> IP de mantenimiento del nodo de almacenamiento de objetos
+****
+
+. Configurar el archivo `/etc/swift/container-server.conf`
+
++
+.El archivo `/etc/swift/container-server.conf`
+****
+[source, bash]
+----
+[DEFAULT]
+bind_ip = {{ ansible_eth0.ipv4.address }} <1>
+bind_port = 6201
+user = swift
+swift_dir = /etc/swift
+devices = /srv/node
+mount_check = true
+
+[pipeline:main]
+pipeline = healthcheck recon container-server
+
+[app:container-server]
+use = egg:swift#container
+
+[filter:healthcheck]
+use = egg:swift#healthcheck
+
+[filter:recon]
+use = egg:swift#recon
+recon_cache_path = /var/cache/swift
+
+[container-replicator]
+
+[container-updater]
+
+[container-auditor]
+
+[container-sync]
+
+[filter:xprofile]
+use = egg:swift#xprofile
+----
+<1> IP de mantenimiento del nodo de almacenamiento de objetos
+****
+
+. Configurar el archivo `/etc/swift/object-server.conf`
+
++
+.El archivo `/etc/swift/object-server.conf`
+****
+[source, bash]
+----
+[DEFAULT]
+bind_ip = {{ ansible_eth0.ipv4.address }} <1>
+bind_port = 6200
+user = swift
+swift_dir = /etc/swift
+devices = /srv/node
+mount_check = true
+
+[pipeline:main]
+pipeline = healthcheck recon object-server
+
+[app:object-server]
+use = egg:swift#object
+
+[filter:healthcheck]
+use = egg:swift#healthcheck
+
+[filter:recon]
+use = egg:swift#recon
+recon_cache_path = /var/cache/swift
+recon_lock_path = /var/lock
+
+[object-replicator]
+
+[object-reconstructor]
+
+[object-updater]
+
+[object-auditor]
+
+[filter:xprofile]
+use = egg:swift#xprofile
+----
+<1> IP de mantenimiento del nodo de almacenamiento de objetos
+****
+
+. Crear el directorio `/srv/node` si no existe y cambiarlo de propietario
+
++
+[source, bash]
+----
+# mkdir -p /srv/node
+# chown -R swift:swift /srv/node
+----
+
+. Crear el directorio `/var/cache/swift` si no existe y cambiarlo de propietario
+
++
+[source, bash]
+----
+# mkdir -p /var/cache/swift
+# chown -R root:swift /var/cache/swift
+----
+
+### Crear y distribuir los anillos iniciales
+
+Realizar estas operaciones en el nodo de control.
+
+. Crear el archivo base `account.builder`
+
++
+[source]
+----
+# swift-ring-builder account.builder create 10 3 1
+----
+
+. Añadir cada nodo de almacenamiento al anillo. Añade el anillo para la combinación de los dos nodos de almacenamiento de objetos (`objetos01` y `objetos02`) con los dos dispositivos (`sdb` y `sdc`).
+
++
+[source]
+----
+# swift-ring-builder account.builder add --region 1 --zone 1 --ip {{ objetos01.management_ip}}  \ <1>
+    --port 6202 --device {{ sdb }}  \ <2>
+    --weight 100} <3>
+# swift-ring-builder account.builder add --region 1 --zone 1 --ip {{ objetos01.management_ip}}  \
+    --port 6202 --device {{ sdc }} \
+    --weight 100} 
+
+# swift-ring-builder account.builder add --region 1 --zone 1 --ip {{ objetos02.management_ip}}  \
+    --port 6202 --device {{ sdb }}  \
+    --weight 100} 
+# swift-ring-builder account.builder add --region 1 --zone 1 --ip {{ objetos02.management_ip}}  \
+    --port 6202 --device {{ sdc }} \
+    --weight 100}
+----
+<1> IP de mantenimiento del primer nodo de almacenamiento de objetos 
+<2> Primer dispositivo
+<3> El peso lo inicializamos a 100
+
+. Rebalancear el anillo
+
++
+[source]
+----
+# swift-ring-builder account.builder rebalance
+----
+
+. Crear el archivo base `container.builder`. Añade el anillo para la combinación de los dos nodos de almacenamiento de objetos (`objetos01` y `objetos02`) con los dos dispositivos (`sdb` y `sdc`).
+
++
+[source]
+----
+swift-ring-builder container.builder create 10 3 1
+----
+
+. Añadir cada nodo de almacenamiento al anillo
+
++
+[source]
+----
+# swift-ring-builder container.builder add --region 1 --zone 1 --ip {{ objetos01.management_ip}}  \ <1>
+    --port 6202 --device {{ sdb }}  \ <2>
+    --weight 100} <3>
+# swift-ring-builder container.builder add --region 1 --zone 1 --ip {{ objetos01.management_ip}}  \
+    --port 6202 --device {{ sdc }} \
+    --weight 100} 
+
+# swift-ring-builder container.builder add --region 1 --zone 1 --ip {{ objetos02.management_ip}}  \
+    --port 6202 --device {{ sdb }}  \
+    --weight 100} 
+# swift-ring-builder container.builder add --region 1 --zone 1 --ip {{ objetos02.management_ip}}  \
+    --port 6202 --device {{ sdc }} \
+    --weight 100}
+----
+<1> IP de mantenimiento del primer nodo de almacenamiento de objetos 
+<2> Primer dispositivo
+<3> El peso lo inicializamos a 100
+
+. Rebalancear el anillo
+
++
+[source]
+----
+# swift-ring-builder container.builder rebalance
+----
+
+. Crear el archivo base `object.builder`
+
++
+[source]
+----
+# swift-ring-builder object.builder create 10 3 1
+----
+
+. Añadir cada nodo de almacenamiento al anillo
+
++
+[source]
+----
+# swift-ring-builder object.builder add --region 1 --zone 1 --ip {{ objetos01.management_ip}}  \ <1>
+    --port 6202 --device {{ sdb }}  \ <2>
+    --weight 100} <3>
+# swift-ring-builder object.builder add --region 1 --zone 1 --ip {{ objetos01.management_ip}}  \
+    --port 6202 --device {{ sdc }} \
+    --weight 100} 
+
+# swift-ring-builder object.builder add --region 1 --zone 1 --ip {{ objetos02.management_ip}}  \
+    --port 6202 --device {{ sdb }}  \
+    --weight 100} 
+# swift-ring-builder object.builder add --region 1 --zone 1 --ip {{ objetos02.management_ip}}  \
+    --port 6202 --device {{ sdc }} \
+    --weight 100}
+----
+<1> IP de mantenimiento del primer nodo de almacenamiento de objetos 
+<2> Primer dispositivo
+<3> El peso lo inicializamos a 100
+
+. Rebalancear el anillo
+
++
+[source]
+----
+# swift-ring-builder object.builder rebalance
+----
+
+. Distribuir los archivos de configuración del anillo a los nodos de almacenamiento de objetos
+
++
+[source]
+----
+# scp /etc/swift/*.ring.gz {{ objetos01.management_ip }}:/etc/swift <1>
+# scp /etc/swift/*.ring.gz {{ objetos02.management_ip }}:/etc/swift <2>
+----
+<1> IP de mantenimento del nodo 1 de almacenamiento de objetos
+<2> IP de mantenimento del nodo 2 de almacenamiento de objetos
+
+### Modificar la configuración de Swift
+
+Realizar estas operaciones en el nodo de control y en los nodos de almacenamiento de objetos
+
+. Modificar el archivo `/etc/swift/swift.conf` 
+
++
+.El archivo `/etc/swift/swift.conf`
+****
+[source, bash]
+----
+[swift-hash]
+
+swift_hash_path_suffix = {{ hash_path_suffix }} <1>
+swift_hash_path_prefix = {{ hash_path_prefix }} <2>
+
+[storage-policy:0]
+name = Policy-0
+default = yes
+aliases = yellow, orange
+
+[swift-constraints]
+----
+<1> Prefijo secreto de hash
+<2> Sufijo secreto de hash
+****
+
+. Cambiar el propietario del directorio `/etc/swift`
+
++
+[source, bash]
+----
+# chown -R root:swift /etc/swift
+----
+
+### Iniciar y reiniciar servicios
+
+. Reiniciar servicios en nodo de control
+
++
+[source, bash]
+----
+# service memcached restart
+# service swift-proxy restart
+----
+
+. Iniciar los servicios de almacenamiento en los nodos de almacenamiento de objetos
+
++
+[source, bash]
+----
+# swift-init all start
+----
+
+## Sahara
+
+Realizar todos estos pasos en el nodo de control.
+
+. Creación y configuración de la base de datos `sahara`
+
++
+[source, bash]
+----
+MariaDB [(none)]> CREATE DATABASE sahara;
+
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON sahara.* TO 'sahara'@'localhost' \
+  IDENTIFIED BY 'SAHARA_DBPASS'; <1>
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON sahara.* TO 'sahara'@'%' \
+  IDENTIFIED BY 'SAHARA_DBPASS'; <2>
+----
+<1> Contraseña del usuario Sahara
+<2> Contraseña del usuario Sahara
+
+. Realizar la configuración de Sahara (usuario `sahara`, añadir el usuario `sahara` al proyecto `service` con el rol `admin` y crear el servicio `sahara`)
+
++
+[source, bash]
+----
+# source openrc-admin <1>
+
+# openstack user create --domain default sahara --password {{ sahara_dbpass }} <2>
+# openstack role add --project service --user sahara admin
+# openstack service create --name sahara --description "OpenStack Data Processing" data-processing
+----
+<1> Cargar las credenciales de `admin`
+<2> Contraseña del usuario `sahara`
+
+. Crear los endpoints de la API
+
++
+[source, bash]
+----
+# openstack endpoint create --region {{region}} data-processing public http://{{ nodes_by_name.controller.provider_ip }}:8386/v1.1/%\(project_id\)s <1>
+# openstack endpoint create --region {{region}} data-processing internal http://{{ nodes_by_name.controller.tunnel_ip }}:8386/v1.1/%\(project_id\)s <2>
+# openstack endpoint create --region {{region}} data-processing admin http://{{ nodes_by_name.controller.management_ip }}:8386/v1.1/%\(project_id\)s <3>
+----
+<1> Región (p.e, `RegionOne`) e IP externa del nodo de control
+<2> Región (p.e, `RegionOne`) e IP de túnel del nodo de control
+<3> Región (p.e, `RegionOne`) e IP de mantenimiento del nodo de control
+
+
+. Instalar los paquetes de Glance 
+
++
+[source, bash]
+----
+# apt install sahara python-saharaclient
+----
+
+. Configurar el archivo `/etc/sahara/sahara.conf`
+
++
+.El archivo `/etc/sahara/sahara.conf`
+****
+[source, bash]
+----
+[DEFAULT]
+
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <1>
+
+use_floating_ips = true
+
+use_neutron = true
+
+heat_enable_wait_condition = false
+
+[castellan]
+
+[cinder]
+
+[conductor]
+
+[cors]
+
+[cors.subdomain]
+
+[database]
+
+connection = mysql://sahara:{{ sahara_dbpass }}@{{ nodes.controller.name }}/sahara <2>
+
+[heat]
+
+[keystone]
+
+[keystone_authtoken]
+
+auth_uri = http://{{ nodes.controller.name }}:5000/v3/ <3>
+
+memcached_servers = {{ nodes.controller.name }}:11211 <4>
+
+identity_uri = http://{{ nodes.controller.name }}:35357/ <5>
+
+admin_user = sahara
+
+admin_password = {{ sahara_dbpass }} <6>
+
+admin_tenant_name = service
+
+[matchmaker_redis]
+
+[neutron]
+
+[nova]
+
+[object_store_access]
+
+[oslo_concurrency]
+
+lock_path = /var/lock/sahara
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_policy]
+
+[retries]
+
+[ssl]
+
+[swift]
+
+[timeouts]
+
+----
+<1> Contraseña de RabbitMQ y nombre del nodo de control
+<2> Contraseña de Sahara y nombre del nodo de control
+<3> Nombre del nodo de control
+<4> Nombre del nodo de control
+<5> Nombre del nodo de control
+<6> Contraseña de Sahara
+****
+
+. Añadir lo siguiente a `/etc/mysql/my.cnf`
+
++
+[source, bash]
+----
+[mysqld]
+max_allowed_packet = 256M
+----
+
+. Reiniciar MySQL
+
++
+[source, bash]
+----
+# service mysql restart
+----
+
+. Inicializar la base de datos `sahara`
+
++
+[source, bash]
+----
+# su -s /bin/sh -c "sahara-db-manage --config-file /etc/sahara/sahara.conf upgrade head" sahara
+----
+
+. Modificar el archivo `/usr/lib/python2.7/dist-packages/sahara/service/quotas.py`
+
++
+.El archivo `/usr/lib/python2.7/dist-packages/sahara/service/quotas.py`
+****
+[source, bash]
+----
+from oslo_config import cfg
+import six
+
+from sahara import context
+from sahara import exceptions as ex
+from sahara.i18n import _
+from sahara.utils.openstack import base as b
+from sahara.utils.openstack import cinder as cinder_client
+from sahara.utils.openstack import neutron as neutron_client
+from sahara.utils.openstack import nova as nova_client
+
+CONF = cfg.CONF
+
+UNLIMITED = 'unlimited'
+
+def _is_unlimited(limit):
+    return limit == -1
+
+def _get_zero_limits():
+    return {
+        'ram': 0,
+        'cpu': 0,
+        'instances': 0,
+        'floatingips': 0,
+        'security_groups': 0,
+        'security_group_rules': 0,
+        'ports': 0,
+        'volumes': 0,
+        'volume_gbs': 0
+    }
+
+def check_cluster(cluster):
+    req_limits = _get_req_cluster_limits(cluster)
+    _check_limits(req_limits)
+
+def check_scaling(cluster, to_be_enlarged, additional):
+    req_limits = _get_req_scaling_limits(cluster, to_be_enlarged, additional)
+    _check_limits(req_limits)
+
+def _check_limits(req_limits):
+    limits_name_map = {
+        'ram': _("RAM"),
+        'cpu': _("VCPU"),
+        'instances': _("instance"),
+        'floatingips': _("floating ip"),
+        'security_groups': _("security group"),
+        'security_group_rules': _("security group rule"),
+        'ports': _("port"),
+        'volumes': _("volume"),
+        'volume_gbs': _("volume storage")
+    }
+
+    avail_limits = _get_avail_limits()
+    for quota, quota_name in six.iteritems(limits_name_map):
+        if avail_limits[quota] != UNLIMITED:
+            if avail_limits[quota] < req_limits[quota]:
+                raise ex.QuotaException(quota_name, req_limits[quota],
+                                        avail_limits[quota])
+
+def _get_req_cluster_limits(cluster):
+    req_limits = _get_zero_limits()
+    for ng in cluster.node_groups:
+        _update_limits_for_ng(req_limits, ng, ng.count)
+    return req_limits
+
+def _get_req_scaling_limits(cluster, to_be_enlarged, additional):
+    ng_id_map = to_be_enlarged.copy()
+    ng_id_map.update(additional)
+    req_limits = _get_zero_limits()
+    for ng in cluster.node_groups:
+        if ng_id_map.get(ng.id):
+            _update_limits_for_ng(req_limits, ng, ng_id_map[ng.id] - ng.count)
+    return req_limits
+
+def _update_limits_for_ng(limits, ng, count):
+    sign = lambda x: (1, -1)[x < 0]
+    nova = nova_client.client()
+    limits['instances'] += count
+    flavor = b.execute_with_retries(nova.flavors.get, ng.flavor_id)
+    limits['ram'] += flavor.ram * count
+    limits['cpu'] += flavor.vcpus * count
+    # tmckay-fp this is fine, it will be zero without it
+    if ng.floating_ip_pool:
+        limits['floatingips'] += count
+    if ng.volumes_per_node:
+        limits['volumes'] += ng.volumes_per_node * count
+        limits['volume_gbs'] += ng.volumes_per_node * ng.volumes_size * count
+    if ng.auto_security_group:
+        limits['security_groups'] += sign(count)
+        # NOTE: +3 - all traffic for private network
+        if CONF.use_neutron:
+            limits['security_group_rules'] += (
+                (len(ng.open_ports) + 3) * sign(count))
+        else:
+            limits['security_group_rules'] = max(
+                limits['security_group_rules'], len(ng.open_ports) + 3)
+    if CONF.use_neutron:
+        limits['ports'] += count
+
+def _get_avail_limits():
+    limits = _get_zero_limits()
+    limits.update(_get_nova_limits())
+    limits.update(_get_neutron_limits())
+    if cinder_client.check_cinder_exists():
+        limits.update(_get_cinder_limits())
+    return limits
+
+def _sub_limit(total, used):
+    if _is_unlimited(total):
+        return UNLIMITED
+    else:
+        return total - used
+
+def _get_nova_limits():
+    limits = {}
+    nova = nova_client.client()
+    lim = b.execute_with_retries(nova.limits.get).to_dict()['absolute']
+    limits['ram'] = _sub_limit(lim['maxTotalRAMSize'], lim['totalRAMUsed'])
+    limits['cpu'] = _sub_limit(lim['maxTotalCores'], lim['totalCoresUsed'])
+    limits['instances'] = _sub_limit(lim['maxTotalInstances'],
+                                     lim['totalInstancesUsed'])
+    if CONF.use_neutron:
+        return limits
+
+    # tmckay-fp here we would just get the limits all the time
+    limits['floatingips'] = _sub_limit(lim['maxTotalFloatingIps'],
+                                       lim['totalFloatingIpsUsed'])
+    # limits['floatingips'] = 0
+
+    limits['security_groups'] = _sub_limit(lim['maxSecurityGroups'],
+                                           lim['totalSecurityGroupsUsed'])
+    limits['security_group_rules'] = _sub_limit(lim['maxSecurityGroupRules'],
+                                                0)
+    return limits
+
+def _get_neutron_limits():
+    limits = {}
+    if not CONF.use_neutron:
+        return limits
+    neutron = neutron_client.client()
+    tenant_id = context.ctx().tenant_id
+    total_lim = b.execute_with_retries(neutron.show_quota, tenant_id)['quota']
+
+    # tmckay-fp here we would just get the limits all the time
+    usage_fip = b.execute_with_retries(
+       neutron.list_floatingips,  tenant_id=tenant_id)['floatingips']
+    limits['floatingips'] = _sub_limit(total_lim['floatingip'],
+                                      len(usage_fip))
+    # limits['floatingips'] = 0
+
+    usage_sg = b.execute_with_retries(
+        neutron.list_security_groups, tenant_id=tenant_id).get(
+        'security_groups', [])
+    limits['security_groups'] = _sub_limit(total_lim['security_group'],
+                                           len(usage_sg))
+
+    usage_sg_rules = b.execute_with_retries(
+        neutron.list_security_group_rules, tenant_id=tenant_id).get(
+        'security_group_rules', [])
+    limits['security_group_rules'] = _sub_limit(
+        total_lim['security_group_rule'], len(usage_sg_rules))
+
+    usage_ports = b.execute_with_retries(
+        neutron.list_ports, tenant_id=tenant_id)['ports']
+    limits['ports'] = _sub_limit(total_lim['port'], len(usage_ports))
+
+    return limits
+
+def _get_cinder_limits():
+    avail_limits = {}
+    cinder = cinder_client.client()
+    lim = {}
+    for l in b.execute_with_retries(cinder.limits.get).absolute:
+        lim[l.name] = l.value
+
+    avail_limits['volumes'] = _sub_limit(lim['maxTotalVolumes'],
+                                         lim['totalVolumesUsed'])
+
+    avail_limits['volume_gbs'] = _sub_limit(lim['maxTotalVolumeGigabytes'],
+                                            lim['totalGigabytesUsed'])
+
+    return avail_limits
+
+----
+****
+
+. Reiniciar los servicios de Sahara
+
++
+[source, bash]
+----
+# service sahara-api restart
+# service sahara-engine restart
+----
+
+. Clonar el repositorio de `sahara-dashboard`
+
++
+[source, bash]
+----
+# git clone https://github.com/openstack/sahara-dashboard /tmp/sahara-dashboard
+----
+
++
+[NOTE]
+====
+Sahara no tiene empaquetada la integración con Horizon. En estos casos descargaremos los fuentes del dashboard, los procesaremos y los integraremos en Horizon.
+====
+
+. Instalar el dashboard de Sahara desde `/tmp/sahara-dashboard/`
+
++
+[source, bash]
+----
+# cd /tmp/sahara-dashboard/
+# python setup.py install
+----
+
+. Copiar los archivos del dashboard de Sahara
+
++
+[source, bash]
+----
+# cp /tmp/sahara-dashboard/sahara_dashboard/enabled/_1810_data_processing_panel_group.py /usr/share/openstack-dashboard/openstack_dashboard/enabled/
+# cp /tmp/sahara-dashboard/sahara_dashboard/enabled/_1830_data_processing_plugins_panel.py /usr/share/openstack-dashboard/openstack_dashboard/enabled/
+# cp /tmp/sahara-dashboard/sahara_dashboard/enabled/_1820_data_processing_clusters_panel.py /usr/share/openstack-dashboard/openstack_dashboard/enabled/
+# cp /tmp/sahara-dashboard/sahara_dashboard/enabled/_1840_data_processing_jobs_panel.py /usr/share/openstack-dashboard/openstack_dashboard/enabled/
+----
+
+. Realizar estos últimos pasos para terminar de integrar el dashboard en Horizon
+
++
+[source, bash]
+----
+# cd /usr/share/openstack-dashboard
+# python manage.py collectstatic <1>
+# python manage.py compress
+----
+<1> Responder `yes` a la pregunta
+
+. Reiniciar el servidor Apache
+
++
+[source, bash]
+----
+# service apache2 restart
+----
+
+
+
+
 
 :numbered!: 
 

@@ -470,6 +470,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#trueconfiguraci-n-de-manila-en-el-nodo-de-control">12.3. Configuración de Manila en el nodo de control</a></li>
 </ul>
 </li>
+<li><a href="#trueswift">13. Swift</a>
+<ul class="sectlevel2">
+<li><a href="#trueinstalaci-n-de-swift-en-el-nodo-de-control">13.1. Instalación de Swift en el nodo de control</a></li>
+<li><a href="#trueinstalar-swift-en-nodos-de-almacenamiento-de-objetos">13.2. Instalar Swift en nodos de almacenamiento de objetos</a></li>
+<li><a href="#truecrear-y-distribuir-los-anillos-iniciales">13.3. Crear y distribuir los anillos iniciales</a></li>
+<li><a href="#truemodificar-la-configuraci-n-de-swift">13.4. Modificar la configuración de Swift</a></li>
+<li><a href="#trueiniciar-y-reiniciar-servicios">13.5. Iniciar y reiniciar servicios</a></li>
+</ul>
+</li>
+<li><a href="#truesahara">14. Sahara</a></li>
 <li><a href="#trueanexo-paquetes-y-archivos-de-configuraci-n">Anexo. Paquetes y archivos de configuración</a></li>
 </ul>
 </div>
@@ -4219,7 +4229,7 @@ service_provider = LOADBALANCERV2:Haproxy:neutron_lbaas.drivers.haproxy.plugin_d
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Neutron LBaaS no tiene empaquetada la integración con Horizon. En estos casos descargaremos los fuentes, los procesaremos y los integraremos en Horizon.</p>
+<p>Neutron LBaaS no tiene empaquetada la integración con Horizon. En estos casos descargaremos los fuentes del dashboard, los procesaremos y los integraremos en Horizon.</p>
 </div>
 </td>
 </tr>
@@ -5260,7 +5270,7 @@ lock_path = /var/lib/manila/tmp</code></pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Manila no tiene empaquetada la integración con Horizon. En estos casos descargaremos los fuentes, los procesaremos y los integraremos en Horizon.</p>
+<p>Manila no tiene empaquetada la integración con Horizon. En estos casos descargaremos los fuentes del dashboard, los procesaremos y los integraremos en Horizon.</p>
 </div>
 </td>
 </tr>
@@ -5502,6 +5512,1330 @@ lvm_share_export_ip = {{ nodes_by_name.shared.provider_ip }} <i class="conum" da
 </div>
 </div>
 <div class="sect1">
+<h2 id="trueswift"><a class="anchor" href="#trueswift"></a>13. Swift</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="trueinstalaci-n-de-swift-en-el-nodo-de-control"><a class="anchor" href="#trueinstalaci-n-de-swift-en-el-nodo-de-control"></a>13.1. Instalación de Swift en el nodo de control</h3>
+<div class="paragraph">
+<p>Realizar estas operaciones en el nodo de control.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Realizar la configuración de Cinder (usuario <code>cinder</code>, añadir el usuario <code>cinder</code> al proyecto <code>service</code> con el rol <code>admin</code> y crear los servicios <code>cinder</code>, <code>cinderv2</code> y <code>cinderv3</code>).</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># source openrc-admin <i class="conum" data-value="1"></i><b>(1)</b>
+
+# openstack user create --domain default swift --password {{ swift_dbpass }} <i class="conum" data-value="2"></i><b>(2)</b>
+# openstack role add --project service --user swift admin
+# openstack service create --name swift --description "OpenStack Object Storage" object-store</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Cargar las credenciales de <code>admin</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contraseña del usuario <code>swift</code></td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Crear los endpoints de la API</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># openstack endpoint create --region {{region}} object-store public http://{{ nodes_by_name.controller.provider_ip }}:8080/v1/AUTH_%\(tenant_id\)s <i class="conum" data-value="1"></i><b>(1)</b>
+# openstack endpoint create --region {{region}} object-store internal http://{{ nodes_by_name.controller.tunnel_ip }}:8080/v1/AUTH_%\(tenant_id\)s <i class="conum" data-value="2"></i><b>(2)</b>
+# openstack endpoint create --region {{region}} object-store admin http://{{ nodes_by_name.controller.management_ip }}:8080/v1/AUTH_%\(tenant_id\)s <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP externa del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de túnel del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de mantenimiento del nodo de control</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Instalar los paquetes de Swift</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt install swift swift-proxy python-swiftclient python-keystoneclient python-keystonemiddleware</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configurar el archivo <code>/etc/swift/proxy-server.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/swift/proxy-server.conf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[DEFAULT]
+bind_port = 8080
+swift_dir = /etc/swift
+user = swift
+
+[pipeline:main]
+pipeline = catch_errors gatekeeper healthcheck proxy-logging cache container_sync bulk ratelimit authtoken keystoneauth container-quotas account-quotas slo dlo versioned_writes proxy-logging proxy-server
+
+[app:proxy-server]
+use = egg:swift#proxy
+account_autocreate = True
+
+[filter:tempauth]
+use = egg:swift#tempauth
+
+user_admin_admin = admin .admin .reseller_admin
+user_test_tester = testing .admin
+user_test2_tester2 = testing2 .admin
+user_test_tester3 = testing3
+user_test5_tester5 = testing5 service
+
+[filter:authtoken]
+paste.filter_factory = keystonemiddleware.auth_token:filter_factory
+
+auth_uri = http://{{ nodes.controller.name }}:5000 <i class="conum" data-value="1"></i><b>(1)</b>
+auth_url = http://{{ nodes.controller.name }}:35357 <i class="conum" data-value="2"></i><b>(2)</b>
+memcached_servers = {{ nodes.controller.name }}:11211 <i class="conum" data-value="3"></i><b>(3)</b>
+auth_type = password
+project_domain_name = default
+user_domain_name = default
+project_name = service
+username = swift
+password = {{ swift_dbpass}} <i class="conum" data-value="4"></i><b>(4)</b>
+
+delay_auth_decision = True
+[filter:keystoneauth]
+use = egg:swift#keystoneauth
+operator_roles = admin, user
+
+[filter:healthcheck]
+use = egg:swift#healthcheck
+
+[filter:cache]
+use = egg:swift#memcache
+memcache_servers = {{ nodes.controller.name }}:11211 <i class="conum" data-value="5"></i><b>(5)</b>
+
+[filter:ratelimit]
+use = egg:swift#ratelimit
+
+[filter:domain_remap]
+use = egg:swift#domain_remap
+
+[filter:catch_errors]
+use = egg:swift#catch_errors
+
+[filter:cname_lookup]
+use = egg:swift#cname_lookup
+
+[filter:staticweb]
+use = egg:swift#staticweb
+
+[filter:tempurl]
+use = egg:swift#tempurl
+
+[filter:formpost]
+use = egg:swift#formpost
+
+[filter:name_check]
+use = egg:swift#name_check
+
+[filter:list-endpoints]
+use = egg:swift#list_endpoints
+
+[filter:proxy-logging]
+use = egg:swift#proxy_logging
+
+[filter:bulk]
+use = egg:swift#bulk
+
+[filter:slo]
+use = egg:swift#slo
+
+[filter:dlo]
+use = egg:swift#dlo
+
+[filter:container-quotas]
+use = egg:swift#container_quotas
+
+[filter:account-quotas]
+use = egg:swift#account_quotas
+
+[filter:gatekeeper]
+use = egg:swift#gatekeeper
+
+[filter:container_sync]
+use = egg:swift#container_sync
+
+[filter:xprofile]
+use = egg:swift#xprofile
+
+[filter:versioned_writes]
+use = egg:swift#versioned_writes
+
+[filter:copy]
+use = egg:swift#copy
+
+[filter:keymaster]
+use = egg:swift#keymaster
+
+encryption_root_secret = changeme
+
+[filter:encryption]
+use = egg:swift#encryption
+
+[filter:ceilometer]
+paste.filter_factory = ceilometermiddleware.swift:filter_factory
+
+control_exchange = swift
+url = rabbit://openstack:{{ RABBIT_PASS }}@{{ short_controller_name }}:5672/ <i class="conum" data-value="6"></i><b>(6)</b>
+driver = messagingv2
+topic = notifications
+log_level = WARN</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Contraseña de Swift</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Contraseña de RabbitMQ y nombre del nodo de control</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Cambiar el propietario del directorio <code>/etc/swift</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># chown -R root:swift /etc/swift</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueinstalar-swift-en-nodos-de-almacenamiento-de-objetos"><a class="anchor" href="#trueinstalar-swift-en-nodos-de-almacenamiento-de-objetos"></a>13.2. Instalar Swift en nodos de almacenamiento de objetos</h3>
+<div class="paragraph">
+<p>Realizar estas operaciones en los nodos de almacenamiento de objetos.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Instalar los paquetes de soporte</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt install xfsprogs rsync</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Crear particiones</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># fdisk /dev/sdb
+# fdisk /dev/sdc</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>En este tutorial suponemos que cada uno de los servidores dedicados a almacenamiento de objetos cuentan con 2 discos (<code>sdb</code> y <code>sdc</code>).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Formatear discos en formato <code>xfs</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># mkfs.xfs /dev/sdb1
+# mkfs.xfs /dev/sdc1</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Crear los puntos de montaje</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># mkdir -p /srv/node/sdb
+# mkdir -p /srv/node/sdc</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Montar los discos</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># mount /dev/sdb1 /srv/node/sdb
+# mount /dev/sdc1 /srv/node/sdc</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configurar el archivo <code>/etc/rsyncd.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/rsync.conf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">uid = swift
+gid = swift
+log file = /var/log/rsyncd.log
+pid file = /var/run/rsyncd.pid
+address = {{ ansible_eth0.ipv4.address }} <i class="conum" data-value="1"></i><b>(1)</b>
+
+[account]
+max connections = 2
+path = /srv/node/
+read only = False
+lock file = /var/lock/account.lock
+
+[container]
+max connections = 2
+path = /srv/node/
+read only = False
+lock file = /var/lock/container.lock
+
+[object]
+max connections = 2
+path = /srv/node/
+read only = False
+lock file = /var/lock/object.lock</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>IP de mantenimiento del nodo de almacenamiento de objetos</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Activar <code>rsync</code> en <code>/etc/default/rsync</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">RSYNC_ENABLE=true <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Establecer este valor</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Iniciar <code>rsync</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service rsync start</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Instalar los paquetes de Swift en los nodos de almacenamiento de objetos</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt install swift swift-account swift-container swift-object</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configurar el archivo <code>/etc/swift/account-server.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/swift/account-server.conf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[DEFAULT]
+bind_ip = {{ ansible_eth0.ipv4.address }} <i class="conum" data-value="1"></i><b>(1)</b>
+bind_port = 6202
+user = swift
+swift_dir = /etc/swift
+devices = /srv/node
+mount_check = true
+
+[pipeline:main]
+pipeline = healthcheck recon account-server
+
+[app:account-server]
+use = egg:swift#account
+
+[filter:healthcheck]
+use = egg:swift#healthcheck
+
+[filter:recon]
+use = egg:swift#recon
+recon_cache_path = /var/cache/swift
+
+[account-replicator]
+
+[account-auditor]
+
+[account-reaper]
+
+[filter:xprofile]
+use = egg:swift#xprofile</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>IP de mantenimiento del nodo de almacenamiento de objetos</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Configurar el archivo <code>/etc/swift/container-server.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/swift/container-server.conf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[DEFAULT]
+bind_ip = {{ ansible_eth0.ipv4.address }} <i class="conum" data-value="1"></i><b>(1)</b>
+bind_port = 6201
+user = swift
+swift_dir = /etc/swift
+devices = /srv/node
+mount_check = true
+
+[pipeline:main]
+pipeline = healthcheck recon container-server
+
+[app:container-server]
+use = egg:swift#container
+
+[filter:healthcheck]
+use = egg:swift#healthcheck
+
+[filter:recon]
+use = egg:swift#recon
+recon_cache_path = /var/cache/swift
+
+[container-replicator]
+
+[container-updater]
+
+[container-auditor]
+
+[container-sync]
+
+[filter:xprofile]
+use = egg:swift#xprofile</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>IP de mantenimiento del nodo de almacenamiento de objetos</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Configurar el archivo <code>/etc/swift/object-server.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/swift/object-server.conf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[DEFAULT]
+bind_ip = {{ ansible_eth0.ipv4.address }} <i class="conum" data-value="1"></i><b>(1)</b>
+bind_port = 6200
+user = swift
+swift_dir = /etc/swift
+devices = /srv/node
+mount_check = true
+
+[pipeline:main]
+pipeline = healthcheck recon object-server
+
+[app:object-server]
+use = egg:swift#object
+
+[filter:healthcheck]
+use = egg:swift#healthcheck
+
+[filter:recon]
+use = egg:swift#recon
+recon_cache_path = /var/cache/swift
+recon_lock_path = /var/lock
+
+[object-replicator]
+
+[object-reconstructor]
+
+[object-updater]
+
+[object-auditor]
+
+[filter:xprofile]
+use = egg:swift#xprofile</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>IP de mantenimiento del nodo de almacenamiento de objetos</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Crear el directorio <code>/srv/node</code> si no existe y cambiarlo de propietario</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># mkdir -p /srv/node
+# chown -R swift:swift /srv/node</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Crear el directorio <code>/var/cache/swift</code> si no existe y cambiarlo de propietario</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># mkdir -p /var/cache/swift
+# chown -R root:swift /var/cache/swift</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truecrear-y-distribuir-los-anillos-iniciales"><a class="anchor" href="#truecrear-y-distribuir-los-anillos-iniciales"></a>13.3. Crear y distribuir los anillos iniciales</h3>
+<div class="paragraph">
+<p>Realizar estas operaciones en el nodo de control.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Crear el archivo base <code>account.builder</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code># swift-ring-builder account.builder create 10 3 1</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Añadir cada nodo de almacenamiento al anillo. Añade el anillo para la combinación de los dos nodos de almacenamiento de objetos (<code>objetos01</code> y <code>objetos02</code>) con los dos dispositivos (<code>sdb</code> y <code>sdc</code>).</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code># swift-ring-builder account.builder add --region 1 --zone 1 --ip {{ objetos01.management_ip}}  \ <i class="conum" data-value="1"></i><b>(1)</b>
+    --port 6202 --device {{ sdb }}  \ <i class="conum" data-value="2"></i><b>(2)</b>
+    --weight 100} <i class="conum" data-value="3"></i><b>(3)</b>
+# swift-ring-builder account.builder add --region 1 --zone 1 --ip {{ objetos01.management_ip}}  \
+    --port 6202 --device {{ sdc }} \
+    --weight 100}
+
+# swift-ring-builder account.builder add --region 1 --zone 1 --ip {{ objetos02.management_ip}}  \
+    --port 6202 --device {{ sdb }}  \
+    --weight 100}
+# swift-ring-builder account.builder add --region 1 --zone 1 --ip {{ objetos02.management_ip}}  \
+    --port 6202 --device {{ sdc }} \
+    --weight 100}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>IP de mantenimiento del primer nodo de almacenamiento de objetos</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Primer dispositivo</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>El peso lo inicializamos a 100</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Rebalancear el anillo</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code># swift-ring-builder account.builder rebalance</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Crear el archivo base <code>container.builder</code>. Añade el anillo para la combinación de los dos nodos de almacenamiento de objetos (<code>objetos01</code> y <code>objetos02</code>) con los dos dispositivos (<code>sdb</code> y <code>sdc</code>).</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>swift-ring-builder container.builder create 10 3 1</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Añadir cada nodo de almacenamiento al anillo</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code># swift-ring-builder container.builder add --region 1 --zone 1 --ip {{ objetos01.management_ip}}  \ <i class="conum" data-value="1"></i><b>(1)</b>
+    --port 6202 --device {{ sdb }}  \ <i class="conum" data-value="2"></i><b>(2)</b>
+    --weight 100} <i class="conum" data-value="3"></i><b>(3)</b>
+# swift-ring-builder container.builder add --region 1 --zone 1 --ip {{ objetos01.management_ip}}  \
+    --port 6202 --device {{ sdc }} \
+    --weight 100}
+
+# swift-ring-builder container.builder add --region 1 --zone 1 --ip {{ objetos02.management_ip}}  \
+    --port 6202 --device {{ sdb }}  \
+    --weight 100}
+# swift-ring-builder container.builder add --region 1 --zone 1 --ip {{ objetos02.management_ip}}  \
+    --port 6202 --device {{ sdc }} \
+    --weight 100}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>IP de mantenimiento del primer nodo de almacenamiento de objetos</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Primer dispositivo</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>El peso lo inicializamos a 100</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Rebalancear el anillo</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code># swift-ring-builder container.builder rebalance</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Crear el archivo base <code>object.builder</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code># swift-ring-builder object.builder create 10 3 1</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Añadir cada nodo de almacenamiento al anillo</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code># swift-ring-builder object.builder add --region 1 --zone 1 --ip {{ objetos01.management_ip}}  \ <i class="conum" data-value="1"></i><b>(1)</b>
+    --port 6202 --device {{ sdb }}  \ <i class="conum" data-value="2"></i><b>(2)</b>
+    --weight 100} <i class="conum" data-value="3"></i><b>(3)</b>
+# swift-ring-builder object.builder add --region 1 --zone 1 --ip {{ objetos01.management_ip}}  \
+    --port 6202 --device {{ sdc }} \
+    --weight 100}
+
+# swift-ring-builder object.builder add --region 1 --zone 1 --ip {{ objetos02.management_ip}}  \
+    --port 6202 --device {{ sdb }}  \
+    --weight 100}
+# swift-ring-builder object.builder add --region 1 --zone 1 --ip {{ objetos02.management_ip}}  \
+    --port 6202 --device {{ sdc }} \
+    --weight 100}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>IP de mantenimiento del primer nodo de almacenamiento de objetos</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Primer dispositivo</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>El peso lo inicializamos a 100</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Rebalancear el anillo</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code># swift-ring-builder object.builder rebalance</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Distribuir los archivos de configuración del anillo a los nodos de almacenamiento de objetos</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code># scp /etc/swift/*.ring.gz {{ objetos01.management_ip }}:/etc/swift <i class="conum" data-value="1"></i><b>(1)</b>
+# scp /etc/swift/*.ring.gz {{ objetos02.management_ip }}:/etc/swift <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>IP de mantenimento del nodo 1 de almacenamiento de objetos</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>IP de mantenimento del nodo 2 de almacenamiento de objetos</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truemodificar-la-configuraci-n-de-swift"><a class="anchor" href="#truemodificar-la-configuraci-n-de-swift"></a>13.4. Modificar la configuración de Swift</h3>
+<div class="paragraph">
+<p>Realizar estas operaciones en el nodo de control y en los nodos de almacenamiento de objetos</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Modificar el archivo <code>/etc/swift/swift.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/swift/swift.conf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[swift-hash]
+
+swift_hash_path_suffix = {{ hash_path_suffix }} <i class="conum" data-value="1"></i><b>(1)</b>
+swift_hash_path_prefix = {{ hash_path_prefix }} <i class="conum" data-value="2"></i><b>(2)</b>
+
+[storage-policy:0]
+name = Policy-0
+default = yes
+aliases = yellow, orange
+
+[swift-constraints]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Prefijo secreto de hash</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Sufijo secreto de hash</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Cambiar el propietario del directorio <code>/etc/swift</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># chown -R root:swift /etc/swift</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueiniciar-y-reiniciar-servicios"><a class="anchor" href="#trueiniciar-y-reiniciar-servicios"></a>13.5. Iniciar y reiniciar servicios</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Reiniciar servicios en nodo de control</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service memcached restart
+# service swift-proxy restart</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Iniciar los servicios de almacenamiento en los nodos de almacenamiento de objetos</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># swift-init all start</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="truesahara"><a class="anchor" href="#truesahara"></a>14. Sahara</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Realizar todos estos pasos en el nodo de control.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Creación y configuración de la base de datos <code>sahara</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">MariaDB [(none)]&gt; CREATE DATABASE sahara;
+
+MariaDB [(none)]&gt; GRANT ALL PRIVILEGES ON sahara.* TO 'sahara'@'localhost' \
+  IDENTIFIED BY 'SAHARA_DBPASS'; <i class="conum" data-value="1"></i><b>(1)</b>
+MariaDB [(none)]&gt; GRANT ALL PRIVILEGES ON sahara.* TO 'sahara'@'%' \
+  IDENTIFIED BY 'SAHARA_DBPASS'; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Contraseña del usuario Sahara</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contraseña del usuario Sahara</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Realizar la configuración de Sahara (usuario <code>sahara</code>, añadir el usuario <code>sahara</code> al proyecto <code>service</code> con el rol <code>admin</code> y crear el servicio <code>sahara</code>)</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># source openrc-admin <i class="conum" data-value="1"></i><b>(1)</b>
+
+# openstack user create --domain default sahara --password {{ sahara_dbpass }} <i class="conum" data-value="2"></i><b>(2)</b>
+# openstack role add --project service --user sahara admin
+# openstack service create --name sahara --description "OpenStack Data Processing" data-processing</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Cargar las credenciales de <code>admin</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contraseña del usuario <code>sahara</code></td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Crear los endpoints de la API</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># openstack endpoint create --region {{region}} data-processing public http://{{ nodes_by_name.controller.provider_ip }}:8386/v1.1/%\(project_id\)s <i class="conum" data-value="1"></i><b>(1)</b>
+# openstack endpoint create --region {{region}} data-processing internal http://{{ nodes_by_name.controller.tunnel_ip }}:8386/v1.1/%\(project_id\)s <i class="conum" data-value="2"></i><b>(2)</b>
+# openstack endpoint create --region {{region}} data-processing admin http://{{ nodes_by_name.controller.management_ip }}:8386/v1.1/%\(project_id\)s <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP externa del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de túnel del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de mantenimiento del nodo de control</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Instalar los paquetes de Glance</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt install sahara python-saharaclient</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configurar el archivo <code>/etc/sahara/sahara.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/sahara/sahara.conf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[DEFAULT]
+
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <i class="conum" data-value="1"></i><b>(1)</b>
+
+use_floating_ips = true
+
+use_neutron = true
+
+heat_enable_wait_condition = false
+
+[castellan]
+
+[cinder]
+
+[conductor]
+
+[cors]
+
+[cors.subdomain]
+
+[database]
+
+connection = mysql://sahara:{{ sahara_dbpass }}@{{ nodes.controller.name }}/sahara <i class="conum" data-value="2"></i><b>(2)</b>
+
+[heat]
+
+[keystone]
+
+[keystone_authtoken]
+
+auth_uri = http://{{ nodes.controller.name }}:5000/v3/ <i class="conum" data-value="3"></i><b>(3)</b>
+
+memcached_servers = {{ nodes.controller.name }}:11211 <i class="conum" data-value="4"></i><b>(4)</b>
+
+identity_uri = http://{{ nodes.controller.name }}:35357/ <i class="conum" data-value="5"></i><b>(5)</b>
+
+admin_user = sahara
+
+admin_password = {{ sahara_dbpass }} <i class="conum" data-value="6"></i><b>(6)</b>
+
+admin_tenant_name = service
+
+[matchmaker_redis]
+
+[neutron]
+
+[nova]
+
+[object_store_access]
+
+[oslo_concurrency]
+
+lock_path = /var/lock/sahara
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_policy]
+
+[retries]
+
+[ssl]
+
+[swift]
+
+[timeouts]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Contraseña de RabbitMQ y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contraseña de Sahara y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Contraseña de Sahara</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Añadir lo siguiente a <code>/etc/mysql/my.cnf</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[mysqld]
+max_allowed_packet = 256M</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Reiniciar MySQL</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service mysql restart</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Inicializar la base de datos <code>sahara</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># su -s /bin/sh -c "sahara-db-manage --config-file /etc/sahara/sahara.conf upgrade head" sahara</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Modificar el archivo <code>/usr/lib/python2.7/dist-packages/sahara/service/quotas.py</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/usr/lib/python2.7/dist-packages/sahara/service/quotas.py</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">from oslo_config import cfg
+import six
+
+from sahara import context
+from sahara import exceptions as ex
+from sahara.i18n import _
+from sahara.utils.openstack import base as b
+from sahara.utils.openstack import cinder as cinder_client
+from sahara.utils.openstack import neutron as neutron_client
+from sahara.utils.openstack import nova as nova_client
+
+CONF = cfg.CONF
+
+UNLIMITED = 'unlimited'
+
+def _is_unlimited(limit):
+    return limit == -1
+
+def _get_zero_limits():
+    return {
+        'ram': 0,
+        'cpu': 0,
+        'instances': 0,
+        'floatingips': 0,
+        'security_groups': 0,
+        'security_group_rules': 0,
+        'ports': 0,
+        'volumes': 0,
+        'volume_gbs': 0
+    }
+
+def check_cluster(cluster):
+    req_limits = _get_req_cluster_limits(cluster)
+    _check_limits(req_limits)
+
+def check_scaling(cluster, to_be_enlarged, additional):
+    req_limits = _get_req_scaling_limits(cluster, to_be_enlarged, additional)
+    _check_limits(req_limits)
+
+def _check_limits(req_limits):
+    limits_name_map = {
+        'ram': _("RAM"),
+        'cpu': _("VCPU"),
+        'instances': _("instance"),
+        'floatingips': _("floating ip"),
+        'security_groups': _("security group"),
+        'security_group_rules': _("security group rule"),
+        'ports': _("port"),
+        'volumes': _("volume"),
+        'volume_gbs': _("volume storage")
+    }
+
+    avail_limits = _get_avail_limits()
+    for quota, quota_name in six.iteritems(limits_name_map):
+        if avail_limits[quota] != UNLIMITED:
+            if avail_limits[quota] &lt; req_limits[quota]:
+                raise ex.QuotaException(quota_name, req_limits[quota],
+                                        avail_limits[quota])
+
+def _get_req_cluster_limits(cluster):
+    req_limits = _get_zero_limits()
+    for ng in cluster.node_groups:
+        _update_limits_for_ng(req_limits, ng, ng.count)
+    return req_limits
+
+def _get_req_scaling_limits(cluster, to_be_enlarged, additional):
+    ng_id_map = to_be_enlarged.copy()
+    ng_id_map.update(additional)
+    req_limits = _get_zero_limits()
+    for ng in cluster.node_groups:
+        if ng_id_map.get(ng.id):
+            _update_limits_for_ng(req_limits, ng, ng_id_map[ng.id] - ng.count)
+    return req_limits
+
+def _update_limits_for_ng(limits, ng, count):
+    sign = lambda x: (1, -1)[x &lt; 0]
+    nova = nova_client.client()
+    limits['instances'] += count
+    flavor = b.execute_with_retries(nova.flavors.get, ng.flavor_id)
+    limits['ram'] += flavor.ram * count
+    limits['cpu'] += flavor.vcpus * count
+    # tmckay-fp this is fine, it will be zero without it
+    if ng.floating_ip_pool:
+        limits['floatingips'] += count
+    if ng.volumes_per_node:
+        limits['volumes'] += ng.volumes_per_node * count
+        limits['volume_gbs'] += ng.volumes_per_node * ng.volumes_size * count
+    if ng.auto_security_group:
+        limits['security_groups'] += sign(count)
+        # NOTE: +3 - all traffic for private network
+        if CONF.use_neutron:
+            limits['security_group_rules'] += (
+                (len(ng.open_ports) + 3) * sign(count))
+        else:
+            limits['security_group_rules'] = max(
+                limits['security_group_rules'], len(ng.open_ports) + 3)
+    if CONF.use_neutron:
+        limits['ports'] += count
+
+def _get_avail_limits():
+    limits = _get_zero_limits()
+    limits.update(_get_nova_limits())
+    limits.update(_get_neutron_limits())
+    if cinder_client.check_cinder_exists():
+        limits.update(_get_cinder_limits())
+    return limits
+
+def _sub_limit(total, used):
+    if _is_unlimited(total):
+        return UNLIMITED
+    else:
+        return total - used
+
+def _get_nova_limits():
+    limits = {}
+    nova = nova_client.client()
+    lim = b.execute_with_retries(nova.limits.get).to_dict()['absolute']
+    limits['ram'] = _sub_limit(lim['maxTotalRAMSize'], lim['totalRAMUsed'])
+    limits['cpu'] = _sub_limit(lim['maxTotalCores'], lim['totalCoresUsed'])
+    limits['instances'] = _sub_limit(lim['maxTotalInstances'],
+                                     lim['totalInstancesUsed'])
+    if CONF.use_neutron:
+        return limits
+
+    # tmckay-fp here we would just get the limits all the time
+    limits['floatingips'] = _sub_limit(lim['maxTotalFloatingIps'],
+                                       lim['totalFloatingIpsUsed'])
+    # limits['floatingips'] = 0
+
+    limits['security_groups'] = _sub_limit(lim['maxSecurityGroups'],
+                                           lim['totalSecurityGroupsUsed'])
+    limits['security_group_rules'] = _sub_limit(lim['maxSecurityGroupRules'],
+                                                0)
+    return limits
+
+def _get_neutron_limits():
+    limits = {}
+    if not CONF.use_neutron:
+        return limits
+    neutron = neutron_client.client()
+    tenant_id = context.ctx().tenant_id
+    total_lim = b.execute_with_retries(neutron.show_quota, tenant_id)['quota']
+
+    # tmckay-fp here we would just get the limits all the time
+    usage_fip = b.execute_with_retries(
+       neutron.list_floatingips,  tenant_id=tenant_id)['floatingips']
+    limits['floatingips'] = _sub_limit(total_lim['floatingip'],
+                                      len(usage_fip))
+    # limits['floatingips'] = 0
+
+    usage_sg = b.execute_with_retries(
+        neutron.list_security_groups, tenant_id=tenant_id).get(
+        'security_groups', [])
+    limits['security_groups'] = _sub_limit(total_lim['security_group'],
+                                           len(usage_sg))
+
+    usage_sg_rules = b.execute_with_retries(
+        neutron.list_security_group_rules, tenant_id=tenant_id).get(
+        'security_group_rules', [])
+    limits['security_group_rules'] = _sub_limit(
+        total_lim['security_group_rule'], len(usage_sg_rules))
+
+    usage_ports = b.execute_with_retries(
+        neutron.list_ports, tenant_id=tenant_id)['ports']
+    limits['ports'] = _sub_limit(total_lim['port'], len(usage_ports))
+
+    return limits
+
+def _get_cinder_limits():
+    avail_limits = {}
+    cinder = cinder_client.client()
+    lim = {}
+    for l in b.execute_with_retries(cinder.limits.get).absolute:
+        lim[l.name] = l.value
+
+    avail_limits['volumes'] = _sub_limit(lim['maxTotalVolumes'],
+                                         lim['totalVolumesUsed'])
+
+    avail_limits['volume_gbs'] = _sub_limit(lim['maxTotalVolumeGigabytes'],
+                                            lim['totalGigabytesUsed'])
+
+    return avail_limits</code></pre>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Reiniciar los servicios de Sahara</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service sahara-api restart
+# service sahara-engine restart</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Clonar el repositorio de <code>sahara-dashboard</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># git clone https://github.com/openstack/sahara-dashboard /tmp/sahara-dashboard</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Sahara no tiene empaquetada la integración con Horizon. En estos casos descargaremos los fuentes del dashboard, los procesaremos y los integraremos en Horizon.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Instalar el dashboard de Sahara desde <code>/tmp/sahara-dashboard/</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># cd /tmp/sahara-dashboard/
+# python setup.py install</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Copiar los archivos del dashboard de Sahara</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># cp /tmp/sahara-dashboard/sahara_dashboard/enabled/_1810_data_processing_panel_group.py /usr/share/openstack-dashboard/openstack_dashboard/enabled/
+# cp /tmp/sahara-dashboard/sahara_dashboard/enabled/_1830_data_processing_plugins_panel.py /usr/share/openstack-dashboard/openstack_dashboard/enabled/
+# cp /tmp/sahara-dashboard/sahara_dashboard/enabled/_1820_data_processing_clusters_panel.py /usr/share/openstack-dashboard/openstack_dashboard/enabled/
+# cp /tmp/sahara-dashboard/sahara_dashboard/enabled/_1840_data_processing_jobs_panel.py /usr/share/openstack-dashboard/openstack_dashboard/enabled/</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Realizar estos últimos pasos para terminar de integrar el dashboard en Horizon</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># cd /usr/share/openstack-dashboard
+# python manage.py collectstatic <i class="conum" data-value="1"></i><b>(1)</b>
+# python manage.py compress</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Responder <code>yes</code> a la pregunta</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Reiniciar el servidor Apache</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service apache2 restart</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="trueanexo-paquetes-y-archivos-de-configuraci-n"><a class="anchor" href="#trueanexo-paquetes-y-archivos-de-configuraci-n"></a>Anexo. Paquetes y archivos de configuración</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -5524,7 +6858,7 @@ lvm_share_export_ip = {{ nodes_by_name.shared.provider_ip }} <i class="conum" da
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-01-16 08:54:00 CET
+Last updated 2019-01-16 12:03:09 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
