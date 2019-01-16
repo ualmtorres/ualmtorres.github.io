@@ -4837,7 +4837,7 @@ Sahara no tiene empaquetada la integración con Horizon. En estos casos descarga
 
 :numbered!: 
 
-## Anexo. Paquetes y archivos de configuración
+## Anexo 1. Paquetes y archivos de configuración
 
 La instalación de OpenStack es un proceso farragoso en cuanto a la cantidad de paquetes y archivos de configuración que hay que instalar y configuirar en cada tipo de nodo. A continuación se muestran dos figuras que ilustran los paquetes a instalar y los archivos a configurar en cada nodo.
 
@@ -4846,3 +4846,321 @@ image::OpenStackPackagesAndFilesController.png[]
 
 .Paquetes y archivos a configurar en el resto de nodos
 image::OpenStackPackagesAndFilesRemainder.png[]
+
+## Anexo 2. Tablas no vacías de las bases de datos de OpenStack
+
+[source, bash]
+----
++--------------------+----------------------------------------------------+
+| table_schema       | table_name                                         |
++--------------------+----------------------------------------------------+
+| barbican           | alembic_version                                    |
+| barbican           | certificate_authorities                            |
+| barbican           | certificate_authority_metadata                     |
+| barbican           | container_secret                                   |
+| barbican           | containers                                         |
+| barbican           | encrypted_data                                     |
+| barbican           | secret_store_metadata                              |
+| barbican           | secrets                                            |
+| cinder             | messages                                           |
+| cinder             | quota_classes                                      |
+| cinder             | quota_usages                                       |
+| cinder             | quotas                                             |
+| cinder             | reservations                                       |
+| cinder             | services                                           |
+| cinder             | snapshot_metadata                                  |
+| cinder             | snapshots                                          |
+| cinder             | transfers                                          |
+| cinder             | volume_admin_metadata                              |
+| cinder             | volume_attachment                                  |
+| cinder             | volume_glance_metadata                             |
+| cinder             | volume_metadata                                    |
+| cinder             | volumes                                            |
+| cinder             | workers                                            |
+| glance             | alembic_version                                    |
+| glance             | image_locations                                    |
+| glance             | image_properties                                   |
+| glance             | images                                             |
+| heat               | event                                              |
+| heat               | raw_template                                       |
+| heat               | raw_template_files                                 |
+| heat               | resource                                           |
+| heat               | resource_data                                      |
+| heat               | resource_properties_data                           |
+| heat               | service                                            |
+| heat               | software_config                                    |
+| heat               | stack                                              |
+| heat               | user_creds                                         |
+| keystone           | assignment                                         |
+| keystone           | credential                                         |
+| keystone           | endpoint                                           |
+| keystone           | local_user                                         |
+| keystone           | migrate_version                                    |
+| keystone           | password                                           |
+| keystone           | project                                            |
+| keystone           | revocation_event                                   |
+| keystone           | role                                               |
+| keystone           | service                                            |
+| keystone           | trust                                              |
+| keystone           | trust_role                                         |
+| keystone           | user                                               |
+| manila             | alembic_version                                    |
+| manila             | quota_usages                                       |
+| manila             | quotas                                             |
+| manila             | reservations                                       |
+| manila             | services                                           |
+| manila             | share_instance_export_locations                    |
+| manila             | share_instance_export_locations_metadata           |
+| manila             | share_instances                                    |
+| manila             | shares                                             |
+| neutron            | agents                                             |
+| neutron            | alembic_version                                    |
+| neutron            | alembic_version_fwaas                              |
+| neutron            | alembic_version_lbaas                              |
+| neutron            | default_security_group                             |
+| neutron            | dnsnameservers                                     |
+| neutron            | floatingips                                        |
+| neutron            | ipallocationpools                                  |
+| neutron            | ipallocations                                      |
+| neutron            | ipamallocationpools                                |
+| neutron            | ipamallocations                                    |
+| neutron            | ipamsubnets                                        |
+| neutron            | lbaas_healthmonitors                               |
+| neutron            | lbaas_listeners                                    |
+| neutron            | lbaas_loadbalancer_statistics                      |
+| neutron            | lbaas_loadbalanceragentbindings                    |
+| neutron            | lbaas_loadbalancers                                |
+| neutron            | lbaas_members                                      |
+| neutron            | lbaas_pools                                        |
+| neutron            | ml2_port_binding_levels                            |
+| neutron            | ml2_port_bindings                                  |
+| neutron            | ml2_vxlan_allocations                              |
+| neutron            | ml2_vxlan_endpoints                                |
+| neutron            | networkdhcpagentbindings                           |
+| neutron            | networkrbacs                                       |
+| neutron            | networks                                           |
+| neutron            | networksecuritybindings                            |
+| neutron            | networksegments                                    |
+| neutron            | ports                                              |
+| neutron            | portsecuritybindings                               |
+| neutron            | providerresourceassociations                       |
+| neutron            | provisioningblocks                                 |
+| neutron            | quotas                                             |
+| neutron            | quotausages                                        |
+| neutron            | router_extra_attributes                            |
+| neutron            | routerl3agentbindings                              |
+| neutron            | routerports                                        |
+| neutron            | routers                                            |
+| neutron            | securitygroupportbindings                          |
+| neutron            | securitygrouprules                                 |
+| neutron            | securitygroups                                     |
+| neutron            | standardattributes                                 |
+| neutron            | subnets                                            |
+| nova               | block_device_mapping                               |
+| nova               | compute_nodes                                      |
+| nova               | instance_actions                                   |
+| nova               | instance_actions_events                            |
+| nova               | instance_extra                                     |
+| nova               | instance_faults                                    |
+| nova               | instance_id_mappings                               |
+| nova               | instance_info_caches                               |
+| nova               | instance_metadata                                  |
+| nova               | instance_system_metadata                           |
+| nova               | instances                                          |
+| nova               | migrations                                         |
+| nova               | quota_usages                                       |
+| nova               | quotas                                             |
+| nova               | reservations                                       |
+| nova               | s3_images                                          |
+| nova               | security_groups                                    |
+| nova               | services                                           |
+| nova               | task_log                                           |
+| nova               | virtual_interfaces                                 |
+| nova_api           | allocations                                        |
+| nova_api           | cell_mappings                                      |
+| nova_api           | flavor_projects                                    |
+| nova_api           | flavors                                            |
+| nova_api           | host_mappings                                      |
+| nova_api           | instance_group_member                              |
+| nova_api           | instance_group_policy                              |
+| nova_api           | instance_groups                                    |
+| nova_api           | instance_mappings                                  |
+| nova_api           | inventories                                        |
+| nova_api           | key_pairs                                          |
+| nova_api           | request_specs                                      |
+| nova_api           | resource_providers                                 |
+| nova_cell0         | instance_extra                                     |
+| nova_cell0         | instance_faults                                    |
+| nova_cell0         | instance_id_mappings                               |
+| nova_cell0         | instance_info_caches                               |
+| nova_cell0         | instance_system_metadata                           |
+| nova_cell0         | instances                                          |
+| nova_cell0         | quota_usages                                       |
+| nova_cell0         | s3_images                                          |
+| nova_cell0         | security_groups                                    |
+| sahara             | alembic_version                                    |
++--------------------+----------------------------------------------------+
+----
+
+## Anexo 3. Consultas SQL de utilidad
+
+. Ids de proyectos 
+
++
+[source, sql]
+----
+= SELECT id
+FROM keystone.project
+WHERE name IN ('proyecto1', 'proyecto2'); <1>
+----
+<1> Pasar los nombre de proyecto como parámetro
+
+. Imágenes de cada proyecto
+
++
+[source, sql]
+----
+SELECT I.id, I.name, P.name
+FROM glance.images I JOIN keystone.project P ON I.owner = P.id;
+----
+
+. Imágenes de proyectos concretos
+
++
+[source, sql]
+----
+SELECT I.id, I.name, P.name
+FROM glance.images I JOIN keystone.project P ON I.owner = P.id
+WHERE P.id IN (
+SELECT id
+FROM keystone.project
+WHERE name IN ('xxxx', 'yyyy')
+) ORDER BY I.id;
+----
+
+. Eliminar imágenes de proyectos concretos
+
++
+[source, sql]
+----
+SELECT CONCAT ('openstack image delete ', I.id)
+FROM glance.images I JOIN keystone.project P ON I.owner = P.id
+WHERE P.id IN (
+SELECT id
+FROM keystone.project
+WHERE name IN ('xxxx', 'yyyy')
+) ORDER BY I.id;
+----
+
+. Instances de proyectos concretos
+
++
+[source, sql]
+----
+SELECT I.uuid, I.hostname, P.name
+FROM nova.instances I JOIN keystone.project P ON I.project_id = P.id
+WHERE P.id IN (
+SELECT id
+FROM keystone.project
+WHERE name IN ('xxxx', 'yyyy') 
+) ORDER BY I.uuid
+;
+----
+
+. Eliminar instancias de proyectos concretos
+
++
+[source, sql]
+----
+SELECT CONCAT ('openstack delete server ', I.uuid)
+FROM nova.instances I JOIN keystone.project P ON I.project_id = P.id
+WHERE P.id IN (
+SELECT id
+FROM keystone.project
+WHERE name IN ('xxxx', 'yyyy')
+) ORDER BY I.uuid
+;
+----
+
+. Attachements de volúmenes de instancias proyectos concretos
+
++
+[source, sql]
+----
+SELECT A.instance_uuid, A.id, A.mountpoint, I.hostname
+FROM cinder.volume_attachment A JOIN nova.instances I ON A.instance_uuid = I.uuid
+WHERE A.instance_uuid IN (
+SELECT I.uuid
+FROM nova.instances I JOIN keystone.project P ON I.project_id = P.id
+WHERE P.id IN (
+SELECT id
+FROM keystone.project
+WHERE name IN ('xxxx', 'yyyy'))
+) ORDER BY A.instance_uuid, A.id;
+----
+
+. Dettach los volúmenes de las instancias de proyectos concretos
+
++
+[source, sql]
+----
+SELECT CONCAT ('openstack server remove volume ', A.instance_uuid, ' ', A.id)
+FROM cinder.volume_attachment A JOIN nova.instances I ON A.instance_uuid = I.uuid
+WHERE A.instance_uuid IN (
+SELECT I.uuid
+FROM nova.instances I JOIN keystone.project P ON I.project_id = P.id
+WHERE P.id IN (
+SELECT id
+FROM keystone.project
+WHERE name IN ('xxxx', 'yyyy'))
+) ORDER BY A.instance_uuid, A.id;
+----
+
+. Volúmenes de proyetos concretos
+
++
+[source, sql]
+----
+SELECT V.id, V.host, V.size, V.display_name
+FROM cinder.volumes V JOIN keystone.project P ON V.project_id = P.id
+WHERE P.id IN (
+SELECT id
+FROM keystone.project
+WHERE name IN ('xxxx', 'yyyy')
+) ORDER BY V.id;
+----
+
+. Eliminar volúmenes de proyectos concretos
+
++
+[source, sql]
+----
+SELECT CONCAT ('openstack volume delete ', V.id)
+FROM cinder.volumes V JOIN keystone.project P ON V.project_id = P.id
+WHERE P.id IN (
+SELECT id
+FROM keystone.project
+WHERE name IN ('xxxx', 'yyyy')
+) ORDER BY V.id;
+----
+
+. Proyectos concretos
+
++
+[source, sql]
+----
+SELECT id, name
+FROM keystone.project
+WHERE name IN ('xxxx', 'yyyy');
+----
+
+. Eliminar proyectos concretos
+
++
+[source, sql]
+----
+SELECT CONCAT ('openstack project delete ' , id)
+FROM keystone.project
+WHERE name IN ('xxxx', 'yyyy');
+----
+
