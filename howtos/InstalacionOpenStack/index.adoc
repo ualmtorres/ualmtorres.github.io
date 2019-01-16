@@ -3590,7 +3590,7 @@ lock_path = /var/lib/manila/tmp
 Manila no tiene empaquetada la integración con Horizon. En estos casos descargaremos los fuentes, los procesaremos y los integraremos en Horizon.
 ====
 
-. Instalar el dashboard de Neutron LBaaS desde `/tmp/neutron-lbaas-dashboard/`
+. Instalar el dashboard de Manila desde `/tmp/manila-ui/`
 
 +
 [source, bash]
@@ -3599,7 +3599,7 @@ Manila no tiene empaquetada la integración con Horizon. En estos casos descarga
 # python setup.py install
 ----
 
-. Copiar los archivos del dashboard de Neutron LBaaS
+. Copiar los archivos del dashboard de Manila
 
 +
 [source, bash]
@@ -3711,9 +3711,9 @@ lvm_share_export_ip = {{ nodes_by_name.shared.provider_ip }} <8>
 <6> IP de mantenemiento del nodo de control
 <7> Contraseña de Manila
 <8> IP externa del nodo de almacenamiento compartido
+****
 
-
-. Create el volumen físico LVM
+. Crear el volumen físico LVM
 
 +
 [source, bash]
@@ -3756,7 +3756,7 @@ filter = [ "a/{{ shared_storage_device }}/", "r/.*/"] <1>
 # systemctl enable nfs-server
 ----
 
-. Delete manila.sqlite on storage
+. Eliminar la base de dato manila.sqlite ` en el nodo de almacenamiento compartido.
 
 +
 [source, bash]
@@ -3768,7 +3768,7 @@ filter = [ "a/{{ shared_storage_device }}/", "r/.*/"] <1>
 
 Realizar esta operación en el nodo de control.
 
-. Crear volúmenes compartidos con `Shared File Systems` de tipo `DHSS = False`
+. Crear el tipo para volúmenes compartidos con `Shared File Systems` del tipo `DHSS = False`
 
 +
 [source, bash]

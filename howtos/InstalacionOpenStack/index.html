@@ -467,8 +467,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#trueinstalaci-n-de-manila-en-el-nodo-de-control">12.1. Instalación de Manila en el nodo de control</a></li>
 <li><a href="#trueinstalaci-n-de-manila-en-el-nodo-de-almacenamiento-compartido">12.2. Instalación de Manila en el nodo de almacenamiento compartido</a></li>
+<li><a href="#trueconfiguraci-n-de-manila-en-el-nodo-de-control">12.3. Configuración de Manila en el nodo de control</a></li>
 </ul>
 </li>
+<li><a href="#trueanexo-paquetes-y-archivos-de-configuraci-n">Anexo. Paquetes y archivos de configuración</a></li>
 </ul>
 </div>
 </div>
@@ -5266,7 +5268,7 @@ lock_path = /var/lib/manila/tmp</code></pre>
 </div>
 </li>
 <li>
-<p>Instalar el dashboard de Neutron LBaaS desde <code>/tmp/neutron-lbaas-dashboard/</code></p>
+<p>Instalar el dashboard de Manila desde <code>/tmp/manila-ui/</code></p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># cd /tmp/manila-ui/
@@ -5275,7 +5277,7 @@ lock_path = /var/lib/manila/tmp</code></pre>
 </div>
 </li>
 <li>
-<p>Copiar los archivos del dashboard de Neutron LBaaS</p>
+<p>Copiar los archivos del dashboard de Manila</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># cp /tmp/manila-ui/manila_ui/local/enabled/_90_manila*  /usr/share/openstack-dashboard/openstack_dashboard/local/enabled/</code></pre>
@@ -5398,109 +5400,99 @@ lvm_share_export_ip = {{ nodes_by_name.shared.provider_ip }} <i class="conum" da
 &lt;5&gt; IP de mantenemiento del nodo de control
 &lt;6&gt; IP de mantenemiento del nodo de control
 &lt;7&gt; Contraseña de Manila
-&lt;8&gt; IP externa del nodo de almacenamiento compartido
-
-
-. Create el volumen físico LVM
-
-+
-[source, bash]</code></pre>
+&lt;8&gt; IP externa del nodo de almacenamiento compartido</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p># pvcreate /dev/{{ shared_storage_device }} &lt;1&gt;</p>
 </div>
+</div>
+</li>
+<li>
+<p>Crear el volumen físico LVM</p>
 <div class="listingblock">
 <div class="content">
-<pre>&lt;1&gt; Volumen del nodo de almacenamiento compartido dedicado a Manila
-
-. Crear el grupo de volúmenes `manila-volumes`
-
-+
-[source, bash]</pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># pvcreate /dev/{{ shared_storage_device }} <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p># vgcreate manila-volumes /dev/{{ shared_storage_device }} &lt;1&gt;</p>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Volumen del nodo de almacenamiento compartido dedicado a Manila</td>
+</tr>
+</table>
 </div>
+</li>
+<li>
+<p>Crear el grupo de volúmenes <code>manila-volumes</code></p>
 <div class="listingblock">
 <div class="content">
-<pre>&lt;1&gt; Volumen del nodo de almacenamiento compartido dedicado a Manila
-
-. Configurar el archivo `/etc/lvm/lvm.conf` añadiendo la línea siguiente al bloque `devices` para especificar los dispositivos utilizados por LVM
-
-+
-[source, bash]</pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># vgcreate manila-volumes /dev/{{ shared_storage_device }} <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>filter = [ "a/{{ shared_storage_device }}/", "r/.*/"] &lt;1&gt;</p>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Volumen del nodo de almacenamiento compartido dedicado a Manila</td>
+</tr>
+</table>
 </div>
+</li>
+<li>
+<p>Configurar el archivo <code>/etc/lvm/lvm.conf</code> añadiendo la línea siguiente al bloque <code>devices</code> para especificar los dispositivos utilizados por LVM</p>
 <div class="listingblock">
 <div class="content">
-<pre>&lt;1&gt; Volumen del nodo de almacenamiento compartido dedicado a Manila
-
-. Reiniciar el servicio `manila-share`
-
-+
-[source, bash]</pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">filter = [ "a/{{ shared_storage_device }}/", "r/.*/"] <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p># service manila-share restart</p>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Volumen del nodo de almacenamiento compartido dedicado a Manila</td>
+</tr>
+</table>
 </div>
+</li>
+<li>
+<p>Reiniciar el servicio <code>manila-share</code></p>
 <div class="listingblock">
 <div class="content">
-<pre>. Activar el servicio `nfs-server`
-
-+
-[source, bash]</pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service manila-share restart</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p># systemctl enable nfs-server</p>
-</div>
+</li>
+<li>
+<p>Activar el servicio <code>nfs-server</code></p>
 <div class="listingblock">
 <div class="content">
-<pre>. Delete manila.sqlite on storage
-
-+
-[source, bash]</pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># systemctl enable nfs-server</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p># rm -f /var/lib/manila/manila.sqlite</p>
-</div>
+</li>
+<li>
+<p>Eliminar la base de dato manila.sqlite ` en el nodo de almacenamiento compartido.</p>
 <div class="listingblock">
 <div class="content">
-<pre>### Configuración de Manila en el nodo de control
-
-Realizar esta operación en el nodo de control.
-
-. Crear volúmenes compartidos con `Shared File Systems` de tipo `DHSS = False`
-
-+
-[source, bash]</pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># rm -f /var/lib/manila/manila.sqlite</code></pre>
 </div>
 </div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueconfiguraci-n-de-manila-en-el-nodo-de-control"><a class="anchor" href="#trueconfiguraci-n-de-manila-en-el-nodo-de-control"></a>12.3. Configuración de Manila en el nodo de control</h3>
 <div class="paragraph">
-<p># manila type-create default_share_type False</p>
+<p>Realizar esta operación en el nodo de control.</p>
 </div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Crear el tipo para volúmenes compartidos con <code>Shared File Systems</code> del tipo <code>DHSS = False</code></p>
 <div class="listingblock">
 <div class="content">
-<pre>:numbered!:
-
-## Anexo. Paquetes y archivos de configuración
-
-La instalación de OpenStack es un proceso farragoso en cuanto a la cantidad de paquetes y archivos de configuración que hay que instalar y configuirar en cada tipo de nodo. A continuación se muestran dos figuras que ilustran los paquetes a instalar y los archivos a configurar en cada nodo.
-
-.Paquetes y archivos a configurar en el nodo de control
-image::OpenStackPackagesAndFilesController.png[]
-
-.Paquetes y archivos a configurar en el resto de nodos
-image::OpenStackPackagesAndFilesRemainder.png[]</pre>
-</div>
-</div>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># manila type-create default_share_type False</code></pre>
 </div>
 </div>
 </li>
@@ -5509,10 +5501,30 @@ image::OpenStackPackagesAndFilesRemainder.png[]</pre>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="trueanexo-paquetes-y-archivos-de-configuraci-n"><a class="anchor" href="#trueanexo-paquetes-y-archivos-de-configuraci-n"></a>Anexo. Paquetes y archivos de configuración</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>La instalación de OpenStack es un proceso farragoso en cuanto a la cantidad de paquetes y archivos de configuración que hay que instalar y configuirar en cada tipo de nodo. A continuación se muestran dos figuras que ilustran los paquetes a instalar y los archivos a configurar en cada nodo.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/OpenStackPackagesAndFilesController.png" alt="OpenStackPackagesAndFilesController.png">
+</div>
+<div class="title">Figure 3. Paquetes y archivos a configurar en el nodo de control</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/OpenStackPackagesAndFilesRemainder.png" alt="OpenStackPackagesAndFilesRemainder.png">
+</div>
+<div class="title">Figure 4. Paquetes y archivos a configurar en el resto de nodos</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-01-16 06:20:08 CET
+Last updated 2019-01-16 08:54:00 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
