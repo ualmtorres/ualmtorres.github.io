@@ -463,7 +463,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#truecinder">10. Cinder</a></li>
 <li><a href="#trueheat">11. Heat</a></li>
-<li><a href="#trueanexo-paquetes-y-archivos-de-configuraci-n">Anexo. Paquetes y archivos de configuración</a></li>
+<li><a href="#truemanila">12. Manila</a>
+<ul class="sectlevel2">
+<li><a href="#trueinstalaci-n-de-manila-en-el-nodo-de-control">12.1. Instalación de Manila en el nodo de control</a></li>
+<li><a href="#trueinstalaci-n-de-manila-en-el-nodo-de-almacenamiento-compartido">12.2. Instalación de Manila en el nodo de almacenamiento compartido</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -5012,29 +5017,502 @@ password = {{ heat_dbpass }} <i class="conum" data-value="13"></i><b>(13)</b>
 </div>
 </div>
 <div class="sect1">
-<h2 id="trueanexo-paquetes-y-archivos-de-configuraci-n"><a class="anchor" href="#trueanexo-paquetes-y-archivos-de-configuraci-n"></a>Anexo. Paquetes y archivos de configuración</h2>
+<h2 id="truemanila"><a class="anchor" href="#truemanila"></a>12. Manila</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="trueinstalaci-n-de-manila-en-el-nodo-de-control"><a class="anchor" href="#trueinstalaci-n-de-manila-en-el-nodo-de-control"></a>12.1. Instalación de Manila en el nodo de control</h3>
 <div class="paragraph">
-<p>La instalación de OpenStack es un proceso farragoso en cuanto a la cantidad de paquetes y archivos de configuración que hay que instalar y configuirar en cada tipo de nodo. A continuación se muestran dos figuras que ilustran los paquetes a instalar y los archivos a configurar en cada nodo.</p>
+<p>Realizar estos pasos en el nodo de control</p>
 </div>
-<div class="imageblock">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Creación y configuración de la base de datos <code>manila</code></p>
+<div class="listingblock">
 <div class="content">
-<img src="./images/OpenStackPackagesAndFilesController.png" alt="OpenStackPackagesAndFilesController.png">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">CREATE DATABASE manila;
+
+GRANT ALL PRIVILEGES ON manila.* TO 'manila'@'localhost' \
+  IDENTIFIED BY 'MANILA_DBPASS'; <i class="conum" data-value="1"></i><b>(1)</b>
+GRANT ALL PRIVILEGES ON manila.* TO 'manila'@'%' \
+  IDENTIFIED BY 'MANILA_DBPASS'; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
-<div class="title">Figure 3. Paquetes y archivos a configurar en el nodo de control</div>
 </div>
-<div class="imageblock">
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Contraseña de Manila</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Contraseña de Manila</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Realizar la configuración de Manila (usuario <code>manila</code>, añadir el usuario <code>manila</code> al proyecto <code>service</code> con el rol <code>admin</code> y crear los servicios <code>manila</code> y <code>manilav2</code>).</p>
+<div class="listingblock">
 <div class="content">
-<img src="./images/OpenStackPackagesAndFilesRemainder.png" alt="OpenStackPackagesAndFilesRemainder.png">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># source openrc-admin <i class="conum" data-value="1"></i><b>(1)</b>
+
+# openstack user create --domain default manila --password {{ manila_dbpass }}
+# openstack role add --project service --user manila admin
+# openstack service create --name manila --description "OpenStack Shared File Systems" share
+# openstack service create --name manilav2 --description "OpenStack Shared File Systems" sharev2</code></pre>
 </div>
-<div class="title">Figure 4. Paquetes y archivos a configurar en el resto de nodos</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Credenciales del usuario <code>manila</code></td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Crear los endpoints de la API</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># openstack endpoint create --region {{region}} share public http://{{ nodes_by_name.controller.provider_ip }}:8786/v1/%\(tenant_id\)s <i class="conum" data-value="1"></i><b>(1)</b>
+# openstack endpoint create --region {{region}} share internal http://{{ nodes_by_name.controller.tunnel_ip }}:8786/v1/%\(tenant_id\)s <i class="conum" data-value="2"></i><b>(2)</b>
+# openstack endpoint create --region {{region}} share admin http://{{ nodes_by_name.controller.management_ip }}:8786/v1/%\(tenant_id\)s <i class="conum" data-value="3"></i><b>(3)</b>
+
+# openstack endpoint create --region {{region}} sharev2 public http://{{ nodes_by_name.controller.provider_ip }}:8786/v2/%\(tenant_id\)s <i class="conum" data-value="4"></i><b>(4)</b>
+# openstack endpoint create --region {{region}} sharev2 internal http://{{ nodes_by_name.controller.tunnel_ip }}:8786/v2/%\(tenant_id\)s <i class="conum" data-value="5"></i><b>(5)</b>
+# command: openstack endpoint create --region {{region}} sharev2 admin http://{{ nodes_by_name.controller.management_ip }}:8786/v2/%\(tenant_id\)s <i class="conum" data-value="6"></i><b>(6)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP externa del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de túnel del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de mantenimiento del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP externa del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de túnel del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Región (p.e, <code>RegionOne</code>) e IP de mantenimiento del nodo de control</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Instalar los paquetes de Cinder</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt install manila-api manila-scheduler python-manilaclient</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configurar el archivo <code>/etc/manila/manila.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/manila/manila.conf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[DEFAULT]
+
+rpc_backend = rabbit
+rabbit_durable_queues = true
+
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <i class="conum" data-value="1"></i><b>(1)</b>
+
+default_share_type = default_share_type
+share_name_template = share-%s
+rootwrap_config = /etc/manila/rootwrap.conf
+api_paste_config = /etc/manila/api-paste.ini
+
+auth_strategy = keystone
+
+my_ip = {{ nodes.controller.management_ip }} <i class="conum" data-value="2"></i><b>(2)</b>
+
+[cors]
+
+[cors.subdomain]
+
+[database]
+
+connection = mysql+pymysql://manila:{{ manila_dbpass }}@{{ nodes.controller.management_ip }}/manila <i class="conum" data-value="3"></i><b>(3)</b>
+
+[keystone_authtoken]
+
+memcached_servers = {{ nodes.controller.management_ip }}:11211 <i class="conum" data-value="4"></i><b>(4)</b>
+auth_uri = http://{{ nodes.controller.management_ip }}:5000 <i class="conum" data-value="5"></i><b>(5)</b>
+auth_url = http://{{ nodes.controller.management_ip }}:35357 <i class="conum" data-value="6"></i><b>(6)</b>
+auth_type = password
+project_domain_id = default
+user_domain_id = default
+project_name = service
+username = manila
+password = {{ manila_dbpass }} <i class="conum" data-value="7"></i><b>(7)</b>
+
+[matchmaker_redis]
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_middleware]
+
+[oslo_concurrency]
+lock_path = /var/lib/manila/tmp</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Contraseña de RabbitMQ y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Contraseña de Manila y nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Contraseña de Manila</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Inicializar la base de datos <code>manila</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># su -s /bin/sh -c "manila-manage db sync" manila</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Reiniciar servicios de Manila</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service manila-scheduler restart
+# service manila-api restart</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Eliminar la base de datos <code>manila.sqlite</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># rm -f /var/lib/manila/manila.sqlite</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Clonar el repositorio de <code>manila-ui</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># git clone https://github.com/openstack/manila-ui /tmp/manila-ui</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Manila no tiene empaquetada la integración con Horizon. En estos casos descargaremos los fuentes, los procesaremos y los integraremos en Horizon.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Instalar el dashboard de Neutron LBaaS desde <code>/tmp/neutron-lbaas-dashboard/</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># cd /tmp/manila-ui/
+# python setup.py install</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Copiar los archivos del dashboard de Neutron LBaaS</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># cp /tmp/manila-ui/manila_ui/local/enabled/_90_manila*  /usr/share/openstack-dashboard/openstack_dashboard/local/enabled/</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Realizar estos últimos pasos para terminar de integrar el dashboard en Horizon</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># cd /usr/share/openstack-dashboard
+# python manage.py collectstatic <i class="conum" data-value="1"></i><b>(1)</b>
+# python manage.py compress</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Responder <code>yes</code> a la pregunta</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Reiniciar el servidor Apache</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service apache2 restart</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueinstalaci-n-de-manila-en-el-nodo-de-almacenamiento-compartido"><a class="anchor" href="#trueinstalaci-n-de-manila-en-el-nodo-de-almacenamiento-compartido"></a>12.2. Instalación de Manila en el nodo de almacenamiento compartido</h3>
+<div class="paragraph">
+<p>Realizar estos pasos en el nodo de almacenamiento compartido</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Instalar Manila en el nodo de almacenamiento compartido</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># apt install manila-share python-pymysql lvm2 nfs-kernel-server</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configurar el archivo <code>/etc/manila/manila.conf</code></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">El archivo <code>/etc/manila/manila.conf</code></div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[DEFAULT]
+
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.management_ip }} <i class="conum" data-value="1"></i><b>(1)</b>
+default_share_type = default_share_type
+rootwrap_config = /etc/manila/rootwrap.conf
+auth_strategy = keystone
+my_ip = {{ nodes_by_name.shared.management_ip }} <i class="conum" data-value="2"></i><b>(2)</b>
+enabled_share_backends = lvm
+enabled_share_protocols = NFS
+rpc_backend = rabbit
+rabbit_durable_queues = true
+api_paste_config = /etc/manila/api-paste.ini
+state_path = /var/lib/manila
+
+[cors]
+
+[cors.subdomain]
+
+[database]
+
+connection = mysql+pymysql://manila:{{ manila_dbpass }}@{{ nodes.controller.management_ip }}/manila <i class="conum" data-value="3"></i><b>(3)</b>
+
+[keystone_authtoken]
+
+memcached_servers = {{nodes.controller.management_ip }}:11211 <i class="conum" data-value="4"></i><b>(4)</b>
+auth_uri = http://{{ nodes.controller.management_ip }}:5000 <i class="conum" data-value="5"></i><b>(5)</b>
+auth_url = http://{{ nodes.controller.management_ip }}:35357 <i class="conum" data-value="6"></i><b>(6)</b>
+auth_type = password
+project_domain_id = default
+user_domain_id = default
+project_name = service
+username = manila
+password = {{ manila_dbpass }} <i class="conum" data-value="7"></i><b>(7)</b>
+
+[matchmaker_redis]
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_middleware]
+
+[oslo_concurrency]
+lock_path = /var/lib/manila/tmp
+
+[lvm]
+share_backend_name = LVM
+share_driver = manila.share.drivers.lvm.LVMShareDriver
+driver_handles_share_servers = False
+lvm_share_volume_group = manila-volumes
+lvm_share_export_ip = {{ nodes_by_name.shared.provider_ip }} <i class="conum" data-value="8"></i><b>(8)</b>
+---
+&lt;1&gt; Contraseña de RabbitMQ y dirección IP de mantenimiento del nodo de control
+&lt;2&gt; IP de mantenimiento del nodo de almacenamiento compartido
+&lt;3&gt; Contraseña de Manila y dirección IP de mantenimiento del nodo de control
+&lt;4&gt; IP de mantenemiento del nodo de control
+&lt;5&gt; IP de mantenemiento del nodo de control
+&lt;6&gt; IP de mantenemiento del nodo de control
+&lt;7&gt; Contraseña de Manila
+&lt;8&gt; IP externa del nodo de almacenamiento compartido
+
+
+. Create el volumen físico LVM
+
++
+[source, bash]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p># pvcreate /dev/{{ shared_storage_device }} &lt;1&gt;</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>&lt;1&gt; Volumen del nodo de almacenamiento compartido dedicado a Manila
+
+. Crear el grupo de volúmenes `manila-volumes`
+
++
+[source, bash]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p># vgcreate manila-volumes /dev/{{ shared_storage_device }} &lt;1&gt;</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>&lt;1&gt; Volumen del nodo de almacenamiento compartido dedicado a Manila
+
+. Configurar el archivo `/etc/lvm/lvm.conf` añadiendo la línea siguiente al bloque `devices` para especificar los dispositivos utilizados por LVM
+
++
+[source, bash]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>filter = [ "a/{{ shared_storage_device }}/", "r/.*/"] &lt;1&gt;</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>&lt;1&gt; Volumen del nodo de almacenamiento compartido dedicado a Manila
+
+. Reiniciar el servicio `manila-share`
+
++
+[source, bash]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p># service manila-share restart</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>. Activar el servicio `nfs-server`
+
++
+[source, bash]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p># systemctl enable nfs-server</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>. Delete manila.sqlite on storage
+
++
+[source, bash]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p># rm -f /var/lib/manila/manila.sqlite</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>### Configuración de Manila en el nodo de control
+
+Realizar esta operación en el nodo de control.
+
+. Crear volúmenes compartidos con `Shared File Systems` de tipo `DHSS = False`
+
++
+[source, bash]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p># manila type-create default_share_type False</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>:numbered!:
+
+## Anexo. Paquetes y archivos de configuración
+
+La instalación de OpenStack es un proceso farragoso en cuanto a la cantidad de paquetes y archivos de configuración que hay que instalar y configuirar en cada tipo de nodo. A continuación se muestran dos figuras que ilustran los paquetes a instalar y los archivos a configurar en cada nodo.
+
+.Paquetes y archivos a configurar en el nodo de control
+image::OpenStackPackagesAndFilesController.png[]
+
+.Paquetes y archivos a configurar en el resto de nodos
+image::OpenStackPackagesAndFilesRemainder.png[]</pre>
+</div>
+</div>
+</div>
+</div>
+</li>
+</ol>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-01-15 23:28:17 CET
+Last updated 2019-01-16 06:20:08 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

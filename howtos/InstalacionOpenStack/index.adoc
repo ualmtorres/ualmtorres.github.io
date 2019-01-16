@@ -3418,6 +3418,364 @@ su -s /bin/sh -c "heat-manage db_sync" heat
 # service heat-engine restart
 ----
 
+## Manila
+
+### Instalación de Manila en el nodo de control
+
+Realizar estos pasos en el nodo de control
+
+. Creación y configuración de la base de datos `manila`
+
++
+[source, bash]
+----
+CREATE DATABASE manila;
+
+GRANT ALL PRIVILEGES ON manila.* TO 'manila'@'localhost' \
+  IDENTIFIED BY 'MANILA_DBPASS'; <1>
+GRANT ALL PRIVILEGES ON manila.* TO 'manila'@'%' \
+  IDENTIFIED BY 'MANILA_DBPASS'; <2>
+----
+<1> Contraseña de Manila
+<2> Contraseña de Manila
+
+. Realizar la configuración de Manila (usuario `manila`, añadir el usuario `manila` al proyecto `service` con el rol `admin` y crear los servicios `manila` y `manilav2`).
+
++
+[source, bash]
+----
+# source openrc-admin <1>
+
+# openstack user create --domain default manila --password {{ manila_dbpass }}
+# openstack role add --project service --user manila admin
+# openstack service create --name manila --description "OpenStack Shared File Systems" share
+# openstack service create --name manilav2 --description "OpenStack Shared File Systems" sharev2
+----
+<2> Credenciales del usuario `manila`
+
+. Crear los endpoints de la API
+
++
+[source, bash]
+----
+# openstack endpoint create --region {{region}} share public http://{{ nodes_by_name.controller.provider_ip }}:8786/v1/%\(tenant_id\)s <1>
+# openstack endpoint create --region {{region}} share internal http://{{ nodes_by_name.controller.tunnel_ip }}:8786/v1/%\(tenant_id\)s <2>
+# openstack endpoint create --region {{region}} share admin http://{{ nodes_by_name.controller.management_ip }}:8786/v1/%\(tenant_id\)s <3>
+
+# openstack endpoint create --region {{region}} sharev2 public http://{{ nodes_by_name.controller.provider_ip }}:8786/v2/%\(tenant_id\)s <4>
+# openstack endpoint create --region {{region}} sharev2 internal http://{{ nodes_by_name.controller.tunnel_ip }}:8786/v2/%\(tenant_id\)s <5>
+# command: openstack endpoint create --region {{region}} sharev2 admin http://{{ nodes_by_name.controller.management_ip }}:8786/v2/%\(tenant_id\)s <6>
+----
+<1> Región (p.e, `RegionOne`) e IP externa del nodo de control
+<2> Región (p.e, `RegionOne`) e IP de túnel del nodo de control
+<3> Región (p.e, `RegionOne`) e IP de mantenimiento del nodo de control
+<4> Región (p.e, `RegionOne`) e IP externa del nodo de control
+<5> Región (p.e, `RegionOne`) e IP de túnel del nodo de control
+<6> Región (p.e, `RegionOne`) e IP de mantenimiento del nodo de control
+
+. Instalar los paquetes de Cinder 
+
++
+[source, bash]
+----
+# apt install manila-api manila-scheduler python-manilaclient
+----
+
+. Configurar el archivo `/etc/manila/manila.conf`
+
++
+.El archivo `/etc/manila/manila.conf`
+****
+[source, bash]
+----
+[DEFAULT]
+
+rpc_backend = rabbit
+rabbit_durable_queues = true
+
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <1>
+
+default_share_type = default_share_type
+share_name_template = share-%s
+rootwrap_config = /etc/manila/rootwrap.conf
+api_paste_config = /etc/manila/api-paste.ini
+
+auth_strategy = keystone
+
+my_ip = {{ nodes.controller.management_ip }} <2>
+
+[cors]
+
+[cors.subdomain]
+
+[database]
+
+connection = mysql+pymysql://manila:{{ manila_dbpass }}@{{ nodes.controller.management_ip }}/manila <3>
+
+[keystone_authtoken]
+
+memcached_servers = {{ nodes.controller.management_ip }}:11211 <4>
+auth_uri = http://{{ nodes.controller.management_ip }}:5000 <5>
+auth_url = http://{{ nodes.controller.management_ip }}:35357 <6>
+auth_type = password
+project_domain_id = default
+user_domain_id = default
+project_name = service
+username = manila
+password = {{ manila_dbpass }} <7>
+
+[matchmaker_redis]
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_middleware]
+
+[oslo_concurrency]
+lock_path = /var/lib/manila/tmp
+
+----
+<1> Contraseña de RabbitMQ y nombre del nodo de control
+<2> Nombre del nodo de control
+<3> Contraseña de Manila y nombre del nodo de control
+<4> Nombre del nodo de control
+<5> Nombre del nodo de control
+<6> Nombre del nodo de control
+<7> Contraseña de Manila
+****
+
+. Inicializar la base de datos `manila`
+
++
+[source, bash]
+----
+# su -s /bin/sh -c "manila-manage db sync" manila
+----
+
+. Reiniciar servicios de Manila
+
++
+[source, bash]
+----
+# service manila-scheduler restart
+# service manila-api restart
+----
+
+. Eliminar la base de datos `manila.sqlite`
+
++
+[source, bash]
+----
+# rm -f /var/lib/manila/manila.sqlite
+----
+
+. Clonar el repositorio de `manila-ui`
+
++
+[source, bash]
+----
+# git clone https://github.com/openstack/manila-ui /tmp/manila-ui
+----
+
++
+[NOTE]
+====
+Manila no tiene empaquetada la integración con Horizon. En estos casos descargaremos los fuentes, los procesaremos y los integraremos en Horizon.
+====
+
+. Instalar el dashboard de Neutron LBaaS desde `/tmp/neutron-lbaas-dashboard/`
+
++
+[source, bash]
+----
+# cd /tmp/manila-ui/
+# python setup.py install
+----
+
+. Copiar los archivos del dashboard de Neutron LBaaS
+
++
+[source, bash]
+----
+# cp /tmp/manila-ui/manila_ui/local/enabled/_90_manila*  /usr/share/openstack-dashboard/openstack_dashboard/local/enabled/
+----
+
+. Realizar estos últimos pasos para terminar de integrar el dashboard en Horizon
+
++
+[source, bash]
+----
+# cd /usr/share/openstack-dashboard
+# python manage.py collectstatic <1>
+# python manage.py compress
+----
+<1> Responder `yes` a la pregunta
+
+. Reiniciar el servidor Apache
+
++
+[source, bash]
+----
+# service apache2 restart
+----
+
+### Instalación de Manila en el nodo de almacenamiento compartido
+
+Realizar estos pasos en el nodo de almacenamiento compartido
+
+. Instalar Manila en el nodo de almacenamiento compartido
+
++
+[source, bash]
+----
+# apt install manila-share python-pymysql lvm2 nfs-kernel-server
+----
+
+. Configurar el archivo `/etc/manila/manila.conf`
+
++
+.El archivo `/etc/manila/manila.conf`
+****
+[source, bash]
+----
+[DEFAULT]
+
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.management_ip }} <1> 
+default_share_type = default_share_type
+rootwrap_config = /etc/manila/rootwrap.conf
+auth_strategy = keystone
+my_ip = {{ nodes_by_name.shared.management_ip }} <2>
+enabled_share_backends = lvm
+enabled_share_protocols = NFS
+rpc_backend = rabbit
+rabbit_durable_queues = true
+api_paste_config = /etc/manila/api-paste.ini
+state_path = /var/lib/manila
+
+[cors]
+
+[cors.subdomain]
+
+[database]
+
+connection = mysql+pymysql://manila:{{ manila_dbpass }}@{{ nodes.controller.management_ip }}/manila <3>
+
+[keystone_authtoken]
+
+memcached_servers = {{nodes.controller.management_ip }}:11211 <4>
+auth_uri = http://{{ nodes.controller.management_ip }}:5000 <5>
+auth_url = http://{{ nodes.controller.management_ip }}:35357 <6>
+auth_type = password
+project_domain_id = default
+user_domain_id = default
+project_name = service
+username = manila
+password = {{ manila_dbpass }} <7>
+
+[matchmaker_redis]
+
+[oslo_messaging_amqp]
+
+[oslo_messaging_kafka]
+
+[oslo_messaging_notifications]
+
+[oslo_messaging_rabbit]
+
+[oslo_messaging_zmq]
+
+[oslo_middleware]
+
+[oslo_concurrency]
+lock_path = /var/lib/manila/tmp
+
+[lvm]
+share_backend_name = LVM
+share_driver = manila.share.drivers.lvm.LVMShareDriver
+driver_handles_share_servers = False
+lvm_share_volume_group = manila-volumes
+lvm_share_export_ip = {{ nodes_by_name.shared.provider_ip }} <8>
+---
+<1> Contraseña de RabbitMQ y dirección IP de mantenimiento del nodo de control
+<2> IP de mantenimiento del nodo de almacenamiento compartido
+<3> Contraseña de Manila y dirección IP de mantenimiento del nodo de control
+<4> IP de mantenemiento del nodo de control
+<5> IP de mantenemiento del nodo de control
+<6> IP de mantenemiento del nodo de control
+<7> Contraseña de Manila
+<8> IP externa del nodo de almacenamiento compartido
+
+
+. Create el volumen físico LVM
+
++
+[source, bash]
+----
+# pvcreate /dev/{{ shared_storage_device }} <1>
+----
+<1> Volumen del nodo de almacenamiento compartido dedicado a Manila
+
+. Crear el grupo de volúmenes `manila-volumes`
+
++
+[source, bash]
+----
+# vgcreate manila-volumes /dev/{{ shared_storage_device }} <1>
+----
+<1> Volumen del nodo de almacenamiento compartido dedicado a Manila
+
+. Configurar el archivo `/etc/lvm/lvm.conf` añadiendo la línea siguiente al bloque `devices` para especificar los dispositivos utilizados por LVM
+
++
+[source, bash]
+----
+filter = [ "a/{{ shared_storage_device }}/", "r/.*/"] <1>
+----
+<1> Volumen del nodo de almacenamiento compartido dedicado a Manila
+
+. Reiniciar el servicio `manila-share`
+
++
+[source, bash]
+----
+# service manila-share restart
+----
+
+. Activar el servicio `nfs-server`
+
++
+[source, bash]
+----
+# systemctl enable nfs-server
+----
+
+. Delete manila.sqlite on storage
+
++
+[source, bash]
+----
+# rm -f /var/lib/manila/manila.sqlite
+----
+
+### Configuración de Manila en el nodo de control
+
+Realizar esta operación en el nodo de control.
+
+. Crear volúmenes compartidos con `Shared File Systems` de tipo `DHSS = False`
+
++
+[source, bash]
+----
+# manila type-create default_share_type False
+----
+
 :numbered!: 
 
 ## Anexo. Paquetes y archivos de configuración
