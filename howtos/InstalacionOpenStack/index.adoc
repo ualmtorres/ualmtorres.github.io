@@ -4900,7 +4900,83 @@ image::OpenStackPackagesAndFilesController.png[]
 .Paquetes y archivos a configurar en el resto de nodos
 image::OpenStackPackagesAndFilesRemainder.png[]
 
-## Anexo 2. Tablas no vacías de las bases de datos de OpenStack
+## Anexo 2. Servicios en ejecución en cada servidor
+
+*Servicios en el nodo de control*
+
+- `chrony`
+- `mysql`
+- `rabbitmq`
+- `memcached`
+- `apache2`
+- `glance-api`
+- `glance-registry`
+- `nova-api`
+- `nova-placement-api`
+- `nova-scheduler`
+- `nova-consoleauth`
+- `nova-novncproxy`
+- `neutron-server`
+- `ml2-agent`
+- `cinder-api`
+- `cinder-scheduler`
+- `manila-api`
+- `manila-scheduler`
+- `swift-proxy`
+- `heat-api`
+- `heat-engine`
+- `heat-api-ctn`
+- `barbican-keystone-listener`
+- `barbican-worker`
+- `sabana-api`
+- `sabana-engine`
+
+*Servicios en el nodo de red* 
+
+- `chrony`
+- `openvswitch-agent`
+- `dhcp-agent`
+- `metadata-agent`
+- `l3-agent`
+
+*Servicios en nodos de cómputo*
+
+- `chrony`
+- `nova-compute`
+- `openvswitch-agent`
+
+*Servicios en el nodo de almacenamiento de bloques* 
+
+- `chrony`
+- `cinder-volume`
+- `lvm2`
+- `tgt`
+
+*Servicios en el nodo de almacenamiento de archivos compartidos* 
+
+- `chrony`
+- `manila-share`
+- `lvm2`
+
+*Servicios en el nodo de almacenamiento de objetos* 
+
+- `chrony`
+- `swift-account`      
+- `swift-account-auditor`       
+- `swift-account-reaper`   
+- `swift-account-replicator`
+- `swift-container`    
+- `swift-container-auditor` 
+- `swift-container-replicator`
+- `swift-container-sync`
+- `swift-container-updater`
+- `swift-object`
+- `swift-object-auditor`
+- `swift-object-reconstructor`
+- `swift-object-replicator`
+- `swift-object-updater`
+
+## Anexo 3. Tablas no vacías de las bases de datos de OpenStack
 
 [source, bash]
 ----
@@ -5055,7 +5131,7 @@ image::OpenStackPackagesAndFilesRemainder.png[]
 +--------------------+----------------------------------------------------+
 ----
 
-## Anexo 3. Consultas SQL de utilidad
+## Anexo 4. Consultas SQL de utilidad
 
 . Ids de proyectos 
 

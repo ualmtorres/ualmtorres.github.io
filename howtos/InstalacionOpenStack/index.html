@@ -481,8 +481,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#truesahara">14. Sahara</a></li>
 <li><a href="#trueanexo-1-paquetes-y-archivos-de-configuraci-n">Anexo 1. Paquetes y archivos de configuración</a></li>
-<li><a href="#trueanexo-2-tablas-no-vac-as-de-las-bases-de-datos-de-openstack">Anexo 2. Tablas no vacías de las bases de datos de OpenStack</a></li>
-<li><a href="#trueanexo-3-consultas-sql-de-utilidad">Anexo 3. Consultas SQL de utilidad</a></li>
+<li><a href="#trueanexo-2-servicios-en-ejecuci-n-en-cada-servidor">Anexo 2. Servicios en ejecución en cada servidor</a></li>
+<li><a href="#trueanexo-3-tablas-no-vac-as-de-las-bases-de-datos-de-openstack">Anexo 3. Tablas no vacías de las bases de datos de OpenStack</a></li>
+<li><a href="#trueanexo-4-consultas-sql-de-utilidad">Anexo 4. Consultas SQL de utilidad</a></li>
 </ul>
 </div>
 </div>
@@ -6928,7 +6929,222 @@ def _get_cinder_limits():
 </div>
 </div>
 <div class="sect1">
-<h2 id="trueanexo-2-tablas-no-vac-as-de-las-bases-de-datos-de-openstack"><a class="anchor" href="#trueanexo-2-tablas-no-vac-as-de-las-bases-de-datos-de-openstack"></a>Anexo 2. Tablas no vacías de las bases de datos de OpenStack</h2>
+<h2 id="trueanexo-2-servicios-en-ejecuci-n-en-cada-servidor"><a class="anchor" href="#trueanexo-2-servicios-en-ejecuci-n-en-cada-servidor"></a>Anexo 2. Servicios en ejecución en cada servidor</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Servicios en el nodo de control</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>chrony</code></p>
+</li>
+<li>
+<p><code>mysql</code></p>
+</li>
+<li>
+<p><code>rabbitmq</code></p>
+</li>
+<li>
+<p><code>memcached</code></p>
+</li>
+<li>
+<p><code>apache2</code></p>
+</li>
+<li>
+<p><code>glance-api</code></p>
+</li>
+<li>
+<p><code>glance-registry</code></p>
+</li>
+<li>
+<p><code>nova-api</code></p>
+</li>
+<li>
+<p><code>nova-placement-api</code></p>
+</li>
+<li>
+<p><code>nova-scheduler</code></p>
+</li>
+<li>
+<p><code>nova-consoleauth</code></p>
+</li>
+<li>
+<p><code>nova-novncproxy</code></p>
+</li>
+<li>
+<p><code>neutron-server</code></p>
+</li>
+<li>
+<p><code>ml2-agent</code></p>
+</li>
+<li>
+<p><code>cinder-api</code></p>
+</li>
+<li>
+<p><code>cinder-scheduler</code></p>
+</li>
+<li>
+<p><code>manila-api</code></p>
+</li>
+<li>
+<p><code>manila-scheduler</code></p>
+</li>
+<li>
+<p><code>swift-proxy</code></p>
+</li>
+<li>
+<p><code>heat-api</code></p>
+</li>
+<li>
+<p><code>heat-engine</code></p>
+</li>
+<li>
+<p><code>heat-api-ctn</code></p>
+</li>
+<li>
+<p><code>barbican-keystone-listener</code></p>
+</li>
+<li>
+<p><code>barbican-worker</code></p>
+</li>
+<li>
+<p><code>sabana-api</code></p>
+</li>
+<li>
+<p><code>sabana-engine</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Servicios en el nodo de red</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>chrony</code></p>
+</li>
+<li>
+<p><code>openvswitch-agent</code></p>
+</li>
+<li>
+<p><code>dhcp-agent</code></p>
+</li>
+<li>
+<p><code>metadata-agent</code></p>
+</li>
+<li>
+<p><code>l3-agent</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Servicios en nodos de cómputo</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>chrony</code></p>
+</li>
+<li>
+<p><code>nova-compute</code></p>
+</li>
+<li>
+<p><code>openvswitch-agent</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Servicios en el nodo de almacenamiento de bloques</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>chrony</code></p>
+</li>
+<li>
+<p><code>cinder-volume</code></p>
+</li>
+<li>
+<p><code>lvm2</code></p>
+</li>
+<li>
+<p><code>tgt</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Servicios en el nodo de almacenamiento de archivos compartidos</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>chrony</code></p>
+</li>
+<li>
+<p><code>manila-share</code></p>
+</li>
+<li>
+<p><code>lvm2</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Servicios en el nodo de almacenamiento de objetos</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>chrony</code></p>
+</li>
+<li>
+<p><code>swift-account</code></p>
+</li>
+<li>
+<p><code>swift-account-auditor</code></p>
+</li>
+<li>
+<p><code>swift-account-reaper</code></p>
+</li>
+<li>
+<p><code>swift-account-replicator</code></p>
+</li>
+<li>
+<p><code>swift-container</code></p>
+</li>
+<li>
+<p><code>swift-container-auditor</code></p>
+</li>
+<li>
+<p><code>swift-container-replicator</code></p>
+</li>
+<li>
+<p><code>swift-container-sync</code></p>
+</li>
+<li>
+<p><code>swift-container-updater</code></p>
+</li>
+<li>
+<p><code>swift-object</code></p>
+</li>
+<li>
+<p><code>swift-object-auditor</code></p>
+</li>
+<li>
+<p><code>swift-object-reconstructor</code></p>
+</li>
+<li>
+<p><code>swift-object-replicator</code></p>
+</li>
+<li>
+<p><code>swift-object-updater</code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueanexo-3-tablas-no-vac-as-de-las-bases-de-datos-de-openstack"><a class="anchor" href="#trueanexo-3-tablas-no-vac-as-de-las-bases-de-datos-de-openstack"></a>Anexo 3. Tablas no vacías de las bases de datos de OpenStack</h2>
 <div class="sectionbody">
 <div class="listingblock">
 <div class="content">
@@ -7086,7 +7302,7 @@ def _get_cinder_limits():
 </div>
 </div>
 <div class="sect1">
-<h2 id="trueanexo-3-consultas-sql-de-utilidad"><a class="anchor" href="#trueanexo-3-consultas-sql-de-utilidad"></a>Anexo 3. Consultas SQL de utilidad</h2>
+<h2 id="trueanexo-4-consultas-sql-de-utilidad"><a class="anchor" href="#trueanexo-4-consultas-sql-de-utilidad"></a>Anexo 4. Consultas SQL de utilidad</h2>
 <div class="sectionbody">
 <div class="olist arabic">
 <ol class="arabic">
@@ -7264,7 +7480,7 @@ WHERE name IN ('xxxx', 'yyyy');</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-01-17 21:37:59 CET
+Last updated 2019-01-17 22:23:23 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
