@@ -1059,10 +1059,10 @@ IDENTIFIED BY {{ 'KEYSTONE_DBPASS' }}; <i class="conum" data-value="2"></i><b>(2
 </div>
 </li>
 <li>
-<p>Configurar el archivo <code>/etc/keystone.conf</code></p>
+<p>Configurar el archivo <code>/etc/keystone/keystone.conf</code></p>
 <div class="sidebarblock">
 <div class="content">
-<div class="title">El archivo <code>/etc/keystone.conf</code></div>
+<div class="title">El archivo <code>/etc/keystone/keystone.conf</code></div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[DEFAULT]
@@ -2980,7 +2980,7 @@ net.ipv4.conf.default.rp_filter=0</code></pre>
 <p>Cargar la nueva configuración del kernel</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># systcl -p</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># sysctl -p</code></pre>
 </div>
 </div>
 </li>
@@ -3526,7 +3526,7 @@ net.ipv4.conf.default.rp_filter=0</code></pre>
 <p>Cargar la nueva configuración del kernel</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># systcl -p</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># sysctl -p</code></pre>
 </div>
 </div>
 </li>
@@ -7264,7 +7264,7 @@ WHERE name IN ('xxxx', 'yyyy');</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-01-17 07:00:23 CET
+Last updated 2019-01-17 21:37:59 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

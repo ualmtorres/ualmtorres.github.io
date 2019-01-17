@@ -390,10 +390,10 @@ IDENTIFIED BY {{ 'KEYSTONE_DBPASS' }}; <2>
 # apt install keystone
 ----
 
-. Configurar el archivo `/etc/keystone.conf`
+. Configurar el archivo `/etc/keystone/keystone.conf`
 
 +
-.El archivo `/etc/keystone.conf`
+.El archivo `/etc/keystone/keystone.conf`
 ****
 [source, bash]
 ----
@@ -1851,7 +1851,7 @@ net.ipv4.conf.default.rp_filter=0
 +
 [source, bash]
 ----
-# systcl -p
+# sysctl -p
 ----
 
 . Instalar Neutron
@@ -2252,7 +2252,7 @@ net.ipv4.conf.default.rp_filter=0
 +
 [source, bash]
 ----
-# systcl -p
+# sysctl -p
 ----
 
 . Instalar Neutron
