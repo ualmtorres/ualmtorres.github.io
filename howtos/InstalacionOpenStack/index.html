@@ -857,6 +857,14 @@ rtcsync</code></pre>
 </div>
 </li>
 <li>
+<p>Revisar funcionamiento de <code>chrony</code> en todos los nodos</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># chronyc sources</code></pre>
+</div>
+</div>
+</li>
+<li>
 <p>Añadir el repositorio de OpenStack Ocata en todos los nodos</p>
 <div class="listingblock">
 <div class="content">
@@ -1299,7 +1307,7 @@ ServerName {{ nodes.controller.name }} <i class="conum" data-value="1"></i><b>(1
 </div>
 </li>
 <li>
-<p>Configurar el archivo de credenciales del usuario <code>admin</code></p>
+<p>Configurar el archivo de credenciales del usuario <code>admin</code>. Crear un archivo denominado <code>openrc-admin</code>.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">export OS_USERNAME=admin
@@ -1327,7 +1335,7 @@ export OS_AUTH_TYPE=password</code></pre>
 </div>
 </li>
 <li>
-<p>Configurar el archivo de credenciales del usuario <code>demo</code></p>
+<p>Configurar el archivo de credenciales del usuario <code>demo</code>. Crear un archivo denominado <code>openrc-demo</code>.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">export OS_USERNAME=demo
@@ -1775,6 +1783,51 @@ flavor = keystone
 </div>
 </div>
 </div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Poblar la base de datos <code>glance</code>.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># su -s /bin/sh -c "glance-manage db_sync" glance</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Reiniciar los servicios de Glance</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service glance-registry restart
+# service glance-api restart</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verificar funcionaminento</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># wget http://download.cirros-cloud.net/0.3.5/cirros-0.3.5-x86_64-disk.img <i class="conum" data-value="1"></i><b>(1)</b>
+# openstack image create "cirros" \
+  --file cirros-0.3.5-x86_64-disk.img \
+  --disk-format qcow2 --container-format bare \
+  --public <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Descargar imagen de prueba de CirrOS</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Subir imagen a OpenStack</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1956,7 +2009,8 @@ MariaDB [(none)]&gt; GRANT ALL PRIVILEGES ON nova_cell0.* TO 'nova'@'%' \
 <div class="title">El archivo <code>/etc/nova/nova.conf</code></div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">my_ip = {{ nodes.controller.management_ip }} <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">[DEFAULT]
+my_ip = {{ nodes.controller.management_ip }} <i class="conum" data-value="1"></i><b>(1)</b>
 
 use_neutron = True
 firewall_driver = nova.virt.firewall.NoopFirewallDriver
@@ -2244,6 +2298,14 @@ api_paste_config=/etc/nova/api-paste.ini
 # service nova-scheduler restart
 # service nova-conductor restart
 # service nova-novncproxy restart</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verificar creación de celdas</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># nova-manage cell_v2 list_cells</code></pre>
 </div>
 </div>
 </li>
@@ -2543,7 +2605,15 @@ api_paste_config=/etc/nova/api-paste.ini
 </div>
 </div>
 </li>
+<li>
+<p>Reiniciar servicios de nova</p>
+</li>
 </ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># service nova-compute restart</code></pre>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -2579,7 +2649,7 @@ api_paste_config=/etc/nova/api-paste.ini
 <p>Descubrir los servidores de cómputo</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash"># su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova</code></pre>
 </div>
 </div>
 </li>
@@ -7194,7 +7264,7 @@ WHERE name IN ('xxxx', 'yyyy');</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-01-16 14:14:25 CET
+Last updated 2019-01-17 07:00:23 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

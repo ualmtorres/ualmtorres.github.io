@@ -231,7 +231,14 @@ rtcsync
 ----
 # service chrony restart
 ----
+
+. Revisar funcionamiento de `chrony` en todos los nodos
+
 +
+[source, bash]
+----
+# chronyc sources
+----
 
 . Añadir el repositorio de OpenStack Ocata en todos los nodos
 
@@ -606,7 +613,7 @@ ServerName {{ nodes.controller.name }} <1>
 # rm -rf /var/lib/keystone/keystone.db
 ----
 
-. Configurar el archivo de credenciales del usuario `admin`
+. Configurar el archivo de credenciales del usuario `admin`. Crear un archivo denominado `openrc-admin`.
 
 +
 [source, bash]
@@ -624,7 +631,7 @@ export OS_AUTH_TYPE=password
 <1> Contraseña de `admin`
 <2> Nombre del nodo de control
 
-. Configurar el archivo de credenciales del usuario `demo`
+. Configurar el archivo de credenciales del usuario `demo`. Crear un archivo denominado `openrc-demo`.
 
 +
 [source, bash]
@@ -959,6 +966,37 @@ flavor = keystone
 <6> Contraseña de Glance
 ****
 
+. Poblar la base de datos `glance`.
+
++
+[source, bash]
+----
+# su -s /bin/sh -c "glance-manage db_sync" glance
+----
+
+. Reiniciar los servicios de Glance
+
++
+[source, bash]
+----
+# service glance-registry restart
+# service glance-api restart
+----
+
+. Verificar funcionaminento
+
++
+[source, bash]
+----
+# wget http://download.cirros-cloud.net/0.3.5/cirros-0.3.5-x86_64-disk.img <1>
+# openstack image create "cirros" \
+  --file cirros-0.3.5-x86_64-disk.img \
+  --disk-format qcow2 --container-format bare \
+  --public <2>
+----
+<1> Descargar imagen de prueba de CirrOS
+<2> Subir imagen a OpenStack
+
 ## Instalación de Nova
 
 ### Instalación de Nova en el nodo de control
@@ -1067,6 +1105,7 @@ MariaDB [(none)]> GRANT ALL PRIVILEGES ON nova_cell0.* TO 'nova'@'%' \
 ****
 [source, bash]
 ----
+[DEFAULT]
 my_ip = {{ nodes.controller.management_ip }} <1>
 
 use_neutron = True
@@ -1299,6 +1338,13 @@ api_paste_config=/etc/nova/api-paste.ini
 # service nova-novncproxy restart
 ----
 
+. Verificar creación de celdas
+
++
+[source, bash]
+----
+# nova-manage cell_v2 list_cells
+----
 
 ### Instalación de Nova en los nodos de cómputo
 
@@ -1536,6 +1582,13 @@ api_paste_config=/etc/nova/api-paste.ini
 <16> IP externa del nodo de control
 ****
 
+. Reiniciar servicios de nova
+
+[source, bash]
+----
+# service nova-compute restart
+----
+
 ### Configuración de Nova en el nodo de control
 
 Realizar estar operaciones en el nodo de control
@@ -1560,7 +1613,7 @@ Realizar estar operaciones en el nodo de control
 +
 [source, bash]
 ----
-# su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova'
+# su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova
 ----
 
 ## Neutron
