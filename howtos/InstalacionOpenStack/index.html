@@ -480,10 +480,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#truesahara">14. Sahara</a></li>
-<li><a href="#trueanexo-1-paquetes-y-archivos-de-configuraci-n">Anexo 1. Paquetes y archivos de configuración</a></li>
-<li><a href="#trueanexo-2-servicios-en-ejecuci-n-en-cada-servidor">Anexo 2. Servicios en ejecución en cada servidor</a></li>
-<li><a href="#trueanexo-3-tablas-no-vac-as-de-las-bases-de-datos-de-openstack">Anexo 3. Tablas no vacías de las bases de datos de OpenStack</a></li>
-<li><a href="#trueanexo-4-consultas-sql-de-utilidad">Anexo 4. Consultas SQL de utilidad</a></li>
+<li><a href="#trueanexo-1-esquema-de-red">Anexo 1. Esquema de red</a></li>
+<li><a href="#trueanexo-2-paquetes-y-archivos-de-configuraci-n">Anexo 2. Paquetes y archivos de configuración</a></li>
+<li><a href="#trueanexo-3-servicios-en-ejecuci-n-en-cada-servidor">Anexo 3. Servicios en ejecución en cada servidor</a></li>
+<li><a href="#trueanexo-4-tablas-no-vac-as-de-las-bases-de-datos-de-openstack">Anexo 4. Tablas no vacías de las bases de datos de OpenStack</a></li>
+<li><a href="#trueanexo-5-consultas-sql-de-utilidad">Anexo 5. Consultas SQL de utilidad</a></li>
 </ul>
 </div>
 </div>
@@ -651,6 +652,20 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Los componentes de OpenStack exponen una API que es usada por los distintos servicios. Cada componente también suele utilizar una base de datos donde registra sus elementos, estado, operaciones, y demás. La comunicación con la base de datos se realiza con el protocolo <a href="https://es.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol">AMQP</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -682,7 +697,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="title">Figure 2. Configuración y conexión de servidores</div>
 </div>
 <div class="paragraph">
-<p>Como se observa en la figura, todos los servidores están conectados a las redes de mantenimiento y túnel. Además, los servidores siguientes están contectados al exterior:</p>
+<p>Como se observa en la figura, todos los servidores están conectados a las redes de mantenimiento y túnel.</p>
+</div>
+<div class="paragraph">
+<p>Además, los servidores siguientes están contectados al exterior a través de una red externa, que proporciona conexión a Internet a las máquinas virtuales, y en el caso de OpenStack-DI al almacenamiento de archivos compartidos.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -696,6 +714,20 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>Almacenamiento compartido: Permite ofrecer sistemas de archivos de compartidos en la red de la UAL.</p>
 </li>
 </ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>La red de mantenimiento proporciona comunicación interna entre los componentes de OpenStack. La red de túnel (también conocida como <code>guest</code>) proporciona comunicación a las máquinas virtuales con los recursos del cloud.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Los requisitos hardware mínimos de cada servidor son los que aparecen el la <a href="https://docs.openstack.org/ocata/install-guide-ubuntu/overview.html#example-architecture">arquitectura de ejemplo de la guía de instalación de OpenStack</a>.</p>
@@ -6909,7 +6941,17 @@ def _get_cinder_limits():
 </div>
 </div>
 <div class="sect1">
-<h2 id="trueanexo-1-paquetes-y-archivos-de-configuraci-n"><a class="anchor" href="#trueanexo-1-paquetes-y-archivos-de-configuraci-n"></a>Anexo 1. Paquetes y archivos de configuración</h2>
+<h2 id="trueanexo-1-esquema-de-red"><a class="anchor" href="#trueanexo-1-esquema-de-red"></a>Anexo 1. Esquema de red</h2>
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="./images/Conexiones.png" alt="Conexiones.png">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueanexo-2-paquetes-y-archivos-de-configuraci-n"><a class="anchor" href="#trueanexo-2-paquetes-y-archivos-de-configuraci-n"></a>Anexo 2. Paquetes y archivos de configuración</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>La instalación de OpenStack es un proceso farragoso en cuanto a la cantidad de paquetes y archivos de configuración que hay que instalar y configuirar en cada tipo de nodo. A continuación se muestran dos figuras que ilustran los paquetes a instalar y los archivos a configurar en cada nodo.</p>
@@ -6929,7 +6971,7 @@ def _get_cinder_limits():
 </div>
 </div>
 <div class="sect1">
-<h2 id="trueanexo-2-servicios-en-ejecuci-n-en-cada-servidor"><a class="anchor" href="#trueanexo-2-servicios-en-ejecuci-n-en-cada-servidor"></a>Anexo 2. Servicios en ejecución en cada servidor</h2>
+<h2 id="trueanexo-3-servicios-en-ejecuci-n-en-cada-servidor"><a class="anchor" href="#trueanexo-3-servicios-en-ejecuci-n-en-cada-servidor"></a>Anexo 3. Servicios en ejecución en cada servidor</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><strong>Servicios en el nodo de control</strong></p>
@@ -6952,43 +6994,43 @@ def _get_cinder_limits():
 <p><code>apache2</code></p>
 </li>
 <li>
-<p><code>glance-api</code></p>
+<p><code>glance-api</code>: Discovery, recuperación y almacenamiento de imágenes.</p>
 </li>
 <li>
-<p><code>glance-registry</code></p>
+<p><code>glance-registry</code>: Creación, modificación y consulta de metadatos de las imágenes (p.e. tamaño, tipo)</p>
 </li>
 <li>
 <p><code>nova-api</code></p>
 </li>
 <li>
-<p><code>nova-placement-api</code></p>
+<p><code>nova-placement-api</code>: Inventario y uso de cada provider.</p>
 </li>
 <li>
-<p><code>nova-scheduler</code></p>
+<p><code>nova-scheduler</code>: Gestiona peticiones de máquinas virtuales a los nodos de cómputo.</p>
 </li>
 <li>
-<p><code>nova-consoleauth</code></p>
+<p><code>nova-consoleauth</code>: Da tokens de acceso a los usuarios</p>
 </li>
 <li>
-<p><code>nova-novncproxy</code></p>
+<p><code>nova-novncproxy</code>: Acceso VNC a las instancias (clientes VNC basados en navegadores compatibles).</p>
 </li>
 <li>
-<p><code>neutron-server</code></p>
+<p><code>neutron-server</code>: Acepta y emite peticiones a la API del plugin correspondiente (bridging/switching, DHCP, &#8230;&#8203;)</p>
 </li>
 <li>
-<p><code>ml2-agent</code></p>
+<p><code>ml2-agent</code>: Bridging/switching</p>
 </li>
 <li>
 <p><code>cinder-api</code></p>
 </li>
 <li>
-<p><code>cinder-scheduler</code></p>
+<p><code>cinder-scheduler</code>: Gestiona peticiones de almacenamiento de bloques.</p>
 </li>
 <li>
 <p><code>manila-api</code></p>
 </li>
 <li>
-<p><code>manila-scheduler</code></p>
+<p><code>manila-scheduler</code>: Gestiona peticiones de almacenamiento de archivos</p>
 </li>
 <li>
 <p><code>swift-proxy</code></p>
@@ -7025,13 +7067,13 @@ def _get_cinder_limits():
 <p><code>chrony</code></p>
 </li>
 <li>
-<p><code>openvswitch-agent</code></p>
+<p><code>openvswitch-agent</code>: Bridging/switching para redes virtuales.</p>
 </li>
 <li>
-<p><code>dhcp-agent</code></p>
+<p><code>dhcp-agent</code>: Servicios de DHCP para redes virrtuales.</p>
 </li>
 <li>
-<p><code>metadata-agent</code></p>
+<p>`metadata-agent`Servicios de metadatos a las instancias.</p>
 </li>
 <li>
 <p><code>l3-agent</code></p>
@@ -7047,10 +7089,10 @@ def _get_cinder_limits():
 <p><code>chrony</code></p>
 </li>
 <li>
-<p><code>nova-compute</code></p>
+<p><code>nova-compute</code>: Crea y termina máquinas virtuales a través de la API del hipervisor</p>
 </li>
 <li>
-<p><code>openvswitch-agent</code></p>
+<p><code>openvswitch-agent</code>: Bridging/switching para redes virtuales.</p>
 </li>
 </ul>
 </div>
@@ -7144,7 +7186,7 @@ def _get_cinder_limits():
 </div>
 </div>
 <div class="sect1">
-<h2 id="trueanexo-3-tablas-no-vac-as-de-las-bases-de-datos-de-openstack"><a class="anchor" href="#trueanexo-3-tablas-no-vac-as-de-las-bases-de-datos-de-openstack"></a>Anexo 3. Tablas no vacías de las bases de datos de OpenStack</h2>
+<h2 id="trueanexo-4-tablas-no-vac-as-de-las-bases-de-datos-de-openstack"><a class="anchor" href="#trueanexo-4-tablas-no-vac-as-de-las-bases-de-datos-de-openstack"></a>Anexo 4. Tablas no vacías de las bases de datos de OpenStack</h2>
 <div class="sectionbody">
 <div class="listingblock">
 <div class="content">
@@ -7302,7 +7344,7 @@ def _get_cinder_limits():
 </div>
 </div>
 <div class="sect1">
-<h2 id="trueanexo-4-consultas-sql-de-utilidad"><a class="anchor" href="#trueanexo-4-consultas-sql-de-utilidad"></a>Anexo 4. Consultas SQL de utilidad</h2>
+<h2 id="trueanexo-5-consultas-sql-de-utilidad"><a class="anchor" href="#trueanexo-5-consultas-sql-de-utilidad"></a>Anexo 5. Consultas SQL de utilidad</h2>
 <div class="sectionbody">
 <div class="olist arabic">
 <ol class="arabic">
@@ -7480,7 +7522,7 @@ WHERE name IN ('xxxx', 'yyyy');</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-01-17 22:23:23 CET
+Last updated 2019-01-17 23:27:01 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

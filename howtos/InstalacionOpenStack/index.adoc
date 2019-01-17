@@ -89,6 +89,11 @@ image::ComponentesOpenStack.png[]
 * _Ceilometer_ recoge medidas de uso de los componentes de networking, imágenes, cómputo, almacenamiento y procesamiento de datos.
 * _Heat_ permite la creación de stacks para la creación de infraestructura mediante código. Opcionalmente se puede combinar con _Ceilometer_ par ajustar dinánicamente la infraestructura en función del uso de recursos (RAM, cores, almacenamiento) recopilado por _Ceilometer_.
 
+[NOTE]
+====
+Los componentes de OpenStack exponen una API que es usada por los distintos servicios. Cada componente también suele utilizar una base de datos donde registra sus elementos, estado, operaciones, y demás. La comunicación con la base de datos se realiza con el protocolo https://es.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol[AMQP].
+====
+
 ## Preparación del entorno
 
 Para la instalación de los componentes de este tutorial partimos del siguiente escenario en el que contaremos con servidores dedicados para Control, Red y Cómputo. Los servicios de almacenamiento tienen los requisitos siguientes:
@@ -102,13 +107,21 @@ La figura siguiente ilustra la arquitectura de referencia que usaremos en este t
 .Configuración y conexión de servidores
 image::configuracionDeseable.png[]
 
-Como se observa en la figura, todos los servidores están conectados a las redes de mantenimiento y túnel. Además, los servidores siguientes están contectados al exterior:
+Como se observa en la figura, todos los servidores están conectados a las redes de mantenimiento y túnel. 
+
+Además, los servidores siguientes están contectados al exterior a través de una red externa, que proporciona conexión a Internet a las máquinas virtuales, y en el caso de OpenStack-DI al almacenamiento de archivos compartidos.
 
 * Control: Proporciona acceso a la consola de _Horizon_ en la red de la UAL.
 * Red: Ofrece conectividad a la red de la UAL a las máquinas virtuales.
 * Almacenamiento compartido: Permite ofrecer sistemas de archivos de compartidos en la red de la UAL.
 
+[NOTE]
+====
+La red de mantenimiento proporciona comunicación interna entre los componentes de OpenStack. La red de túnel (también conocida como `guest`) proporciona comunicación a las máquinas virtuales con los recursos del cloud.
+====
+
 Los requisitos hardware mínimos de cada servidor son los que aparecen el la https://docs.openstack.org/ocata/install-guide-ubuntu/overview.html#example-architecture[arquitectura de ejemplo de la guía de instalación de OpenStack].
+
 
 ### Configuración de las interfaces de red
 
@@ -4890,7 +4903,11 @@ Sahara no tiene empaquetada la integración con Horizon. En estos casos descarga
 
 :numbered!: 
 
-## Anexo 1. Paquetes y archivos de configuración
+## Anexo 1. Esquema de red
+
+image::Conexiones.png[]
+
+## Anexo 2. Paquetes y archivos de configuración
 
 La instalación de OpenStack es un proceso farragoso en cuanto a la cantidad de paquetes y archivos de configuración que hay que instalar y configuirar en cada tipo de nodo. A continuación se muestran dos figuras que ilustran los paquetes a instalar y los archivos a configurar en cada nodo.
 
@@ -4900,7 +4917,7 @@ image::OpenStackPackagesAndFilesController.png[]
 .Paquetes y archivos a configurar en el resto de nodos
 image::OpenStackPackagesAndFilesRemainder.png[]
 
-## Anexo 2. Servicios en ejecución en cada servidor
+## Anexo 3. Servicios en ejecución en cada servidor
 
 *Servicios en el nodo de control*
 
@@ -4909,19 +4926,19 @@ image::OpenStackPackagesAndFilesRemainder.png[]
 - `rabbitmq`
 - `memcached`
 - `apache2`
-- `glance-api`
-- `glance-registry`
+- `glance-api`: Discovery, recuperación y almacenamiento de imágenes.
+- `glance-registry`: Creación, modificación y consulta de metadatos de las imágenes (p.e. tamaño, tipo)
 - `nova-api`
-- `nova-placement-api`
-- `nova-scheduler`
-- `nova-consoleauth`
-- `nova-novncproxy`
-- `neutron-server`
-- `ml2-agent`
+- `nova-placement-api`: Inventario y uso de cada provider.
+- `nova-scheduler`: Gestiona peticiones de máquinas virtuales a los nodos de cómputo.
+- `nova-consoleauth`: Da tokens de acceso a los usuarios
+- `nova-novncproxy`: Acceso VNC a las instancias (clientes VNC basados en navegadores compatibles).
+- `neutron-server`: Acepta y emite peticiones a la API del plugin correspondiente (bridging/switching, DHCP, ...)
+- `ml2-agent`: Bridging/switching
 - `cinder-api`
-- `cinder-scheduler`
+- `cinder-scheduler`: Gestiona peticiones de almacenamiento de bloques.
 - `manila-api`
-- `manila-scheduler`
+- `manila-scheduler`: Gestiona peticiones de almacenamiento de archivos
 - `swift-proxy`
 - `heat-api`
 - `heat-engine`
@@ -4934,16 +4951,16 @@ image::OpenStackPackagesAndFilesRemainder.png[]
 *Servicios en el nodo de red* 
 
 - `chrony`
-- `openvswitch-agent`
-- `dhcp-agent`
-- `metadata-agent`
+- `openvswitch-agent`: Bridging/switching para redes virtuales.
+- `dhcp-agent`: Servicios de DHCP para redes virrtuales.
+- `metadata-agent`Servicios de metadatos a las instancias.
 - `l3-agent`
 
 *Servicios en nodos de cómputo*
 
 - `chrony`
-- `nova-compute`
-- `openvswitch-agent`
+- `nova-compute`: Crea y termina máquinas virtuales a través de la API del hipervisor
+- `openvswitch-agent`: Bridging/switching para redes virtuales.
 
 *Servicios en el nodo de almacenamiento de bloques* 
 
@@ -4976,7 +4993,7 @@ image::OpenStackPackagesAndFilesRemainder.png[]
 - `swift-object-replicator`
 - `swift-object-updater`
 
-## Anexo 3. Tablas no vacías de las bases de datos de OpenStack
+## Anexo 4. Tablas no vacías de las bases de datos de OpenStack
 
 [source, bash]
 ----
@@ -5131,7 +5148,7 @@ image::OpenStackPackagesAndFilesRemainder.png[]
 +--------------------+----------------------------------------------------+
 ----
 
-## Anexo 4. Consultas SQL de utilidad
+## Anexo 5. Consultas SQL de utilidad
 
 . Ids de proyectos 
 
