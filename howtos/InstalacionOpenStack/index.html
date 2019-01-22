@@ -2787,6 +2787,20 @@ Exit</code></pre>
 </li>
 <li>
 <p>Configurar el archivo <code>/etc/neutron/neutron.conf</code></p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Este tutorial deja preparado el archivo <code>/etc/neutron/neutron.conf</code> para la instalación posterior del componente <em>Neutron Load Balancer as a Service (LBaaS)</em>. En caso de no instalar tal componente habrá que eliminar la carga de LBaaS en la línea <code>service_plugins</code> del archivo <code>/etc/neutron/neutron.conf</code>. De no eliminar la referencia a LBaaS en <code>/etc/neutron/neutron.conf</code> el componente Neutron no funcionará correctamente.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">El archivo <code>/etc/neutron/neutron.conf</code></div>
@@ -2797,15 +2811,19 @@ Exit</code></pre>
 auth_strategy = keystone
 
 core_plugin = ml2
-service_plugins = router,neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2
+
+service_plugins = router,neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2 <i class="conum" data-value="1"></i><b>(1)</b>
+# Sustituir la línea anterior por la línea siguiente si no se va a instalar el componente de Load Balancer as a Service
+# service_plugins = router
+
 allow_overlapping_ips = true
-transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <i class="conum" data-value="1"></i><b>(1)</b>
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <i class="conum" data-value="2"></i><b>(2)</b>
 
 notify_nova_on_port_status_changes = true
 
 notify_nova_on_port_data_changes = true
 
-dhcp_agents_per_network = {{ compute_nodes_quantity }} <i class="conum" data-value="2"></i><b>(2)</b>
+dhcp_agents_per_network = 1
 
 [agent]
 
@@ -2873,11 +2891,11 @@ driver = messagingv2
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Contraseña de RabbitMQ y nombre del nodo de control</td>
+<td>Sustituir la línea de <code>service_plugins</code> si no se va a instalar el componente <em>Neutron Load Balancer as a Service (LBaaS)</em></td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Cantidad de servidores de cómputo</td>
+<td>Contraseña de RabbitMQ y nombre del nodo de control</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -3027,6 +3045,20 @@ net.ipv4.conf.default.rp_filter=0</code></pre>
 </li>
 <li>
 <p>Configurar el archivo <code>/etc/neutron/neutron.conf</code></p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Este tutorial deja preparado el archivo <code>/etc/neutron/neutron.conf</code> para la instalación posterior del componente <em>Neutron Load Balancer as a Service (LBaaS)</em>. En caso de no instalar tal componente habrá que eliminar la carga de LBaaS en la línea <code>service_plugins</code> del archivo <code>/etc/neutron/neutron.conf</code>. De no eliminar la referencia a LBaaS en <code>/etc/neutron/neutron.conf</code> el componente Neutron no funcionará correctamente.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">El archivo <code>/etc/neutron/neutron.conf</code></div>
@@ -3037,15 +3069,19 @@ net.ipv4.conf.default.rp_filter=0</code></pre>
 auth_strategy = keystone
 
 core_plugin = ml2
-service_plugins = router,neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2
+
+service_plugins = router,neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2 <i class="conum" data-value="1"></i><b>(1)</b>
+# Sustituir la línea anterior por la línea siguiente si no se va a instalar el componente de Load Balancer as a Service
+# service_plugins = router
+
 allow_overlapping_ips = true
-transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <i class="conum" data-value="1"></i><b>(1)</b>
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <i class="conum" data-value="2"></i><b>(2)</b>
 
 notify_nova_on_port_status_changes = true
 
 notify_nova_on_port_data_changes = true
 
-dhcp_agents_per_network = {{ compute_nodes_quantity }} <i class="conum" data-value="2"></i><b>(2)</b>
+dhcp_agents_per_network = 1
 
 [agent]
 
@@ -3113,11 +3149,11 @@ driver = messagingv2
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Contraseña de RabbitMQ y nombre del nodo de control</td>
+<td>Sustituir la línea de <code>service_plugins</code> si no se va a instalar el componente <em>Neutron Load Balancer as a Service (LBaaS)</em></td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Cantidad de servidores de cómputo</td>
+<td>Contraseña de RabbitMQ y nombre del nodo de control</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -3573,6 +3609,20 @@ net.ipv4.conf.default.rp_filter=0</code></pre>
 </li>
 <li>
 <p>Configurar el archivo <code>/etc/neutron/neutron.conf</code></p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Este tutorial deja preparado el archivo <code>/etc/neutron/neutron.conf</code> para la instalación posterior del componente <em>Neutron Load Balancer as a Service (LBaaS)</em>. En caso de no instalar tal componente habrá que eliminar la carga de LBaaS en la línea <code>service_plugins</code> del archivo <code>/etc/neutron/neutron.conf</code>. De no eliminar la referencia a LBaaS en <code>/etc/neutron/neutron.conf</code> el componente Neutron no funcionará correctamente.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">El archivo <code>/etc/neutron/neutron.conf</code></div>
@@ -3583,15 +3633,19 @@ net.ipv4.conf.default.rp_filter=0</code></pre>
 auth_strategy = keystone
 
 core_plugin = ml2
-service_plugins = router,neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2
+
+service_plugins = router,neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2 <i class="conum" data-value="1"></i><b>(1)</b>
+# Sustituir la línea anterior por la línea siguiente si no se va a instalar el componente de Load Balancer as a Service
+# service_plugins = router
+
 allow_overlapping_ips = true
-transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <i class="conum" data-value="1"></i><b>(1)</b>
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <i class="conum" data-value="2"></i><b>(2)</b>
 
 notify_nova_on_port_status_changes = true
 
 notify_nova_on_port_data_changes = true
 
-dhcp_agents_per_network = {{ compute_nodes_quantity }} <i class="conum" data-value="2"></i><b>(2)</b>
+dhcp_agents_per_network = {{ compute_nodes_quantity }}
 
 [agent]
 
@@ -3659,11 +3713,11 @@ driver = messagingv2
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Contraseña de RabbitMQ y nombre del nodo de control</td>
+<td>Sustituir la línea de <code>service_plugins</code> si no se va a instalar el componente <em>Neutron Load Balancer as a Service (LBaaS)</em></td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Cantidad de servidores de cómputo</td>
+<td>Contraseña de RabbitMQ y nombre del nodo de control</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -7522,7 +7576,7 @@ WHERE name IN ('xxxx', 'yyyy');</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-01-17 23:27:01 CET
+Last updated 2019-01-22 09:10:56 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

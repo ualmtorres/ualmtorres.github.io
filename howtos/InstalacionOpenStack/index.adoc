@@ -1690,6 +1690,12 @@ Exit
 . Configurar el archivo `/etc/neutron/neutron.conf`
 
 +
+[IMPORTANT]
+====
+Este tutorial deja preparado el archivo `/etc/neutron/neutron.conf` para la instalación posterior del componente _Neutron Load Balancer as a Service (LBaaS)_. En caso de no instalar tal componente habrá que eliminar la carga de LBaaS en la línea `service_plugins` del archivo `/etc/neutron/neutron.conf`. De no eliminar la referencia a LBaaS en `/etc/neutron/neutron.conf` el componente Neutron no funcionará correctamente.
+====
+
++
 .El archivo `/etc/neutron/neutron.conf`
 ****
 [source, bash]
@@ -1699,15 +1705,19 @@ Exit
 auth_strategy = keystone
 
 core_plugin = ml2
-service_plugins = router,neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2
+
+service_plugins = router,neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2 <1>
+# Sustituir la línea anterior por la línea siguiente si no se va a instalar el componente de Load Balancer as a Service
+# service_plugins = router
+
 allow_overlapping_ips = true
-transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <1>
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <2>
 
 notify_nova_on_port_status_changes = true
 
 notify_nova_on_port_data_changes = true
 
-dhcp_agents_per_network = {{ compute_nodes_quantity }} <2>
+dhcp_agents_per_network = 1 
 
 [agent]
 
@@ -1771,8 +1781,8 @@ driver = messagingv2
 [ssl]
 
 ----
-<1> Contraseña de RabbitMQ y nombre del nodo de control
-<2> Cantidad de servidores de cómputo
+<1> Sustituir la línea de `service_plugins` si no se va a instalar el componente _Neutron Load Balancer as a Service (LBaaS)_
+<2> Contraseña de RabbitMQ y nombre del nodo de control
 <3> Contraseña de Neutron y nombre del nodo de control
 <4> Nombre del nodo de control
 <5> Nombre del nodo de control
@@ -1878,6 +1888,12 @@ net.ipv4.conf.default.rp_filter=0
 . Configurar el archivo `/etc/neutron/neutron.conf`
 
 +
+[IMPORTANT]
+====
+Este tutorial deja preparado el archivo `/etc/neutron/neutron.conf` para la instalación posterior del componente _Neutron Load Balancer as a Service (LBaaS)_. En caso de no instalar tal componente habrá que eliminar la carga de LBaaS en la línea `service_plugins` del archivo `/etc/neutron/neutron.conf`. De no eliminar la referencia a LBaaS en `/etc/neutron/neutron.conf` el componente Neutron no funcionará correctamente.
+====
+
++
 .El archivo `/etc/neutron/neutron.conf`
 ****
 [source, bash]
@@ -1887,15 +1903,19 @@ net.ipv4.conf.default.rp_filter=0
 auth_strategy = keystone
 
 core_plugin = ml2
-service_plugins = router,neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2
+
+service_plugins = router,neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2 <1>
+# Sustituir la línea anterior por la línea siguiente si no se va a instalar el componente de Load Balancer as a Service
+# service_plugins = router
+
 allow_overlapping_ips = true
-transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <1>
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <2>
 
 notify_nova_on_port_status_changes = true
 
 notify_nova_on_port_data_changes = true
 
-dhcp_agents_per_network = {{ compute_nodes_quantity }} <2>
+dhcp_agents_per_network = 1 
 
 [agent]
 
@@ -1959,8 +1979,8 @@ driver = messagingv2
 [ssl]
 
 ----
-<1> Contraseña de RabbitMQ y nombre del nodo de control
-<2> Cantidad de servidores de cómputo
+<1> Sustituir la línea de `service_plugins` si no se va a instalar el componente _Neutron Load Balancer as a Service (LBaaS)_
+<2> Contraseña de RabbitMQ y nombre del nodo de control
 <3> Contraseña de Neutron y nombre del nodo de control
 <4> Nombre del nodo de control
 <5> Nombre del nodo de control
@@ -2279,6 +2299,12 @@ net.ipv4.conf.default.rp_filter=0
 . Configurar el archivo `/etc/neutron/neutron.conf`
 
 +
+[IMPORTANT]
+====
+Este tutorial deja preparado el archivo `/etc/neutron/neutron.conf` para la instalación posterior del componente _Neutron Load Balancer as a Service (LBaaS)_. En caso de no instalar tal componente habrá que eliminar la carga de LBaaS en la línea `service_plugins` del archivo `/etc/neutron/neutron.conf`. De no eliminar la referencia a LBaaS en `/etc/neutron/neutron.conf` el componente Neutron no funcionará correctamente.
+====
+
++
 .El archivo `/etc/neutron/neutron.conf`
 ****
 [source, bash]
@@ -2288,15 +2314,19 @@ net.ipv4.conf.default.rp_filter=0
 auth_strategy = keystone
 
 core_plugin = ml2
-service_plugins = router,neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2
+
+service_plugins = router,neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2 <1>
+# Sustituir la línea anterior por la línea siguiente si no se va a instalar el componente de Load Balancer as a Service
+# service_plugins = router
+
 allow_overlapping_ips = true
-transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <1>
+transport_url = rabbit://openstack:{{ RABBIT_PASS }}@{{ nodes.controller.name }} <2>
 
 notify_nova_on_port_status_changes = true
 
 notify_nova_on_port_data_changes = true
 
-dhcp_agents_per_network = {{ compute_nodes_quantity }} <2>
+dhcp_agents_per_network = {{ compute_nodes_quantity }} 
 
 [agent]
 
@@ -2360,8 +2390,8 @@ driver = messagingv2
 [ssl]
 
 ----
-<1> Contraseña de RabbitMQ y nombre del nodo de control
-<2> Cantidad de servidores de cómputo
+<1> Sustituir la línea de `service_plugins` si no se va a instalar el componente _Neutron Load Balancer as a Service (LBaaS)_
+<2> Contraseña de RabbitMQ y nombre del nodo de control
 <3> Contraseña de Neutron y nombre del nodo de control
 <4> Nombre del nodo de control
 <5> Nombre del nodo de control
