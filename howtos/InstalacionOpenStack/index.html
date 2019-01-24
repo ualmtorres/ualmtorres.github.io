@@ -732,6 +732,20 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>Los requisitos hardware mínimos de cada servidor son los que aparecen el la <a href="https://docs.openstack.org/ocata/install-guide-ubuntu/overview.html#example-architecture">arquitectura de ejemplo de la guía de instalación de OpenStack</a>.</p>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Si dispones de recursos en una plataforma OpenStack que disponga del componente <code>Heat</code> instalado, puedes usar <a href="https://gist.github.com/ualmtorres/8f1e7720deaa3aefa77678372e37d69e">esta plantilla Heat</a> para crear la infraestructura. El script denomina <code>lowcost-net</code> a la red externa. En la documentación de OpenStack suele denominarse <code>ext-net</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="sect2">
 <h3 id="trueconfiguraci-n-de-las-interfaces-de-red"><a class="anchor" href="#trueconfiguraci-n-de-las-interfaces-de-red"></a>2.1. Configuración de las interfaces de red</h3>
 <div class="paragraph">
@@ -2462,7 +2476,7 @@ project_name = service
 username = nova
 password = {{ nova_dbpass }} <i class="conum" data-value="9"></i><b>(9)</b>
 
-[libvirt]
+[libvirt] <i class="conum" data-value="10"></i><b>(10)</b>
 
 cpu_mode=custom
 
@@ -2476,15 +2490,15 @@ cpu_model=kvm64
 
 [neutron]
 
-url = http://{{ nodes.controller.name }}:9696 <i class="conum" data-value="10"></i><b>(10)</b>
-auth_url = http://{{ nodes.controller.name }}:35357 <i class="conum" data-value="11"></i><b>(11)</b>
+url = http://{{ nodes.controller.name }}:9696 <i class="conum" data-value="11"></i><b>(11)</b>
+auth_url = http://{{ nodes.controller.name }}:35357 <i class="conum" data-value="12"></i><b>(12)</b>
 auth_type = password
 project_domain_name = default
 user_domain_name = default
-region_name = {{ region }} <i class="conum" data-value="12"></i><b>(12)</b>
+region_name = {{ region }} <i class="conum" data-value="13"></i><b>(13)</b>
 project_name = service
 username = neutron
-password = {{ neutron_dbpass }} <i class="conum" data-value="13"></i><b>(13)</b>
+password = {{ neutron_dbpass }} <i class="conum" data-value="14"></i><b>(14)</b>
 
 [notifications]
 
@@ -2516,14 +2530,14 @@ driver = messagingv2
 
 [placement]
 
-os_region_name = {{ region }} <i class="conum" data-value="14"></i><b>(14)</b>
+os_region_name = {{ region }} <i class="conum" data-value="15"></i><b>(15)</b>
 project_domain_name = Default
 project_name = service
 auth_type = password
 user_domain_name = Default
-auth_url = http://{{ nodes.controller.name }}:35357/v3 <i class="conum" data-value="15"></i><b>(15)</b>
+auth_url = http://{{ nodes.controller.name }}:35357/v3 <i class="conum" data-value="16"></i><b>(16)</b>
 username = placement
-password = {{ placement_pass }} <i class="conum" data-value="16"></i><b>(16)</b>
+password = {{ placement_pass }} <i class="conum" data-value="17"></i><b>(17)</b>
 
 [quota]
 
@@ -2554,7 +2568,7 @@ password = {{ placement_pass }} <i class="conum" data-value="16"></i><b>(16)</b>
 enabled = True
 vncserver_listen = 0.0.0.0
 vncserver_proxyclient_address = $my_ip
-novncproxy_base_url = http://{{ nodes_by_name.controller.provider_ip }}:6080/vnc_auto.html <i class="conum" data-value="17"></i><b>(17)</b>
+novncproxy_base_url = http://{{ nodes_by_name.controller.provider_ip }}:6080/vnc_auto.html <i class="conum" data-value="18"></i><b>(18)</b>
 
 [workarounds]
 
@@ -2607,7 +2621,7 @@ api_paste_config=/etc/nova/api-paste.ini
 </tr>
 <tr>
 <td><i class="conum" data-value="10"></i><b>10</b></td>
-<td>Nombre del nodo de control</td>
+<td>Configurar los parámetros <code>cpu_mode</code> y <code>cpu_model</code> de esta forma permite la migración de instancias entre servidores que tengan diferente procesador</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="11"></i><b>11</b></td>
@@ -2615,22 +2629,26 @@ api_paste_config=/etc/nova/api-paste.ini
 </tr>
 <tr>
 <td><i class="conum" data-value="12"></i><b>12</b></td>
-<td>Nombre de la región (p.e. <code>RegionOne</code>)</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="13"></i><b>13</b></td>
-<td>Contraseña de Neutron</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="14"></i><b>14</b></td>
-<td>Nombre de la región (p.e. <code>RegionOne</code>)</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="15"></i><b>15</b></td>
 <td>Nombre del nodo de control</td>
 </tr>
 <tr>
+<td><i class="conum" data-value="13"></i><b>13</b></td>
+<td>Nombre de la región (p.e. <code>RegionOne</code>)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="14"></i><b>14</b></td>
+<td>Contraseña de Neutron</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="15"></i><b>15</b></td>
+<td>Nombre de la región (p.e. <code>RegionOne</code>)</td>
+</tr>
+<tr>
 <td><i class="conum" data-value="16"></i><b>16</b></td>
+<td>Nombre del nodo de control</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="17"></i><b>17</b></td>
 <td>IP externa del nodo de control</td>
 </tr>
 </table>
@@ -3645,7 +3663,7 @@ notify_nova_on_port_status_changes = true
 
 notify_nova_on_port_data_changes = true
 
-dhcp_agents_per_network = {{ compute_nodes_quantity }}
+dhcp_agents_per_network = 1
 
 [agent]
 
@@ -7576,7 +7594,7 @@ WHERE name IN ('xxxx', 'yyyy');</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-01-22 09:10:56 CET
+Last updated 2019-01-24 23:06:01 CET
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

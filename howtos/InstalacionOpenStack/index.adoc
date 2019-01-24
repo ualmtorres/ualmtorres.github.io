@@ -122,6 +122,10 @@ La red de mantenimiento proporciona comunicación interna entre los componentes 
 
 Los requisitos hardware mínimos de cada servidor son los que aparecen el la https://docs.openstack.org/ocata/install-guide-ubuntu/overview.html#example-architecture[arquitectura de ejemplo de la guía de instalación de OpenStack].
 
+[TIP]
+====
+Si dispones de recursos en una plataforma OpenStack que disponga del componente `Heat` instalado, puedes usar https://gist.github.com/ualmtorres/8f1e7720deaa3aefa77678372e37d69e[esta plantilla Heat] para crear la infraestructura. El script denomina `lowcost-net` a la red externa. En la documentación de OpenStack suele denominarse `ext-net`.
+====
 
 ### Configuración de las interfaces de red
 
@@ -1473,7 +1477,7 @@ project_name = service
 username = nova
 password = {{ nova_dbpass }} <9>
 
-[libvirt]
+[libvirt] <10>
 
 cpu_mode=custom
 
@@ -1487,15 +1491,15 @@ cpu_model=kvm64
 
 [neutron]
 
-url = http://{{ nodes.controller.name }}:9696 <10>
-auth_url = http://{{ nodes.controller.name }}:35357 <11>
+url = http://{{ nodes.controller.name }}:9696 <11>
+auth_url = http://{{ nodes.controller.name }}:35357 <12>
 auth_type = password
 project_domain_name = default
 user_domain_name = default
-region_name = {{ region }} <12>
+region_name = {{ region }} <13>
 project_name = service
 username = neutron
-password = {{ neutron_dbpass }} <13>
+password = {{ neutron_dbpass }} <14>
 
 [notifications]
 
@@ -1527,14 +1531,14 @@ driver = messagingv2
 
 [placement]
 
-os_region_name = {{ region }} <14>
+os_region_name = {{ region }} <15>
 project_domain_name = Default
 project_name = service
 auth_type = password
 user_domain_name = Default
-auth_url = http://{{ nodes.controller.name }}:35357/v3 <15>
+auth_url = http://{{ nodes.controller.name }}:35357/v3 <16>
 username = placement
-password = {{ placement_pass }} <16>
+password = {{ placement_pass }} <17>
 
 [quota]
 
@@ -1565,7 +1569,7 @@ password = {{ placement_pass }} <16>
 enabled = True
 vncserver_listen = 0.0.0.0
 vncserver_proxyclient_address = $my_ip
-novncproxy_base_url = http://{{ nodes_by_name.controller.provider_ip }}:6080/vnc_auto.html <17>
+novncproxy_base_url = http://{{ nodes_by_name.controller.provider_ip }}:6080/vnc_auto.html <18>
 
 [workarounds]
 
@@ -1586,13 +1590,14 @@ api_paste_config=/etc/nova/api-paste.ini
 <7> Nombre del nodo de control
 <8> Nombre del nodo de control
 <9> Contraseña de Nova
-<10> Nombre del nodo de control
+<10> Configurar los parámetros `cpu_mode` y `cpu_model` de esta forma permite la migración de instancias entre servidores que tengan diferente procesador
 <11> Nombre del nodo de control
-<12> Nombre de la región (p.e. `RegionOne`)
-<13> Contraseña de Neutron
-<14> Nombre de la región (p.e. `RegionOne`)
-<15> Nombre del nodo de control
-<16> IP externa del nodo de control
+<12> Nombre del nodo de control
+<13> Nombre de la región (p.e. `RegionOne`)
+<14> Contraseña de Neutron
+<15> Nombre de la región (p.e. `RegionOne`)
+<16> Nombre del nodo de control
+<17> IP externa del nodo de control
 ****
 
 . Reiniciar servicios de nova
@@ -2326,7 +2331,7 @@ notify_nova_on_port_status_changes = true
 
 notify_nova_on_port_data_changes = true
 
-dhcp_agents_per_network = {{ compute_nodes_quantity }} 
+dhcp_agents_per_network = 1 
 
 [agent]
 
