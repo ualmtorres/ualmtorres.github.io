@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Plantilla Heat para la creación de la infraestrcutura básica de OpenStack
+title: Plantilla Heat para la creación de la infraestructura básica de OpenStack
 category: posts
 ---
 
