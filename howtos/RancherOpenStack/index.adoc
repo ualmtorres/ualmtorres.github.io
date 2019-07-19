@@ -31,7 +31,7 @@ image::di.png[]
 
 https://rancher.com/[Rancher] es un proyecto open-source que nos permite ofrecer https://kubernetes.io/[Kubernetes] como servicio. Su gran ventaja es que permite gestionar desde un único lugar clusters Kubernetes alojados bien en alguno de los proveedores de Kubernetes más populares, como Google Container Engine, Amazon EKS o Azure Kubernetes Service, o bien, en proveedores de infraestructura, como Amazon EC2, Microsoft Azure, Digital Ocean, RackSpace, OpenStack, SoftLayer, entre otros.
 
-En este tutorial veremos cómo crear un cluster Kubernetes usando OpenStack como proveedor de infaestructura.
+En este tutorial veremos por un lado, cómo crear un cluster Kubernetes usando OpenStack como proveedor de infaestructura para el máster y los nodos worker. Por otro lado, veremos cómo usar Cinder para propocionar almacenamiento persistente a clusters Kubernetes creados sobre OpenStack.
 
 // Entrar en modo numerado de apartados
 :numbered:
@@ -97,10 +97,10 @@ Usaremos un par de claves SSH específicas para este propósito en la máquina e
 
 [NOTE]
 ====
-En el caso de Rancher-DI, tenemos instalado Rancher como un contenedor en una instancia Ubuntu en OpenStack. Hemos creado el par de claves en la instancia OpenStack (`ssh-keygen -f rancher-di`) y después hemos copiado la clave privada (`rancher-di`) al contenedor de Rancher (`docker cp rancher_di <contenedor-rancher>:/root`). Finalmente, la clave privada se encuentra en `/root/rancher-di`. *Es muy importante que anotememos esta ruta, ya que luego habrá que usarla al crear la plantilla OpenStack para la creación de los nodos del cluster de Kubernetes*.
+En el caso de Rancher-DI, tenemos instalado Rancher como un contenedor en una instancia Ubuntu en OpenStack. Hemos creado el par de claves en la instancia OpenStack (`ssh-keygen -f rancher_di`) y después hemos copiado la clave privada (`rancher_di`) al contenedor de Rancher (`docker cp rancher_di <contenedor-rancher>:/root`). Finalmente, la clave privada se encuentra en `/root/rancher_di`. *Es muy importante que anotememos esta ruta, ya que luego habrá que usarla al crear la plantilla OpenStack para la creación de los nodos del cluster de Kubernetes*.
 ====
 
-== Activación de OpenStack como proveedor de infraestructura para Rancher
+## Activación de OpenStack como proveedor de infraestructura de cómputo para Rancher
 
 De forma predeterminada, Rancher ofrece los siguientes proveedores para la creación de clusters Kubernetes:
 
@@ -119,9 +119,9 @@ Al pulsar `Activate` sobre OpenStack quedará activado OpenStack como proveedor 
 
 image::./openstack-active.png[]
 
-Sin embago, esto no es suficiente. A continuación, hay que definir la plantilla con la que se crearán en OpenStack los nodos del cluster Kubernetes
+Sin embago, esto no es suficiente. A continuación, hay que definir la plantilla con la que se crearán en OpenStack los nodos del cluster Kubernetes (master y workers)
 
-## Creación de la plantilla para nodos
+### Creación de la plantilla para nodos
 
 Google Container Engine, Amazon EKS y demás, son productos comerciales que ya tienen establecida su URL, los nombres de las zonas de disponibilidad, los nombres de las imágenes para la creación de nodos, y demás. Sin embargo, dado que no existe un único proveedor OpenStack, los parámetros citados anteriormente como URL, nombres de zonas de disponibilidad, nombres de imagen, y demás, pueden variar (y seguro que lo hacen) de un proveedor OpenStack a otro.
 
@@ -176,7 +176,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6TiN7lieyNtdnF3a85Yx2GlRlAzJ8nMPPnpz7ra/D
 
 * `netName`: Nombre de la red a la que se conectarán las instancias que se creen de acuerdo con esta plantilla. Revisa las redes de tu proyecto OpenStack e identifica el nombre de la red donde se sitúarán las instancias a crear.
 * `password`: Contraseña del usuario en OpenStack para poder dar acceso a Rancher para que cree las instancias.
-* `privateKeyFile`: Nombre completo incluyendo la ruta del archivo de clave privada que usará Rancher para aprovisionar las instancias *y que será la pareja de la clave pública que está en el proyecto en el que se crearán las instancias*. En el caso de Rancher-DI, el valor a introducir es `/root/rancher-di`.
+* `privateKeyFile`: Nombre completo incluyendo la ruta del archivo de clave privada que usará Rancher para aprovisionar las instancias *y que será la pareja de la clave pública que está en el proyecto en el que se crearán las instancias*. En el caso de Rancher-DI, el valor a introducir es `/root/rancher_di`.
 * `region`: Nombre de la región. En nuestro caso es `RegionOne`
 * `secGroups`: Lista de grupos de seguridad del proyecto OpenStack separadas por comas aplicables a las instancias creadas con esta plantilla (p.e. `default`)
 * `sshPort`: Puerto de acceso a las instancias. Dejamos el valor `22`.
@@ -203,7 +203,7 @@ La figura siguiente ilustra dos plantillas disponibles para la creación de un c
 
 image::node-templates-full-list.png[]
 
-## Creación de cluster Kubernetes usando plantillas
+### Creación de cluster Kubernetes usando plantillas
 
 A partir de las plantillas creadas desplegaremos un cluster Kubernetes de ejemplo para tareas de CI. Las caracterísitcas de los nodos son las siguientes:
 
@@ -212,8 +212,174 @@ A partir de las plantillas creadas desplegaremos un cluster Kubernetes de ejempl
 
 image::cluster-definition.png[]
 
-Transcurridos unos minutos, el cluster estará creado y podremos ver en el proyecto OpenStack asociado las instancias creadas distinguidas con los prefijos `k8s-prod-ci` y `k8-prod-ci-worker`
+Transcurridos unos minutos, el cluster estará creado y podremos ver en el proyecto OpenStack asociado las instancias creadas distinguidas con los prefijos `k8s-prod-ci` y `k8-prod-ci-worker`.
 
+## Configuración de OpenStack como proveedor de volúmenes
+
+Cinder es el componente de OpenStack que proporciona almacenamiento de bloques. Podemos usar Cinder para la creación de almacenamiento persistente en proyectos Kubernetes. Aquí veremos cómo realizar esta configuración en Rancher.
+
+Para activar OpenStack como proveedor cloud en Rancher hay que configurar una serie de parámetros a través de un archivo de configuración en YAML para las opciones del cluster. 
+
+[NOTE]
+====
+La configuración en Rancher de un proveedor cloud para almacenamiento o cualquier otro servicio (p.e. balanceadores de carga) se realiza a nivel de cluster. Por tanto, habrá que realizar esta configuración en cada cluster Kubernetes.
+====
+
+A la hora de crear el cluster, una vez definida la configuración de los nodos Master y Worker del cluster Kubernetes, configuraremos la parte relacionada con el almacenamiento en volúmenes con Cinder. Para realizar esta configuración seguiremos estos dos pasos tal y como se ilustra en la figura:
+
+1. Seleccionar el botón de opción `Custom` de `Cloud Provider` en la sección `Cluster Options` 
+2. Después, seleccionar el enlace `Edit as YAML`. Esto abrirá un cuadro donde configuraremos las opciones de OpenStack y de Cinder para que se puedan proporcionar volúmenes Cinder a este cluster.
+
+image::custom-cloud-provider.png[]
+
+[NOTE]
+====
+También es posible aplicar la configuración de OpenStack como proveedor cloud sobre clusters Kubernetes existentes. Una vez realizados los cambios Rancher reconfigurará el cluster Kubernetes para que se pueda usar Cinder como proveedor de almacenamiento.
+====
+
+### Valores de configuración del archivo YAML
+
+A continuación se muestra el fragmento con la configuración de Cinder como proveedor de almacenamiento de bloques en el cluster. https://gist.github.com/ualmtorres/0408992657b4a5fdf985846c33da87b1[Enlace de descarga de valores de configuración]
+
+Las opciones de configuración están agrupadas en varias secciones. Las más importantes para la definición de volúmenes Cinder en Rancher son las secciones `global` y `block_storage` de la sección `openstackCloudProvider`. No obstante, en esta misma sección también hay otras secciones interesantes para otras situaciones específicas (p.e. la sección `load_balancer` para el uso de balanceadores de carga OpenStack https://gist.github.com/ualmtorres/3650ddd11c4973593f0ac34fa5b9f06c[Enlace de descarga de valores de configuración completos incluyendo balanceadores de carga]).
+
+[source, yaml]
+----
+cloud_provider:
+  name: "openstack"
+  openstackCloudProvider:
+    block_storage: <1>
+      ignore-volume-az: true
+      trust-device-path: false
+    global:
+      auth-url: "http://192.168.64.12:5000/v3/" <2>
+      domain-name: "default" <3> 
+      tenant-id: "your-tenant-id-here" <4>
+      username: "your-username-here" <5>
+      password: "your-password-here" <6>
+    metadata:
+      request-timeout: 0
+----
+<1> Opciones de configuración de Cinder
+<2> Endpoint de autenticación de OpenStack-DI
+<3> Nombre de dominio usado en OpenStack-DI
+<4> ID del proyecto. *No se admite el nombre del proyecto*. Ver a continuación información sobre Obtención del ID del proyecto
+<5> Nombre de usuario
+<6> Contraseña
+
+.Obtención del ID del proyecto
+****
+El ID del proyecto lo obtenemos mediante la opción de *Ver credenciales* que está disponible en el menú de OpenStack `Project | Compute | API Access`. A continuación pulsar el botón `View credentials`
+
+image::API-access.png[]
+
+Aparecerá el cuadro de diálogo `User Credentials Details` en el que se mostrará el `Project ID`, que es la información que necesitábamos para completar el YAML de configuración del cluster para uso de Cinder.
+
+image::user-credentials-details.png[]
+****
+
+### Creación de volúmenes Cinder en clusters Kubernetes
+
+Los contenedores pueden almacenar datos, pero los datos se pierden al eliminar los contenedores. Kubernetes ofrece volúmenes persistentes, que es almacenamiento externo al pod, ya sea en el host, en un cluster de almacenamiento o almacenamiento cloud. Si un contenedor falla, el contenedor que lo reemplace puede volver a acceder a los datos sin que se produzca pérdida de datos.
+
+Kubernetes ofrece dos formas de almacenamiento persistente: Volúmenes persistentes (_Persistent Volumes, PV_) y Clases de almacenamiento (_Storage classes_).
+
+* Los volúmenes persitentes (PV):
+    - Son volúmenes preaprovisionados que se pueden conectar más adelante a los pods.
+    - Cuando se inicia la aplicación, crea una petición de volumen persistente (_Persistent Volume Claim, PVC_) y queda ligada al volumen persistente.
+    - En Rancher se crean a nivel de cluster, no a nivel de proyecto.
+* Las clases de almacenamiento:
+    - Representan algo así como drivers de almacenamiento (podríamos tener clases para Cinder, iSCSI, glusterfs, nfs, ...). Más https://kubernetes.io/docs/concepts/storage/volumes/#types-of-volumes[información sobre tipos de volúmenes en Kubernetes].
+    - Provisionan volúmenes persistentes bajo demanda.
+    - Permiten crear la PVC directamente sin tener que crear primero el volumen persistente.
+    - Van creando volúmenes (Cinder) que después son conectados a las PVC.
+
+#### Creación de una clase de almacenamiento para Cinder
+
+Si queremos crear volúmenes Cinder, una vez configurado el cluster para usar Cinder como proveedor de almacenamiento, tenemos que crear una clase de almacenamiento.
+
+Para crear una clase de almacenamiento para Cinder:
+
+. Seleccionar el cluster a nivel global, no a nivel de proyecto (p.e. `Default`, `System`, ...). 
+. Seleccionar `Storage Classes` en el menú `Storage` 
+
++
+image::storage-in-menu-bar.png[]
+
+. Seleccionar `Add Class` para añadir una clase de almacenamiento
+
++
+image::add-class-button.png[]
+
+. Introducir un nombre (p.e `Cinder`) y elegir `OpenStack Cinder Volume` como proveedor de almacenamiento. (En la sección `Customize` se puede configurar que se elimine o mantengan los volúmenes asociados tras eliminar un workload)
+
+image::cinder-storage-class.png[]
+
+[NOTE]
+====
+La selección de `OpenStack Cinder Volume` como proveedor de almacenamiento tomará los valores configurados en el YAML del cluster de la sección <<Configuración de OpenStack como proveedor de volúmenes>>.
+====
+
+#### Creación de un volumen persistente
+
+* Seleccionar el cluster a nivel global, no a nivel de proyecto (`Default`, `System`, ...).
+* En el menú `Storage` seleccionar `Persistent Volumes` y pulsar el botón `Add Volume`.
+* Introducir los valores un nombre (p.e. `myPV`), elegir `OpenStack Cinder Volume` en `Volume Plugin`, una capacidad (p.e. 10 GB). En la sección `Plugin configuration` introducir valores para `Volume ID`, `Secret Name` y `Secret Namespace`.
+* En la sección `Customize` desplegar `Assign to Storage Class` y seleccionar la clase `cinder` creada anteriormente.
+
++
+image::add-persistent-volume.png[]
+
++
+El volumen persistente creado aparecerá en la lista y observaremos como no aún no tiene ninguna petición de volumen persistente (_Persistent Volume Claim, PVC_), por lo que aún no se ha creado ningún volumen en Cinder.
+
++
+image::persistent-volume.png[]
+
+#### Creación de una petición de volumen persistente
+
+En Kubernetes se puede crear una petición de volumen persistente (_Persistent Volume Claim, PVC_) bien a partir de un volumen persitente o a partir de una clase de almacenamiento. Una PVC sí proporciona almacenamiento real para nuestro cluster y si usamos Cinder, veremos los volúmenes creados en OpenStack.
+
+Comencemos creando una PVC. Para ello, seleccionamos el proyecto `Default` de nuestro cluster y seleccionamos el menú `Workloads`. A continuación seleccionamos el menú `Volumes` y pulsamos `Add Volume`.
+
+image::add-volume.png[]
+
+A continuación tendremos que indicar si crear la PVC a partir de un volumen persistente previamente creado (p.e. `mypv`) o bien crear la PVC a partir de una de las clases de almacenamento diponibles (p.e. la clase `cinder`). Veamos cómo hacer las dos opciones:
+
+* *Creación de la PVC a partir de un volumen persistente*: Introducir un nombre (p.e. `pvc-from-persistent-volume`), seleccionar el botón de opción `Use an existing persistent volume` en la sección `Source` y elegir el volumen persistente en el desplegable `Persistent Volume` (p.e. `mypv`). 
+
++
+image::pvc-persistent-volume.png[]
+
++
+Esta acción tomará la configuración almacenada en el volumen persistente, que en el caso de `mypv` es un volumen de 10 GB. Este volumen aparecerá reservado en Cinder en el momento que lo use una aplicación.
+
+* *Creación de la PVC a partir de una clase de almacenamiento*: Introducir un nombre (p.e. `pvc-from-storage-class`), seleccionar el botón de opción `Use a Storage Class to provision a new persistent volume` en la sección `Source` y elegir `cinder` en el desplegable `Storage Class`. Esta acción creará en OpenStack un volumen del tamaño especificado y con un nombre aleatorio que se corresponde con el de la PVC
+
++
+image::pvc-storage-class.png[]
+
++
+A continuación se muestra el volumen creado.
+
++
+image::pvc-creada.png[]
+
+
++
+El volumen creado en OpenStack coincide con la PVC creada desde Rancher. En nuestro caso, la PVC es `kubernetes-dynamic-pvc-7c9ebbab-aa63-11e9-b090-fa163ee64fe0`
+
++
+image::pvc-openstack.png[]
+
+.Creación de aplicaciones basadas en volúmenes
+****
+El catálogo de aplicaciones de Rancher es bastante amplio. Muchas de las aplicaciones del catálogo permiten la creación de volúmenes. Por ejemplo, podemos crear un MySQL con un volumen asociado de 8 GB, tal y como muestra la figura
+
+image::mysql-pvc.png[]
+
+Así, de forma predeterminada tendremos un MySQL corriendo en un único pod. Una vez creado, si iniciamos sesión en MySQL, creamos una base de datos de ejemplo y eliminamos el pod, los datos no se perderán. Los datos están almacenados en una PVC, que está almacenada en un volumen Cinder en OpenStack. Si se vuelve a crear un pod que reemplace al pod eliminado, tras iniciar sesión en el nuevo pod se podrá comprobar que se tiene acceso a los mismos datos que tenía el pod eliminado.
+****
 
 ## Conclusiones
 
@@ -221,8 +387,10 @@ Rancher ofrece una plataforma integrada para creación y mantenimiento de cluste
 
 En este tutorial hemos visto cómo crear estas plantillas y cómo crear las claves SSH que serán usadas por Rancher para la creación y aprovisionamiento de las instancias del cluster Kubernetes.
 
+También hemos visto cómo crear almacenamiento persistente para clusters Kubernetes usando Cinder como proveedor de almacenamiento
+
 ___
 
-Cloud-DI Team, 2018
+Cloud-DI Team, 2018. Actualizado 2019
 
 
