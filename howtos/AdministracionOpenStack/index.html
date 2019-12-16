@@ -863,7 +863,7 @@ OpenStack-DI es OpenStack <strong>O</strong>cata (febrero de 2017) sobre Ubuntu 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ source openrc-admin</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ source openrc-admin</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -943,7 +943,7 @@ OpenStack-DI es OpenStack <strong>O</strong>cata (febrero de 2017) sobre Ubuntu 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack project create \
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack project create \
 --domain default \
 --description "Proyecto stic" --enable \
 stic
@@ -978,7 +978,7 @@ stic
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack project list
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack project list
 +----------------------------------+------------------------------------------------------------------+
 | ID                               | Name                                                             |
 +----------------------------------+------------------------------------------------------------------+
@@ -1015,7 +1015,7 @@ stic
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack project set stic --disable
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack project set stic --disable
 $ openstack project show stic
 +-------------+----------------------------------+
 | Field       | Value                            |
@@ -1068,7 +1068,7 @@ $ openstack project show stic
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">openstack quota set [-h] [--class] [--properties &lt;properties&gt;]
+<pre class="highlight"><code class="language-bash" data-lang="bash">openstack quota set [-h] [--class] [--properties &lt;properties&gt;]
                            [--server-groups &lt;server-groups&gt;] [--ram &lt;ram&gt;]
                            [--key-pairs &lt;key-pairs&gt;] [--instances &lt;instances&gt;]
                            [--fixed-ips &lt;fixed-ips&gt;]
@@ -1099,7 +1099,7 @@ $ openstack project show stic
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack quota set \
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack quota set \
 --ram 102400 \
 --cores 40 \
 stic</code></pre>
@@ -1123,7 +1123,7 @@ stic</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack quota show stic
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack quota show stic
 +----------------------+----------------------------------+
 | Field                | Value                            |
 +----------------------+----------------------------------+
@@ -1189,7 +1189,7 @@ stic</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack project delete stic</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack project delete stic</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -1250,7 +1250,7 @@ stic</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack user list
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack user list
 +----------------------------------+-------------------+
 | ID                               | Name              |
 +----------------------------------+-------------------+
@@ -1305,7 +1305,7 @@ stic</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack user create \
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack user create \
 --domain default \
 --project stic \
 --password xxx \
@@ -1348,7 +1348,7 @@ invitado
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack user set --password theNewPassword invitado</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack user set --password theNewPassword invitado</code></pre>
 </div>
 </div>
 </div>
@@ -1372,7 +1372,7 @@ invitado
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack user set stic --disable
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack user set stic --disable
 $ openstack user show stic
 +---------------------+----------------------------------+
 | Field               | Value                            |
@@ -1422,7 +1422,7 @@ $ openstack user show stic
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack user show invitado
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack user show invitado
 +---------------------+----------------------------------+
 | Field               | Value                            |
 +---------------------+----------------------------------+
@@ -1468,7 +1468,7 @@ $ openstack user show stic
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">openstack role add
+<pre class="highlight"><code class="language-bash" data-lang="bash">openstack role add
     --domain &lt;domain&gt; | --project &lt;project&gt; [--project-domain &lt;project-domain&gt;]
     --user &lt;user&gt; [--user-domain &lt;user-domain&gt;] | --group &lt;group&gt; [--group-domain &lt;group-domain&gt;]
     --role-domain &lt;role-domain&gt;
@@ -1481,7 +1481,7 @@ $ openstack user show stic
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack role add \
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack role add \
     --project stic \
     --user mtorres \
     user</code></pre>
@@ -1498,7 +1498,7 @@ $ openstack user show stic
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack role add --project stic --user admin admin <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack role add --project stic --user admin admin <i class="conum" data-value="1"></i><b>(1)</b>
 $ &lt;&lt; Realizar operaciones &gt;&gt;
 $ openstack role remove --project stic --user admin admin <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
@@ -1542,7 +1542,7 @@ Sintaxis:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">openstack role list
+<pre class="highlight"><code class="language-bash" data-lang="bash">openstack role list
     --domain &lt;domain&gt; | --project &lt;project&gt; [--project-domain &lt;project-domain&gt;]
     --user &lt;user&gt; [--user-domain &lt;user-domain&gt;] | --group &lt;group&gt; [--group-domain &lt;group-domain&gt;]
     --inherited</code></pre>
@@ -1553,7 +1553,7 @@ Sintaxis:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack role list \
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack role list \
     --project stic \
     --user mtorres
 Listing assignments using role list is deprecated. Use role assignment list --user &lt;user-name&gt; --project &lt;project-name&gt; --names instead.
@@ -1572,7 +1572,7 @@ Listing assignments using role list is deprecated. Use role assignment list --us
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">openstack role assignment list
+<pre class="highlight"><code class="language-bash" data-lang="bash">openstack role assignment list
     [--role &lt;role&gt;]
     [--role-domain &lt;role-domain&gt;]
     [--user &lt;user&gt;]
@@ -1592,7 +1592,7 @@ Listing assignments using role list is deprecated. Use role assignment list --us
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack role assignment list \
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack role assignment list \
     --project stic \
     --names <i class="conum" data-value="1"></i><b>(1)</b>
 
@@ -1633,7 +1633,7 @@ Listing assignments using role list is deprecated. Use role assignment list --us
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack user delete invitado</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack user delete invitado</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -1686,7 +1686,7 @@ Listing assignments using role list is deprecated. Use role assignment list --us
 <div class="listingblock">
 <div class="title">Archivo <code>usuarios.csv</code> con la lista de usuarios</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">usuario1;usuario1@gmail.com
+<pre class="highlight"><code class="language-bash" data-lang="bash">usuario1;usuario1@gmail.com
 usuario2;usuario2@gmail.com</code></pre>
 </div>
 </div>
@@ -1696,7 +1696,7 @@ usuario2;usuario2@gmail.com</code></pre>
 <div class="listingblock">
 <div class="title">Script <code>crearProyectos.sh</code> para la automatización de la creación de proyectos y usuarios a partir del archivo <code>usuarios.csv</code></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">while IFS=';' read -r usuario email <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlight"><code class="language-bash" data-lang="bash">while IFS=';' read -r usuario email <i class="conum" data-value="1"></i><b>(1)</b>
 do
   openstack project create --domain default --description "Proyecto $usuario" --enable $usuario <i class="conum" data-value="2"></i><b>(2)</b>
   openstack user create --domain default --project $usuario --password $usuario --email $email --description "Usuario $usuario" --enable  $usuario <i class="conum" data-value="3"></i><b>(3)</b>
@@ -1870,7 +1870,7 @@ done &lt; usuarios.csv <i class="conum" data-value="5"></i><b>(5)</b></code></pr
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack router create \
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack router create \
     --project stic \
     stic-router
 +-------------------------+--------------------------------------+
@@ -1900,7 +1900,7 @@ done &lt; usuarios.csv <i class="conum" data-value="5"></i><b>(5)</b></code></pr
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack router add subnet \
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack router add subnet \
     stic-router \
     stic-subnet</code></pre>
 </div>
@@ -1910,7 +1910,7 @@ done &lt; usuarios.csv <i class="conum" data-value="5"></i><b>(5)</b></code></pr
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack router set \
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack router set \
     --external-gateway lowcost-net \
     stic-router</code></pre>
 </div>
@@ -1971,7 +1971,7 @@ done &lt; usuarios.csv <i class="conum" data-value="5"></i><b>(5)</b></code></pr
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack network create \
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack network create \
     --project stic \
     --enable \
     --description "Red servidores stic" \
@@ -2003,7 +2003,7 @@ $ openstack subnet create \
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ nova interface-attach  \
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ nova interface-attach  \
     --net-id caf51c2c-e03c-413c-9dcf-3925f5be4a00 \ <i class="conum" data-value="1"></i><b>(1)</b>
     my-cirros</code></pre>
 </div>
@@ -2028,7 +2028,7 @@ $ openstack subnet create \
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack network list</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack network list</code></pre>
 </div>
 </div>
 </td>
@@ -2046,7 +2046,7 @@ $ openstack subnet create \
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">while IFS=';' read -r usuario email
+<pre class="highlight"><code class="language-bash" data-lang="bash">while IFS=';' read -r usuario email
 do
   openstack project create --domain default --description "Proyecto $usuario" --enable $usuario
   openstack user create --domain default --project $usuario --password $usuario --email $email --description "Usuario $usuario" --enable $usuario
@@ -2139,7 +2139,7 @@ done &lt; usuarios.csv</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">openstack image create
+<pre class="highlight"><code class="language-bash" data-lang="bash">openstack image create
     [--id &lt;id&gt;]
     [--store &lt;store&gt;]
     [--container-format &lt;container-format&gt;]
@@ -2168,7 +2168,7 @@ done &lt; usuarios.csv</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ cd /tmp
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ cd /tmp
 $ wget https://download.fedoraproject.org/pub/fedora/linux/releases/29/Cloud/x86_64/images/Fedora-Cloud-Base-29-1.2.x86_64.qcow2
 $ openstack image create \
     --container-format bare \
@@ -2200,7 +2200,7 @@ $ openstack image create \
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack image set --public my-cirros-snapshot</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack image set --public my-cirros-snapshot</code></pre>
 </div>
 </div>
 </div>
@@ -2229,7 +2229,7 @@ $ openstack image create \
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bare" data-lang="bare">openstack image save
+<pre class="highlight"><code class="language-bare" data-lang="bare">openstack image save
     --file &lt;filename&gt;
     &lt;image&gt; <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
@@ -2309,7 +2309,7 @@ $ openstack image create \
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">openstack server image create
+<pre class="highlight"><code class="language-bash" data-lang="bash">openstack server image create
     [--name &lt;image-name&gt;]
     [--wait]
     &lt;server&gt;</code></pre>
@@ -2320,7 +2320,7 @@ $ openstack image create \
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack server image create \
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack server image create \
     --name my-cirros-snapshot \
     my-cirros</code></pre>
 </div>
@@ -2333,7 +2333,7 @@ $ openstack image create \
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">openstack image show my-cirros-snapshot
+<pre class="highlight"><code class="language-bash" data-lang="bash">openstack image show my-cirros-snapshot
 +------------------+--------------------------------------------------------------------------------------------------------------------------------+
 | Field            | Value                                                                                                                          |
 +------------------+--------------------------------------------------------------------------------------------------------------------------------+
@@ -2393,7 +2393,7 @@ $ openstack image create \
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">openstack image set \
+<pre class="highlight"><code class="language-bash" data-lang="bash">openstack image set \
     --property image_location=image \
     --property image_type=image \
     my-cirros-snapshot</code></pre>
@@ -2424,7 +2424,7 @@ $ openstack image create \
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ source &lt;archivoCredenciales&gt;</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ source &lt;archivoCredenciales&gt;</code></pre>
 </div>
 </div>
 </div>
@@ -2519,7 +2519,7 @@ $ openstack image create \
 <div class="listingblock">
 <div class="title">Archivo <code>dockerInstall.sh</code></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">#!/bin/bash
+<pre class="highlight"><code class="language-bash" data-lang="bash">#!/bin/bash
 
 echo "Instalando Docker"
 
@@ -2553,7 +2553,7 @@ exit 0</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ openstack server create \
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack server create \
   --image "Ubuntu 16.04 LTS" \
   --flavor medium \
   --security-group default \
@@ -2625,11 +2625,8 @@ exit 0</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-01-14 08:49:27 CET
+Last updated 2019-12-16 10:54:27 CET
 </div>
 </div>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
-<script>hljs.initHighlighting()</script>
 </body>
 </html>

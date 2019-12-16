@@ -9,7 +9,6 @@ Codificación, idioma, tabla de contenidos, tipo de documento
 :doctype: book
 :imagesdir: ./images
 
-
 ////
 Nombre y título del trabajo
 ////
