@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Desarrollo ágil
+title: Operacione en OpenStack-STIC
 category: posts
 ---
 
