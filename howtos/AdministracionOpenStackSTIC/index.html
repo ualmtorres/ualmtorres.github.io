@@ -1,0 +1,2694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.5.dev">
+<meta name="author" content="Servicio de las Tecnologías de la Información y las Comunicaciones - Universidad de Almería">
+<title>Administración de OpenStack-STIC</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<style>
+/* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
+/* Remove comment around @import statement below when using as a custom stylesheet */
+/*@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700";*/
+article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display:block}
+audio,canvas,video{display:inline-block}
+audio:not([controls]){display:none;height:0}
+[hidden],template{display:none}
+script{display:none!important}
+html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
+body{margin:0}
+a{background:transparent}
+a:focus{outline:thin dotted}
+a:active,a:hover{outline:0}
+h1{font-size:2em;margin:.67em 0}
+abbr[title]{border-bottom:1px dotted}
+b,strong{font-weight:bold}
+dfn{font-style:italic}
+hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}
+mark{background:#ff0;color:#000}
+code,kbd,pre,samp{font-family:monospace;font-size:1em}
+pre{white-space:pre-wrap}
+q{quotes:"\201C" "\201D" "\2018" "\2019"}
+small{font-size:80%}
+sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}
+sup{top:-.5em}
+sub{bottom:-.25em}
+img{border:0}
+svg:not(:root){overflow:hidden}
+figure{margin:0}
+fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}
+legend{border:0;padding:0}
+button,input,select,textarea{font-family:inherit;font-size:100%;margin:0}
+button,input{line-height:normal}
+button,select{text-transform:none}
+button,html input[type="button"],input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer}
+button[disabled],html input[disabled]{cursor:default}
+input[type="checkbox"],input[type="radio"]{box-sizing:border-box;padding:0}
+input[type="search"]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box}
+input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration{-webkit-appearance:none}
+button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}
+textarea{overflow:auto;vertical-align:top}
+table{border-collapse:collapse;border-spacing:0}
+*,*:before,*:after{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}
+html,body{font-size:100%}
+body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;font-weight:400;font-style:normal;line-height:1;position:relative;cursor:auto}
+a:hover{cursor:pointer}
+img,object,embed{max-width:100%;height:auto}
+object,embed{height:100%}
+img{-ms-interpolation-mode:bicubic}
+.left{float:left!important}
+.right{float:right!important}
+.text-left{text-align:left!important}
+.text-right{text-align:right!important}
+.text-center{text-align:center!important}
+.text-justify{text-align:justify!important}
+.hide{display:none}
+body{-webkit-font-smoothing:antialiased}
+img,object,svg{display:inline-block;vertical-align:middle}
+textarea{height:auto;min-height:50px}
+select{width:100%}
+.center{margin-left:auto;margin-right:auto}
+.spread{width:100%}
+p.lead,.paragraph.lead>p,#preamble>.sectionbody>.paragraph:first-of-type p{font-size:1.21875em;line-height:1.6}
+.subheader,.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{line-height:1.45;color:#7a2518;font-weight:400;margin-top:0;margin-bottom:.25em}
+div,dl,dt,dd,ul,ol,li,h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6,pre,form,p,blockquote,th,td{margin:0;padding:0;direction:ltr}
+a{color:#2156a5;text-decoration:underline;line-height:inherit}
+a:hover,a:focus{color:#1d4b8f}
+a img{border:none}
+p{font-family:inherit;font-weight:400;font-size:1em;line-height:1.6;margin-bottom:1.25em;text-rendering:optimizeLegibility}
+p aside{font-size:.875em;line-height:1.35;font-style:italic}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{font-family:"Open Sans","DejaVu Sans",sans-serif;font-weight:300;font-style:normal;color:#ba3925;text-rendering:optimizeLegibility;margin-top:1em;margin-bottom:.5em;line-height:1.0125em}
+h1 small,h2 small,h3 small,#toctitle small,.sidebarblock>.content>.title small,h4 small,h5 small,h6 small{font-size:60%;color:#e99b8f;line-height:0}
+h1{font-size:2.125em}
+h2{font-size:1.6875em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.375em}
+h4,h5{font-size:1.125em}
+h6{font-size:1em}
+hr{border:solid #ddddd8;border-width:1px 0 0;clear:both;margin:1.25em 0 1.1875em;height:0}
+em,i{font-style:italic;line-height:inherit}
+strong,b{font-weight:bold;line-height:inherit}
+small{font-size:60%;line-height:inherit}
+code{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;color:rgba(0,0,0,.9)}
+ul,ol,dl{font-size:1em;line-height:1.6;margin-bottom:1.25em;list-style-position:outside;font-family:inherit}
+ul,ol,ul.no-bullet,ol.no-bullet{margin-left:1.5em}
+ul li ul,ul li ol{margin-left:1.25em;margin-bottom:0;font-size:1em}
+ul.square li ul,ul.circle li ul,ul.disc li ul{list-style:inherit}
+ul.square{list-style-type:square}
+ul.circle{list-style-type:circle}
+ul.disc{list-style-type:disc}
+ul.no-bullet{list-style:none}
+ol li ul,ol li ol{margin-left:1.25em;margin-bottom:0}
+dl dt{margin-bottom:.3125em;font-weight:bold}
+dl dd{margin-bottom:1.25em}
+abbr,acronym{text-transform:uppercase;font-size:90%;color:rgba(0,0,0,.8);border-bottom:1px dotted #ddd;cursor:help}
+abbr{text-transform:none}
+blockquote{margin:0 0 1.25em;padding:.5625em 1.25em 0 1.1875em;border-left:1px solid #ddd}
+blockquote cite{display:block;font-size:.9375em;color:rgba(0,0,0,.6)}
+blockquote cite:before{content:"\2014 \0020"}
+blockquote cite a,blockquote cite a:visited{color:rgba(0,0,0,.6)}
+blockquote,blockquote p{line-height:1.6;color:rgba(0,0,0,.85)}
+@media only screen and (min-width:768px){h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2}
+h1{font-size:2.75em}
+h2{font-size:2.3125em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.6875em}
+h4{font-size:1.4375em}}
+table{background:#fff;margin-bottom:1.25em;border:solid 1px #dedede}
+table thead,table tfoot{background:#f7f8f7;font-weight:bold}
+table thead tr th,table thead tr td,table tfoot tr th,table tfoot tr td{padding:.5em .625em .625em;font-size:inherit;color:rgba(0,0,0,.8);text-align:left}
+table tr th,table tr td{padding:.5625em .625em;font-size:inherit;color:rgba(0,0,0,.8)}
+table tr.even,table tr.alt,table tr:nth-of-type(even){background:#f8f8f7}
+table thead tr th,table tfoot tr th,table tbody tr td,table tr td,table tfoot tr td{display:table-cell;line-height:1.6}
+body{tab-size:4}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2;word-spacing:-.05em}
+h1 strong,h2 strong,h3 strong,#toctitle strong,.sidebarblock>.content>.title strong,h4 strong,h5 strong,h6 strong{font-weight:400}
+.clearfix:before,.clearfix:after,.float-group:before,.float-group:after{content:" ";display:table}
+.clearfix:after,.float-group:after{clear:both}
+*:not(pre)>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background-color:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed}
+pre,pre>code{line-height:1.45;color:rgba(0,0,0,.9);font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;text-rendering:optimizeSpeed}
+.keyseq{color:rgba(51,51,51,.8)}
+kbd{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;display:inline-block;color:rgba(0,0,0,.8);font-size:.65em;line-height:1.45;background-color:#f7f7f7;border:1px solid #ccc;-webkit-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em white inset;box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em #fff inset;margin:0 .15em;padding:.2em .5em;vertical-align:middle;position:relative;top:-.1em;white-space:nowrap}
+.keyseq kbd:first-child{margin-left:0}
+.keyseq kbd:last-child{margin-right:0}
+.menuseq,.menu{color:rgba(0,0,0,.8)}
+b.button:before,b.button:after{position:relative;top:-1px;font-weight:400}
+b.button:before{content:"[";padding:0 3px 0 2px}
+b.button:after{content:"]";padding:0 2px 0 3px}
+p a>code:hover{color:rgba(0,0,0,.9)}
+#header,#content,#footnotes,#footer{width:100%;margin-left:auto;margin-right:auto;margin-top:0;margin-bottom:0;max-width:62.5em;*zoom:1;position:relative;padding-left:.9375em;padding-right:.9375em}
+#header:before,#header:after,#content:before,#content:after,#footnotes:before,#footnotes:after,#footer:before,#footer:after{content:" ";display:table}
+#header:after,#content:after,#footnotes:after,#footer:after{clear:both}
+#content{margin-top:1.25em}
+#content:before{content:none}
+#header>h1:first-child{color:rgba(0,0,0,.85);margin-top:2.25rem;margin-bottom:0}
+#header>h1:first-child+#toc{margin-top:8px;border-top:1px solid #ddddd8}
+#header>h1:only-child,body.toc2 #header>h1:nth-last-child(2){border-bottom:1px solid #ddddd8;padding-bottom:8px}
+#header .details{border-bottom:1px solid #ddddd8;line-height:1.45;padding-top:.25em;padding-bottom:.25em;padding-left:.25em;color:rgba(0,0,0,.6);display:-ms-flexbox;display:-webkit-flex;display:flex;-ms-flex-flow:row wrap;-webkit-flex-flow:row wrap;flex-flow:row wrap}
+#header .details span:first-child{margin-left:-.125em}
+#header .details span.email a{color:rgba(0,0,0,.85)}
+#header .details br{display:none}
+#header .details br+span:before{content:"\00a0\2013\00a0"}
+#header .details br+span.author:before{content:"\00a0\22c5\00a0";color:rgba(0,0,0,.85)}
+#header .details br+span#revremark:before{content:"\00a0|\00a0"}
+#header #revnumber{text-transform:capitalize}
+#header #revnumber:after{content:"\00a0"}
+#content>h1:first-child:not([class]){color:rgba(0,0,0,.85);border-bottom:1px solid #ddddd8;padding-bottom:8px;margin-top:0;padding-top:1rem;margin-bottom:1.25rem}
+#toc{border-bottom:1px solid #efefed;padding-bottom:.5em}
+#toc>ul{margin-left:.125em}
+#toc ul.sectlevel0>li>a{font-style:italic}
+#toc ul.sectlevel0 ul.sectlevel1{margin:.5em 0}
+#toc ul{font-family:"Open Sans","DejaVu Sans",sans-serif;list-style-type:none}
+#toc li{line-height:1.3334;margin-top:.3334em}
+#toc a{text-decoration:none}
+#toc a:active{text-decoration:underline}
+#toctitle{color:#7a2518;font-size:1.2em}
+@media only screen and (min-width:768px){#toctitle{font-size:1.375em}
+body.toc2{padding-left:15em;padding-right:0}
+#toc.toc2{margin-top:0!important;background-color:#f8f8f7;position:fixed;width:15em;left:0;top:0;border-right:1px solid #efefed;border-top-width:0!important;border-bottom-width:0!important;z-index:1000;padding:1.25em 1em;height:100%;overflow:auto}
+#toc.toc2 #toctitle{margin-top:0;margin-bottom:.8rem;font-size:1.2em}
+#toc.toc2>ul{font-size:.9em;margin-bottom:0}
+#toc.toc2 ul ul{margin-left:0;padding-left:1em}
+#toc.toc2 ul.sectlevel0 ul.sectlevel1{padding-left:0;margin-top:.5em;margin-bottom:.5em}
+body.toc2.toc-right{padding-left:0;padding-right:15em}
+body.toc2.toc-right #toc.toc2{border-right-width:0;border-left:1px solid #efefed;left:auto;right:0}}
+@media only screen and (min-width:1280px){body.toc2{padding-left:20em;padding-right:0}
+#toc.toc2{width:20em}
+#toc.toc2 #toctitle{font-size:1.375em}
+#toc.toc2>ul{font-size:.95em}
+#toc.toc2 ul ul{padding-left:1.25em}
+body.toc2.toc-right{padding-left:0;padding-right:20em}}
+#content #toc{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
+#content #toc>:first-child{margin-top:0}
+#content #toc>:last-child{margin-bottom:0}
+#footer{max-width:100%;background-color:rgba(0,0,0,.8);padding:1.25em}
+#footer-text{color:rgba(255,255,255,.8);line-height:1.44}
+.sect1{padding-bottom:.625em}
+@media only screen and (min-width:768px){.sect1{padding-bottom:1.25em}}
+.sect1+.sect1{border-top:1px solid #efefed}
+#content h1>a.anchor,h2>a.anchor,h3>a.anchor,#toctitle>a.anchor,.sidebarblock>.content>.title>a.anchor,h4>a.anchor,h5>a.anchor,h6>a.anchor{position:absolute;z-index:1001;width:1.5ex;margin-left:-1.5ex;display:block;text-decoration:none!important;visibility:hidden;text-align:center;font-weight:400}
+#content h1>a.anchor:before,h2>a.anchor:before,h3>a.anchor:before,#toctitle>a.anchor:before,.sidebarblock>.content>.title>a.anchor:before,h4>a.anchor:before,h5>a.anchor:before,h6>a.anchor:before{content:"\00A7";font-size:.85em;display:block;padding-top:.1em}
+#content h1:hover>a.anchor,#content h1>a.anchor:hover,h2:hover>a.anchor,h2>a.anchor:hover,h3:hover>a.anchor,#toctitle:hover>a.anchor,.sidebarblock>.content>.title:hover>a.anchor,h3>a.anchor:hover,#toctitle>a.anchor:hover,.sidebarblock>.content>.title>a.anchor:hover,h4:hover>a.anchor,h4>a.anchor:hover,h5:hover>a.anchor,h5>a.anchor:hover,h6:hover>a.anchor,h6>a.anchor:hover{visibility:visible}
+#content h1>a.link,h2>a.link,h3>a.link,#toctitle>a.link,.sidebarblock>.content>.title>a.link,h4>a.link,h5>a.link,h6>a.link{color:#ba3925;text-decoration:none}
+#content h1>a.link:hover,h2>a.link:hover,h3>a.link:hover,#toctitle>a.link:hover,.sidebarblock>.content>.title>a.link:hover,h4>a.link:hover,h5>a.link:hover,h6>a.link:hover{color:#a53221}
+.audioblock,.imageblock,.literalblock,.listingblock,.stemblock,.videoblock{margin-bottom:1.25em}
+.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{text-rendering:optimizeLegibility;text-align:left;font-family:"Noto Serif","DejaVu Serif",serif;font-size:1rem;font-style:italic}
+table.tableblock>caption.title{white-space:nowrap;overflow:visible;max-width:0}
+.paragraph.lead>p,#preamble>.sectionbody>.paragraph:first-of-type p{color:rgba(0,0,0,.85)}
+table.tableblock #preamble>.sectionbody>.paragraph:first-of-type p{font-size:inherit}
+.admonitionblock>table{border-collapse:separate;border:0;background:none;width:100%}
+.admonitionblock>table td.icon{text-align:center;width:80px}
+.admonitionblock>table td.icon img{max-width:none}
+.admonitionblock>table td.icon .title{font-weight:bold;font-family:"Open Sans","DejaVu Sans",sans-serif;text-transform:uppercase}
+.admonitionblock>table td.content{padding-left:1.125em;padding-right:1.25em;border-left:1px solid #ddddd8;color:rgba(0,0,0,.6)}
+.admonitionblock>table td.content>:last-child>:last-child{margin-bottom:0}
+.exampleblock>.content{border-style:solid;border-width:1px;border-color:#e6e6e6;margin-bottom:1.25em;padding:1.25em;background:#fff;-webkit-border-radius:4px;border-radius:4px}
+.exampleblock>.content>:first-child{margin-top:0}
+.exampleblock>.content>:last-child{margin-bottom:0}
+.sidebarblock{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
+.sidebarblock>:first-child{margin-top:0}
+.sidebarblock>:last-child{margin-bottom:0}
+.sidebarblock>.content>.title{color:#7a2518;margin-top:0;text-align:center}
+.exampleblock>.content>:last-child>:last-child,.exampleblock>.content .olist>ol>li:last-child>:last-child,.exampleblock>.content .ulist>ul>li:last-child>:last-child,.exampleblock>.content .qlist>ol>li:last-child>:last-child,.sidebarblock>.content>:last-child>:last-child,.sidebarblock>.content .olist>ol>li:last-child>:last-child,.sidebarblock>.content .ulist>ul>li:last-child>:last-child,.sidebarblock>.content .qlist>ol>li:last-child>:last-child{margin-bottom:0}
+.literalblock pre,.listingblock pre:not(.highlight),.listingblock pre[class="highlight"],.listingblock pre[class^="highlight "],.listingblock pre.CodeRay,.listingblock pre.prettyprint{background:#f7f7f8}
+.sidebarblock .literalblock pre,.sidebarblock .listingblock pre:not(.highlight),.sidebarblock .listingblock pre[class="highlight"],.sidebarblock .listingblock pre[class^="highlight "],.sidebarblock .listingblock pre.CodeRay,.sidebarblock .listingblock pre.prettyprint{background:#f2f1f1}
+.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{-webkit-border-radius:4px;border-radius:4px;word-wrap:break-word;padding:1em;font-size:.8125em}
+.literalblock pre.nowrap,.literalblock pre[class].nowrap,.listingblock pre.nowrap,.listingblock pre[class].nowrap{overflow-x:auto;white-space:pre;word-wrap:normal}
+@media only screen and (min-width:768px){.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{font-size:.90625em}}
+@media only screen and (min-width:1280px){.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{font-size:1em}}
+.literalblock.output pre{color:#f7f7f8;background-color:rgba(0,0,0,.9)}
+.listingblock pre.highlightjs{padding:0}
+.listingblock pre.highlightjs>code{padding:1em;-webkit-border-radius:4px;border-radius:4px}
+.listingblock pre.prettyprint{border-width:0}
+.listingblock>.content{position:relative}
+.listingblock code[data-lang]:before{display:none;content:attr(data-lang);position:absolute;font-size:.75em;top:.425rem;right:.5rem;line-height:1;text-transform:uppercase;color:#999}
+.listingblock:hover code[data-lang]:before{display:block}
+.listingblock.terminal pre .command:before{content:attr(data-prompt);padding-right:.5em;color:#999}
+.listingblock.terminal pre .command:not([data-prompt]):before{content:"$"}
+table.pyhltable{border-collapse:separate;border:0;margin-bottom:0;background:none}
+table.pyhltable td{vertical-align:top;padding-top:0;padding-bottom:0;line-height:1.45}
+table.pyhltable td.code{padding-left:.75em;padding-right:0}
+pre.pygments .lineno,table.pyhltable td:not(.code){color:#999;padding-left:0;padding-right:.5em;border-right:1px solid #ddddd8}
+pre.pygments .lineno{display:inline-block;margin-right:.25em}
+table.pyhltable .linenodiv{background:none!important;padding-right:0!important}
+.quoteblock{margin:0 1em 1.25em 1.5em;display:table}
+.quoteblock>.title{margin-left:-1.5em;margin-bottom:.75em}
+.quoteblock blockquote,.quoteblock blockquote p{color:rgba(0,0,0,.85);font-size:1.15rem;line-height:1.75;word-spacing:.1em;letter-spacing:0;font-style:italic;text-align:justify}
+.quoteblock blockquote{margin:0;padding:0;border:0}
+.quoteblock blockquote:before{content:"\201c";float:left;font-size:2.75em;font-weight:bold;line-height:.6em;margin-left:-.6em;color:#7a2518;text-shadow:0 1px 2px rgba(0,0,0,.1)}
+.quoteblock blockquote>.paragraph:last-child p{margin-bottom:0}
+.quoteblock .attribution{margin-top:.5em;margin-right:.5ex;text-align:right}
+.quoteblock .quoteblock{margin-left:0;margin-right:0;padding:.5em 0;border-left:3px solid rgba(0,0,0,.6)}
+.quoteblock .quoteblock blockquote{padding:0 0 0 .75em}
+.quoteblock .quoteblock blockquote:before{display:none}
+.verseblock{margin:0 1em 1.25em 1em}
+.verseblock pre{font-family:"Open Sans","DejaVu Sans",sans;font-size:1.15rem;color:rgba(0,0,0,.85);font-weight:300;text-rendering:optimizeLegibility}
+.verseblock pre strong{font-weight:400}
+.verseblock .attribution{margin-top:1.25rem;margin-left:.5ex}
+.quoteblock .attribution,.verseblock .attribution{font-size:.9375em;line-height:1.45;font-style:italic}
+.quoteblock .attribution br,.verseblock .attribution br{display:none}
+.quoteblock .attribution cite,.verseblock .attribution cite{display:block;letter-spacing:-.025em;color:rgba(0,0,0,.6)}
+.quoteblock.abstract{margin:0 0 1.25em 0;display:block}
+.quoteblock.abstract blockquote,.quoteblock.abstract blockquote p{text-align:left;word-spacing:0}
+.quoteblock.abstract blockquote:before,.quoteblock.abstract blockquote p:first-of-type:before{display:none}
+table.tableblock{max-width:100%;border-collapse:separate}
+table.tableblock td>.paragraph:last-child p>p:last-child,table.tableblock th>p:last-child,table.tableblock td>p:last-child{margin-bottom:0}
+table.tableblock,th.tableblock,td.tableblock{border:0 solid #dedede}
+table.grid-all th.tableblock,table.grid-all td.tableblock{border-width:0 1px 1px 0}
+table.grid-all tfoot>tr>th.tableblock,table.grid-all tfoot>tr>td.tableblock{border-width:1px 1px 0 0}
+table.grid-cols th.tableblock,table.grid-cols td.tableblock{border-width:0 1px 0 0}
+table.grid-all *>tr>.tableblock:last-child,table.grid-cols *>tr>.tableblock:last-child{border-right-width:0}
+table.grid-rows th.tableblock,table.grid-rows td.tableblock{border-width:0 0 1px 0}
+table.grid-all tbody>tr:last-child>th.tableblock,table.grid-all tbody>tr:last-child>td.tableblock,table.grid-all thead:last-child>tr>th.tableblock,table.grid-rows tbody>tr:last-child>th.tableblock,table.grid-rows tbody>tr:last-child>td.tableblock,table.grid-rows thead:last-child>tr>th.tableblock{border-bottom-width:0}
+table.grid-rows tfoot>tr>th.tableblock,table.grid-rows tfoot>tr>td.tableblock{border-width:1px 0 0 0}
+table.frame-all{border-width:1px}
+table.frame-sides{border-width:0 1px}
+table.frame-topbot{border-width:1px 0}
+th.halign-left,td.halign-left{text-align:left}
+th.halign-right,td.halign-right{text-align:right}
+th.halign-center,td.halign-center{text-align:center}
+th.valign-top,td.valign-top{vertical-align:top}
+th.valign-bottom,td.valign-bottom{vertical-align:bottom}
+th.valign-middle,td.valign-middle{vertical-align:middle}
+table thead th,table tfoot th{font-weight:bold}
+tbody tr th{display:table-cell;line-height:1.6;background:#f7f8f7}
+tbody tr th,tbody tr th p,tfoot tr th,tfoot tr th p{color:rgba(0,0,0,.8);font-weight:bold}
+p.tableblock>code:only-child{background:none;padding:0}
+p.tableblock{font-size:1em}
+td>div.verse{white-space:pre}
+ol{margin-left:1.75em}
+ul li ol{margin-left:1.5em}
+dl dd{margin-left:1.125em}
+dl dd:last-child,dl dd:last-child>:last-child{margin-bottom:0}
+ol>li p,ul>li p,ul dd,ol dd,.olist .olist,.ulist .ulist,.ulist .olist,.olist .ulist{margin-bottom:.625em}
+ul.unstyled,ol.unnumbered,ul.checklist,ul.none{list-style-type:none}
+ul.unstyled,ol.unnumbered,ul.checklist{margin-left:.625em}
+ul.checklist li>p:first-child>.fa-square-o:first-child,ul.checklist li>p:first-child>.fa-check-square-o:first-child{width:1em;font-size:.85em}
+ul.checklist li>p:first-child>input[type="checkbox"]:first-child{width:1em;position:relative;top:1px}
+ul.inline{margin:0 auto .625em auto;margin-left:-1.375em;margin-right:0;padding:0;list-style:none;overflow:hidden}
+ul.inline>li{list-style:none;float:left;margin-left:1.375em;display:block}
+ul.inline>li>*{display:block}
+.unstyled dl dt{font-weight:400;font-style:normal}
+ol.arabic{list-style-type:decimal}
+ol.decimal{list-style-type:decimal-leading-zero}
+ol.loweralpha{list-style-type:lower-alpha}
+ol.upperalpha{list-style-type:upper-alpha}
+ol.lowerroman{list-style-type:lower-roman}
+ol.upperroman{list-style-type:upper-roman}
+ol.lowergreek{list-style-type:lower-greek}
+.hdlist>table,.colist>table{border:0;background:none}
+.hdlist>table>tbody>tr,.colist>table>tbody>tr{background:none}
+td.hdlist1,td.hdlist2{vertical-align:top;padding:0 .625em}
+td.hdlist1{font-weight:bold;padding-bottom:1.25em}
+.literalblock+.colist,.listingblock+.colist{margin-top:-.5em}
+.colist>table tr>td:first-of-type{padding:0 .75em;line-height:1}
+.colist>table tr>td:last-of-type{padding:.25em 0}
+.thumb,.th{line-height:0;display:inline-block;border:solid 4px #fff;-webkit-box-shadow:0 0 0 1px #ddd;box-shadow:0 0 0 1px #ddd}
+.imageblock.left,.imageblock[style*="float: left"]{margin:.25em .625em 1.25em 0}
+.imageblock.right,.imageblock[style*="float: right"]{margin:.25em 0 1.25em .625em}
+.imageblock>.title{margin-bottom:0}
+.imageblock.thumb,.imageblock.th{border-width:6px}
+.imageblock.thumb>.title,.imageblock.th>.title{padding:0 .125em}
+.image.left,.image.right{margin-top:.25em;margin-bottom:.25em;display:inline-block;line-height:0}
+.image.left{margin-right:.625em}
+.image.right{margin-left:.625em}
+a.image{text-decoration:none;display:inline-block}
+a.image object{pointer-events:none}
+sup.footnote,sup.footnoteref{font-size:.875em;position:static;vertical-align:super}
+sup.footnote a,sup.footnoteref a{text-decoration:none}
+sup.footnote a:active,sup.footnoteref a:active{text-decoration:underline}
+#footnotes{padding-top:.75em;padding-bottom:.75em;margin-bottom:.625em}
+#footnotes hr{width:20%;min-width:6.25em;margin:-.25em 0 .75em 0;border-width:1px 0 0 0}
+#footnotes .footnote{padding:0 .375em 0 .225em;line-height:1.3334;font-size:.875em;margin-left:1.2em;text-indent:-1.05em;margin-bottom:.2em}
+#footnotes .footnote a:first-of-type{font-weight:bold;text-decoration:none}
+#footnotes .footnote:last-of-type{margin-bottom:0}
+#content #footnotes{margin-top:-.625em;margin-bottom:0;padding:.75em 0}
+.gist .file-data>table{border:0;background:#fff;width:100%;margin-bottom:0}
+.gist .file-data>table td.line-data{width:99%}
+div.unbreakable{page-break-inside:avoid}
+.big{font-size:larger}
+.small{font-size:smaller}
+.underline{text-decoration:underline}
+.overline{text-decoration:overline}
+.line-through{text-decoration:line-through}
+.aqua{color:#00bfbf}
+.aqua-background{background-color:#00fafa}
+.black{color:#000}
+.black-background{background-color:#000}
+.blue{color:#0000bf}
+.blue-background{background-color:#0000fa}
+.fuchsia{color:#bf00bf}
+.fuchsia-background{background-color:#fa00fa}
+.gray{color:#606060}
+.gray-background{background-color:#7d7d7d}
+.green{color:#006000}
+.green-background{background-color:#007d00}
+.lime{color:#00bf00}
+.lime-background{background-color:#00fa00}
+.maroon{color:#600000}
+.maroon-background{background-color:#7d0000}
+.navy{color:#000060}
+.navy-background{background-color:#00007d}
+.olive{color:#606000}
+.olive-background{background-color:#7d7d00}
+.purple{color:#600060}
+.purple-background{background-color:#7d007d}
+.red{color:#bf0000}
+.red-background{background-color:#fa0000}
+.silver{color:#909090}
+.silver-background{background-color:#bcbcbc}
+.teal{color:#006060}
+.teal-background{background-color:#007d7d}
+.white{color:#bfbfbf}
+.white-background{background-color:#fafafa}
+.yellow{color:#bfbf00}
+.yellow-background{background-color:#fafa00}
+span.icon>.fa{cursor:default}
+.admonitionblock td.icon [class^="fa icon-"]{font-size:2.5em;text-shadow:1px 1px 2px rgba(0,0,0,.5);cursor:default}
+.admonitionblock td.icon .icon-note:before{content:"\f05a";color:#19407c}
+.admonitionblock td.icon .icon-tip:before{content:"\f0eb";text-shadow:1px 1px 2px rgba(155,155,0,.8);color:#111}
+.admonitionblock td.icon .icon-warning:before{content:"\f071";color:#bf6900}
+.admonitionblock td.icon .icon-caution:before{content:"\f06d";color:#bf3400}
+.admonitionblock td.icon .icon-important:before{content:"\f06a";color:#bf0000}
+.conum[data-value]{display:inline-block;color:#fff!important;background-color:rgba(0,0,0,.8);-webkit-border-radius:100px;border-radius:100px;text-align:center;font-size:.75em;width:1.67em;height:1.67em;line-height:1.67em;font-family:"Open Sans","DejaVu Sans",sans-serif;font-style:normal;font-weight:bold}
+.conum[data-value] *{color:#fff!important}
+.conum[data-value]+b{display:none}
+.conum[data-value]:after{content:attr(data-value)}
+pre .conum[data-value]{position:relative;top:-.125em}
+b.conum *{color:inherit!important}
+.conum:not([data-value]):empty{display:none}
+dt,th.tableblock,td.content,div.footnote{text-rendering:optimizeLegibility}
+h1,h2,p,td.content,span.alt{letter-spacing:-.01em}
+p strong,td.content strong,div.footnote strong{letter-spacing:-.005em}
+p,blockquote,dt,td.content,span.alt{font-size:1.0625rem}
+p{margin-bottom:1.25rem}
+.sidebarblock p,.sidebarblock dt,.sidebarblock td.content,p.tableblock{font-size:1em}
+.exampleblock>.content{background-color:#fffef7;border-color:#e0e0dc;-webkit-box-shadow:0 1px 4px #e0e0dc;box-shadow:0 1px 4px #e0e0dc}
+.print-only{display:none!important}
+@media print{@page{margin:1.25cm .75cm}
+*{-webkit-box-shadow:none!important;box-shadow:none!important;text-shadow:none!important}
+a{color:inherit!important;text-decoration:underline!important}
+a.bare,a[href^="#"],a[href^="mailto:"]{text-decoration:none!important}
+a[href^="http:"]:not(.bare):after,a[href^="https:"]:not(.bare):after{content:"(" attr(href) ")";display:inline-block;font-size:.875em;padding-left:.25em}
+abbr[title]:after{content:" (" attr(title) ")"}
+pre,blockquote,tr,img,object,svg{page-break-inside:avoid}
+thead{display:table-header-group}
+svg{max-width:100%}
+p,blockquote,dt,td.content{font-size:1em;orphans:3;widows:3}
+h2,h3,#toctitle,.sidebarblock>.content>.title{page-break-after:avoid}
+#toc,.sidebarblock,.exampleblock>.content{background:none!important}
+#toc{border-bottom:1px solid #ddddd8!important;padding-bottom:0!important}
+.sect1{padding-bottom:0!important}
+.sect1+.sect1{border:0!important}
+#header>h1:first-child{margin-top:1.25rem}
+body.book #header{text-align:center}
+body.book #header>h1:first-child{border:0!important;margin:2.5em 0 1em 0}
+body.book #header .details{border:0!important;display:block;padding:0!important}
+body.book #header .details span:first-child{margin-left:0!important}
+body.book #header .details br{display:block}
+body.book #header .details br+span:before{content:none!important}
+body.book #toc{border:0!important;text-align:left!important;padding:0!important;margin:0!important}
+body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-break-before:always}
+.listingblock code[data-lang]:before{display:block}
+#footer{background:none!important;padding:0 .9375em}
+#footer-text{color:rgba(0,0,0,.6)!important;font-size:.9em}
+.hide-on-print{display:none!important}
+.print-only{display:block!important}
+.hide-for-print{display:none!important}
+.show-for-print{display:inherit!important}}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+</head>
+<body class="book toc2 toc-right">
+<div id="header">
+<h1>Administración de OpenStack-STIC</h1>
+<div class="details">
+<span id="author" class="author">Servicio de las Tecnologías de la Información y las Comunicaciones - Universidad de Almería</span><br>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Tabla de contenidos</div>
+<ul class="sectlevel1">
+<li><a href="#trueresumen">Resumen</a></li>
+<li><a href="#truecomponentes-de-openstack">1. Componentes de OpenStack</a>
+<ul class="sectlevel2">
+<li><a href="#truecomponentes-m-nimos">1.1. Componentes mínimos</a></li>
+<li><a href="#truecomponentes-recomendados">1.2. Componentes recomendados</a></li>
+<li><a href="#trueotros-componentes-interesantes">1.3. Otros componentes interesantes</a></li>
+</ul>
+</li>
+<li><a href="#trueacceso-a-openstack">2. Acceso a OpenStack</a>
+<ul class="sectlevel2">
+<li><a href="#trueclouds-p-blicos">2.1. Clouds públicos</a></li>
+<li><a href="#truedevstack">2.2. DevStack</a></li>
+<li><a href="#trueopenstack-on-premise">2.3. OpenStack on-premise</a></li>
+<li><a href="#trueconfiguraci-n-de-servidores">2.4. Configuración de servidores</a></li>
+</ul>
+</li>
+<li><a href="#trueinstalaci-n-del-cli">3. Instalación del CLI</a>
+<ul class="sectlevel2">
+<li><a href="#truerequisitos">3.1. Requisitos</a></li>
+<li><a href="#trueinstalaci-n-de-osc-openstack-client">3.2. Instalación de OSC (Openstack Client)</a></li>
+<li><a href="#trueconfiguraci-n-de-credenciales">3.3. Configuración de credenciales</a></li>
+<li><a href="#truearchivo-de-credenciales-del-proyecto-personal">3.4. Archivo de credenciales del proyecto personal</a></li>
+</ul>
+</li>
+<li><a href="#trueadministraci-n-de-proyectos">4. Administración de proyectos</a>
+<ul class="sectlevel2">
+<li><a href="#truelistado-de-proyectos">4.1. Listado de proyectos</a></li>
+<li><a href="#trueactivaci-n-desactivaci-n-de-proyectos">4.2. Activación/Desactivación de proyectos</a></li>
+<li><a href="#truemodificaci-n-de-cuotas">4.3. Modificación de cuotas</a></li>
+<li><a href="#truemostrar-la-cuota-de-un-proyecto">4.4. Mostrar la cuota de un proyecto</a></li>
+<li><a href="#trueeliminaci-n-de-proyectos">4.5. Eliminación de proyectos</a></li>
+</ul>
+</li>
+<li><a href="#trueadministraci-n-de-usuarios">5. Administración de usuarios</a>
+<ul class="sectlevel2">
+<li><a href="#truelistado-de-usuarios">5.1. Listado de usuarios</a></li>
+<li><a href="#truecreaci-n-de-usuarios">5.2. Creación de usuarios</a></li>
+<li><a href="#truemodificaci-n-de-contrase-a">5.3. Modificación de contraseña</a></li>
+<li><a href="#trueactivaci-n-desactivaci-n-de-usuarios">5.4. Activación/Desactivación de usuarios</a></li>
+<li><a href="#truemostrar-informaci-n-de-un-usuario">5.5. Mostrar información de un usuario</a></li>
+<li><a href="#truea-adir-un-usuario-a-un-proyecto">5.6. Añadir un usuario a un proyecto</a></li>
+<li><a href="#truerol-de-un-usuario-en-un-proyecto">5.7. Rol de un usuario en un proyecto</a></li>
+<li><a href="#trueeliminaci-n-de-usuarios">5.8. Eliminación de usuarios</a></li>
+</ul>
+</li>
+<li><a href="#trueautomatizar-la-creaci-n-de-proyectos">6. Automatizar la creación de proyectos</a></li>
+<li><a href="#trueadministraci-n-de-redes">7. Administración de redes</a></li>
+<li><a href="#truecreaci-n-de-una-red">8. Creación de una red</a>
+<ul class="sectlevel2">
+<li><a href="#trueconexi-n-a-varias-redes">8.1. Conexión a varias redes</a></li>
+</ul>
+</li>
+<li><a href="#trueconfiguracion-b-sica-de-un-proyecto-de-usuario-final">9. Configuracion básica de un proyecto de usuario final</a></li>
+<li><a href="#trueadministraci-n-de-im-genes">10. Administración de imágenes</a>
+<ul class="sectlevel2">
+<li><a href="#truesubida-de-im-genes">10.1. Subida de imágenes</a></li>
+<li><a href="#truemodificaci-n-de-im-genes">10.2. Modificación de imágenes</a></li>
+<li><a href="#truecreaci-n-de-im-genes-propias">10.3. Creación de imágenes propias</a></li>
+<li><a href="#truebajada-de-im-genes">10.4. Bajada de imágenes</a></li>
+</ul>
+</li>
+<li><a href="#trueadministraci-n-de-snapshots">11. Administración de snapshots</a>
+<ul class="sectlevel2">
+<li><a href="#truecreaci-n-de-snapshots">11.1. Creación de snapshots</a></li>
+<li><a href="#trueetiquetar-un-snapshot-como-imagen">11.2. Etiquetar un snapshot como imagen</a></li>
+</ul>
+</li>
+<li><a href="#truedescarga-de-credenciales">12. Descarga de credenciales</a></li>
+<li><a href="#truecreaci-n-de-instancias">13. Creación de instancias</a>
+<ul class="sectlevel2">
+<li><a href="#truecreaci-n-b-sica-de-una-instancia">13.1. Creación básica de una instancia</a></li>
+<li><a href="#truecreaci-n-de-una-instancia-auto-aprovisionada">13.2. Creación de una instancia auto aprovisionada</a></li>
+</ul>
+</li>
+<li><a href="#trueadministraci-n-de-sabores">14. Administración de sabores</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="./images/logocloudstic.png" alt="logocloudstic.png">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueresumen"><a class="anchor" href="#trueresumen"></a>Resumen</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>OpenStack-STIC nos proporciona Infraestructura como servicio (IaaS) muy variada (redes, imágenes, instancias, almacenamiento de bloques, volúmenes NFS y balanceadores como servicio). Todos estos recursos están disponibles a los usuarios a través de proyectos. En este tutorial realizaremos una introducción a la administración de usuarios, cuotas, redes, imágenes y volúmenes) en OpenStack-STIC.</p>
+</div>
+<div class="paragraph">
+<p>Para las tareas de administración OpenStack ofrece un CLI que permite realizar todas las operaciones que ofrece la API de OpenStack. Además, OpenStack ofrece una interfaz web, denominada Horizon, que permite realizar las operaciones más habituales y facilita el acceso a usuarios no experimentados.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>El acceso a OpenStack-STIC se puede hacer directamente desde <a href="https://openstack.stic.ual.es/horizon">https://openstack.stic.ual.es/horizon</a> o desde la web de servicios de Cloud-STIC <a href="https://home.stic.ual.es">https://home.stic.ual.es</a>. Allí además hay disponible una lista de respuestas a preguntas frecuentes y los <a href="https://home.stic.ual.es/TerminosServicio.html">Términos de servicio de Cloud-STIC</a>.</p>
+</div>
+<div class="paragraph">
+<p>Para realizar operaciones repetitivas o avanzadas es conveniente utilizar el CLI. Aquí está disponible la <a href="https://docs.openstack.org/python-openstackclient/pike/cli/command-list.html#command-list">Lista de comandos CLI</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="truecomponentes-de-openstack"><a class="anchor" href="#truecomponentes-de-openstack"></a>1. Componentes de OpenStack</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>OpenStack tiene una arquitectura totalmente modular. Se comienza instalando los componentes mínimos (identidad, imágenes, instancias y redes). Posteriormente se pueden añadir otros componentes para aumentar la cartera de servicios (almacenamiento, orquestación, procesamiento de datos, y demás)</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/componentes.png" alt="Componentes de OpenStack">
+</div>
+</div>
+<div class="sect2">
+<h3 id="truecomponentes-m-nimos"><a class="anchor" href="#truecomponentes-m-nimos"></a>1.1. Componentes mínimos</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Keystone: Servicio de Identidad (*)</p>
+</li>
+<li>
+<p>Glance: Servicio de imágenes (*)</p>
+</li>
+<li>
+<p>Nova: Servicio de cómputo (máquinas virtuales) (*)</p>
+</li>
+<li>
+<p>Neutron: Servicio de redes (*)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truecomponentes-recomendados"><a class="anchor" href="#truecomponentes-recomendados"></a>1.2. Componentes recomendados</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Horizon: Interfaz web (*)</p>
+</li>
+<li>
+<p>Cinder: Almacenamiento de bloques (*)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueotros-componentes-interesantes"><a class="anchor" href="#trueotros-componentes-interesantes"></a>1.3. Otros componentes interesantes</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Octavia o LBaaS: Servicio de balanceo de carga (*)</p>
+</li>
+<li>
+<p>Manila: Servicio de sistemas de archivos compartidos (*)</p>
+</li>
+<li>
+<p>Swift: Servicio de almacenamiento de objetos</p>
+</li>
+<li>
+<p>Sahara: Servicio de procesamiento de datos</p>
+</li>
+<li>
+<p>Heat: Servicio de orquestación</p>
+</li>
+<li>
+<p>Ceilometer: Servicio de recolección de datos de telemetría</p>
+</li>
+<li>
+<p>Aodh: Servicio de alerta de telemetría</p>
+</li>
+<li>
+<p>Ironic: Aprovisionamiento en máquinas físicas</p>
+</li>
+<li>
+<p>Cloudkitty: Servicio de tarificación</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Más información en <a href="https://www.openstack.org/software/project-navigator/openstack-components#openstack-services">lista de componentes de OpenStack</a></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Los componentes marcardos con asterisco (*) están disponibles actualmente en <a href="https://openstack.stic.ual.es/horizon">OpenStack-STIC</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>La figura siguiente ilustra cómo interactúan los componentes principales de OpenStack y la funcionalidad que ofrece cada uno.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/arquitectura.png" alt="Arquitectura de componentes de OpenStack">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueacceso-a-openstack"><a class="anchor" href="#trueacceso-a-openstack"></a>2. Acceso a OpenStack</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="trueclouds-p-blicos"><a class="anchor" href="#trueclouds-p-blicos"></a>2.1. Clouds públicos</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rackspace.com/es/openstack">Rackspace OpenStack</a></p>
+</li>
+<li>
+<p><a href="https://www.cloud.telefonica.com/en/open-cloud/">Telefónica Open Cloud</a></p>
+</li>
+<li>
+<p><a href="https://cloud.telekom.de/en/infrastructure/open-telekom-cloud">Open Telekom Cloud</a></p>
+</li>
+<li>
+<p><a href="https://nws.netways.de/">Netways Web Services</a></p>
+</li>
+<li>
+<p><a href="https://yellowcircle.net/">Yellow Circle</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Más información en <a href="https://www.openstack.org/passport/">The OpenStack Public Cloud Passport</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truedevstack"><a class="anchor" href="#truedevstack"></a>2.2. DevStack</h3>
+<div class="paragraph">
+<p>Distribución de OpenStack para instalación en equipo local. Se recomienda usarlo en una máquina virtual. <a href="https://docs.openstack.org/devstack/latest/">Guía de instalacion de DevStack</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueopenstack-on-premise"><a class="anchor" href="#trueopenstack-on-premise"></a>2.3. OpenStack on-premise</h3>
+<div class="paragraph">
+<p>Disponible para SUSE, RHEL, CentOS y Ubuntu.</p>
+</div>
+<div class="paragraph">
+<p>Instalación en servidores on-premise.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://docs.openstack.org/stein/install/">Guías de instalación</a></p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Ciclo de versiones en OpenStack</div>
+<div class="paragraph">
+<p>OpenStack tiene un ciclo de versiones semestral programadas para febrero y agosto de cada año. Sus versiones siguen el convenio del orden alfabético de sus iniciales. La versión actual, a abril de 2020, es <strong>T</strong>rain. En agosto de 2020 estárá disponible <strong>U</strong>ssury.
+OpenStack-STIC es OpenStack <strong>S</strong>tein (agosto de 2019) sobre Ubuntu (<a href="https://docs.openstack.org/stein/install/">Guía de instalación</a>).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueconfiguraci-n-de-servidores"><a class="anchor" href="#trueconfiguraci-n-de-servidores"></a>2.4. Configuración de servidores</h3>
+<div class="paragraph">
+<p>Los requisitos mínimos para una instalación para producción debería contar con un servidor para las funciones de <em>Control</em> y <em>Red</em>, y un servidor para las funciones de <em>Cómputo</em>, en el que se ejecutarán las máquinas virtuales creadas. Posteriormente, es posible añadir nuevos servidores de cómputo ofreciendo un escalado horizontal.</p>
+</div>
+<div class="paragraph">
+<p>Los servicios de almacenamiento (<em>Cinder</em>, para bloques; <em>Swift</em>, para objetos; y <em>Manila</em>, para sistemas de archivos compartidos) suelen instalarse en servidores independientes, aunque se podría forzar su instalación en uno de los servidores disponibles, aunque no es recomendable para un entorno de producción.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>El componente <em>Cinder</em> para almacenamiento de bloques permite el uso directo de dispositivos de almacenamiento (p.e. NAS) en lugar de usar servidores. La documentación oficial de OpenStack ofrece un listado de
+<a href="https://docs.openstack.org/ocata/config-reference/block-storage/volume-drivers.html">drivers para dispositivos configurables <em>Cinder</em></a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Se recomienda consultar la documentación de OpenStack para conocer los <a href="https://docs.openstack.org/install-guide/overview.html#example-architecture">requisitos hardware de los servidores</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="trueconfiguraci-n-deseable"><a class="anchor" href="#trueconfiguraci-n-deseable"></a>2.4.1. Configuración deseable</h4>
+<div class="paragraph">
+<p>A continuación se muestra la configuración de servidores deseable. En la figura se observan servidores dedicados e independientes para Control y Red, servidores para Cómputo, y servidores dedicados para cada tipo de almacenamiento (Bloques, Objetos y Sistemas de archivos compartidos).</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/configuracionDeseable.png" alt="configuracionDeseable.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Como no siempre se cuenta con el hardware suficiente, o bien las cargas de trabajo de algunos servicios van a ser pequeñas podemos compartir servidores para varios componentes de OpenStack. A continuación se muestran configuraciones alternativas que podrán tener mayor o menor sentido en función de la carga de trabajo a la que esté expuesta nuestra plataforma OpenStack.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="trueconfiguraci-n-combinando-nodos-de-control-red-y-cinder-manila"><a class="anchor" href="#trueconfiguraci-n-combinando-nodos-de-control-red-y-cinder-manila"></a>2.4.2. Configuración combinando nodos de Control+Red y Cinder+Manila</h4>
+<div class="paragraph">
+<p>Una posible configuración para ajustar el número de servidores pasa por combinar:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Las funciones de Control y Red.</p>
+</li>
+<li>
+<p>Las funciones de Almacenamiento de bloques y Sistemas de archivos compartidos.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>En el caso de combinar en el mismo nodo distintos tipos de servicios de almacenamiento se recomienda utilizar discos o arrays de discos independientes para cada tipo de almacenamiento. Por ejemplo, si combinamos en un mismo nodo <em>Cinder</em> y <em>Manila</em>, se recomienda contar con discos para <em>Cinder</em> y discos para <em>Manila</em>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/configuracionMasAjustada.png" alt="configuracionMasAjustada.png">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="trueconfiguraci-n-combinando-un-nodo-swift-con-el-resto-de-servicios-de-almacenamiento"><a class="anchor" href="#trueconfiguraci-n-combinando-un-nodo-swift-con-el-resto-de-servicios-de-almacenamiento"></a>2.4.3. Configuración combinando un nodo Swift con el resto de servicios de almacenamiento</h4>
+<div class="paragraph">
+<p>El servicio de almacenamiento de objetos, <em>Swift</em>, se instala en al menos dos servidores para ofrecer tolerancia a fallos. Una idea para intentar ajustar los recursos puede pasar por instalar los servicios de almacenamiento de bloques y de objetos en uno de los nodos <em>Swift</em>, tal y como muestra la figura siguiente.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/configuracionMasAjustadaAun.png" alt="configuracionMasAjustadaAun.png">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="trueconfiguraci-n-m-nima"><a class="anchor" href="#trueconfiguraci-n-m-nima"></a>2.4.4. Configuración mínima</h4>
+<div class="paragraph">
+<p>Como se puede observar, se pueden dar lugar a gran cantidad de configuraciones diferentes en función de dónde decidamos instalar los servicios de OpenStack.</p>
+</div>
+<div class="paragraph">
+<p>Una configuración más ajustada aún, quizá la más ajustada, pasa por combinar en un mismo nodo Control, Red, Almacenamiento de bloques y Sistemas de archivos compartidos.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/configuracionMuyMuyAjustada.png" alt="configuracionMuyMuyAjustada.png">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>OpenStack-DI dispone del hardware siguiente para los servicios de almacenamiento de OpenStack:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Cinder (Almacenamiento de bloques): NAS</p>
+</li>
+<li>
+<p>Swift (Almacenamiento de objetos): Dos servidores dedicados que ofrecen tolerancia a fallos</p>
+</li>
+<li>
+<p>Manila (Sistemas de archivos compartidos): Servidor dedicado.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Además, los nodos de Control y Red son separados y los nodos de cómputo también son dedicados</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Alta disponibilidad</div>
+<div class="paragraph">
+<p>En entornos de producción es conveniente contar con algunos servicios replicados para aumentar la tolerancia a fallos.</p>
+</div>
+<div class="paragraph">
+<p>La documentación oficial de OpenStack ofrece una <a href="https://docs.openstack.org/ha-guide/">Guía para configuración de alta disponibilidad</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueinstalaci-n-del-cli"><a class="anchor" href="#trueinstalaci-n-del-cli"></a>3. Instalación del CLI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>El CLI de OpenStack es un cliente en línea de comandos que nos permite interactuar con las APIs de los componentes de cómputo, identidad, imágenes, redes y almacenamiento de OpenStack en una única interfaz de forma uniforme.</p>
+</div>
+<div class="sect2">
+<h3 id="truerequisitos"><a class="anchor" href="#truerequisitos"></a>3.1. Requisitos</h3>
+<div class="paragraph">
+<p>Como requisito necesitamos <code>pip</code>, el instalador de paquetes de Python. Comprueba si tienes <code>pip</code> instalado con este comando:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>pìp --version</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Si no tienes <code>pip</code> instalado, consulta este <a href="https://tecnonucleous.com/2018/01/28/como-instalar-pip-para-python-en-windows-mac-y-linux/">enlace</a> para descargar <code>pip</code>.</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Instalación de <code>pip</code> en MacOS y Linux</div>
+<div class="ulist">
+<ul>
+<li>
+<p>MacOS: <code>sudo easy_install pip</code></p>
+</li>
+<li>
+<p>Ubuntu/Debian: <code>sudo apt-get install python-dev python-pip</code></p>
+</li>
+<li>
+<p>Fedora/CentOS: <code>yum install python-devel python-pip</code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueinstalaci-n-de-osc-openstack-client"><a class="anchor" href="#trueinstalaci-n-de-osc-openstack-client"></a>3.2. Instalación de OSC (Openstack Client)</h3>
+<div class="paragraph">
+<p>Instala el CLI de OpenStack con el comando</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>pip install python-openstackclient</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueconfiguraci-n-de-credenciales"><a class="anchor" href="#trueconfiguraci-n-de-credenciales"></a>3.3. Configuración de credenciales</h3>
+<div class="paragraph">
+<p>Para usar el CLI necesitamos cargar las credenciales de nuestro usuario. Los archivos de credenciales básicamente contienen datos sobre usuario, contraseña, proyecto y URL de autenticación. Crea con un editor un archivo como este añadiéndole las credenciales correspondientes:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">export OS_PROJECT_DOMAIN_NAME=default
+export OS_USER_DOMAIN_NAME=default
+export OS_PROJECT_NAME=projectName
+export OS_USERNAME=username
+export OS_PASSWORD=password
+export OS_AUTH_URL=http://identityHost:portNumber/v3
+export OS_IDENTITY_API_VERSION=3
+export OS_IMAGE_API_VERSION=2</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Coloca este archivo en tu <code>home</code> y contacta con un administrador de OpenStack-STIC para obtener los datos de la cuenta <code>admin</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Carga este archivo con este comando para poder usar el CLI de OpenStack con los datos configurados en el archivo</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ source openrc-admin</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truearchivo-de-credenciales-del-proyecto-personal"><a class="anchor" href="#truearchivo-de-credenciales-del-proyecto-personal"></a>3.4. Archivo de credenciales del proyecto personal</h3>
+<div class="paragraph">
+<p>En Horizon puedes descargar tu archivo de credenciales. Despliega las opciones de usuario en la esquina superior derecha y selecciona <code>OpenStack RC File</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueadministraci-n-de-proyectos"><a class="anchor" href="#trueadministraci-n-de-proyectos"></a>4. Administración de proyectos</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>El asistente para la creación de proyectos permite especificar la información del proyecto, sus miembros, grupos y recursos asociados al proyecto. De forma predeterminada, los proyectos quedan activados (<em>enabled</em>) al crearlos. Podemos desmarcar esta opción si queremos crearlo pero mantenerlo desactivado por ahora.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/CreateProject.png" alt="CreateProject.png">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Si estamos creando el proyecto mientras creamos un usuario, el usuario aún no aparece en la sección de <code>Project Members</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>En la zona <code>Quota</code> del asistente de creación de proyectos especificamos las restricciones de cuota respecto al uso de recursos. Caben destacar estas opciones:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>VCPUs</code>: Número de cores asignados al proyecto.</p>
+</li>
+<li>
+<p><code>Instances</code>: Número de instancias (máquinas virtuales) que se pueden crear en el proyecto.</p>
+</li>
+<li>
+<p><code>Volumes</code>: Número de volúmenes que se pueden crear en el proyecto</p>
+</li>
+<li>
+<p><code>Volume Snapshots</code>: Número de snapshots de volúmen que se pueden crear en el proyecto.</p>
+</li>
+<li>
+<p><code>RAM (MB)</code>: Cantidad de RAM, expresada en MB, asignada al proyecto.</p>
+</li>
+<li>
+<p><code>Floating IPs</code>: Cantidad de IPs flotantes asignadas al proyecto. Las IPs flotantes se usan para asignar a una instancia una IP de la red externa de OpenStack de forma que la instancia sea accesible desde fuera (SSH, HTTP, &#8230;&#8203;)</p>
+</li>
+<li>
+<p><code>Shares</code>: Cantidad de sistemas de archivos compartidos que se pueden crear en el proyecto.</p>
+</li>
+<li>
+<p><code>Shares gigabites</code>: Espacio en GB para <em>shares</em> asignados al proyecto.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>CLI</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack project create \
+--domain default \
+--description "Proyecto stic" --enable \
+stic
+
++-------------+----------------------------------+
+| Field       | Value                            |
++-------------+----------------------------------+
+| description | Proyecto stic                    |
+| domain_id   | default                          |
+| enabled     | True                             |
+| id          | 23d0050d8b7040c69e6a2d1d90c488ec |
+| is_domain   | False                            |
+| name        | stic                             |
+| parent_id   | default                          |
++-------------+----------------------------------+</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truelistado-de-proyectos"><a class="anchor" href="#truelistado-de-proyectos"></a>4.1. Listado de proyectos</h3>
+<div class="paragraph">
+<p><strong>Horizon</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Menú <code>Identity | Projects</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>CLI</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack project list
++----------------------------------+------------------------------------------------------------------+
+| ID                               | Name                                                             |
++----------------------------------+------------------------------------------------------------------+
+| 3e0cd10ba4b041c08a254421062d62db | 528295a77d1049a8b9e265358e9aae20-54550ecd-388d-4de6-846e-74cabc6 |
+| 528295a77d1049a8b9e265358e9aae20 | mtorres                                                          |
+| 85667a0f9b4e4484bb050658d08bbd12 | admin                                                            |
+| 8eb19bd7f6a8443b9c174a193478fdec | demo                                                             |
+| b3047d7355784ea19c17a825469f2f11 | hpcjmart                                                         |
+| f02340f3518d4129955ae1fa08a8c93f | service                                                          |
++----------------------------------+------------------------------------------------------------------+</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueactivaci-n-desactivaci-n-de-proyectos"><a class="anchor" href="#trueactivaci-n-desactivaci-n-de-proyectos"></a>4.2. Activación/Desactivación de proyectos</h3>
+<div class="paragraph">
+<p><strong>Horizon</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Menú <code>Identity | Users</code></p>
+</li>
+<li>
+<p>En el desplegable de acciones sobre el proyecto seleccionar <code>Edit Project</code>.</p>
+</li>
+<li>
+<p>Desactiva <code>Enabled</code> en el cuadro de diálogo</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>CLI</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack project set stic --disable
+$ openstack project show stic
++-------------+----------------------------------+
+| Field       | Value                            |
++-------------+----------------------------------+
+| description | Proyecto stic                    |
+| domain_id   | default                          |
+| enabled     | False                            |
+| id          | 23d0050d8b7040c69e6a2d1d90c488ec |
+| is_domain   | False                            |
+| name        | stic                             |
+| parent_id   | default                          |
++-------------+----------------------------------+
+
+$ openstack project set stic --enable
+$ openstack project show stic
++-------------+----------------------------------+
+| Field       | Value                            |
++-------------+----------------------------------+
+| description | Proyecto stic                    |
+| domain_id   | default                          |
+| enabled     | True                             |
+| id          | 23d0050d8b7040c69e6a2d1d90c488ec |
+| is_domain   | False                            |
+| name        | stic                             |
+| parent_id   | default                          |
++-------------+----------------------------------+</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truemodificaci-n-de-cuotas"><a class="anchor" href="#truemodificaci-n-de-cuotas"></a>4.3. Modificación de cuotas</h3>
+<div class="paragraph">
+<p><strong>Horizon</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Menú <code>Identity | Projects</code></p>
+</li>
+<li>
+<p>En el desplegable de acciones sobre el proyecto seleccionar <code>Modify Quotas</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>CLI</strong></p>
+</div>
+<div class="paragraph">
+<p>Sintaxis:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">openstack quota set [-h] [--class] [--properties &lt;properties&gt;]
+                           [--server-groups &lt;server-groups&gt;] [--ram &lt;ram&gt;]
+                           [--key-pairs &lt;key-pairs&gt;] [--instances &lt;instances&gt;]
+                           [--fixed-ips &lt;fixed-ips&gt;]
+                           [--injected-file-size &lt;injected-file-size&gt;]
+                           [--server-group-members &lt;server-group-members&gt;]
+                           [--injected-files &lt;injected-files&gt;]
+                           [--cores &lt;cores&gt;]
+                           [--injected-path-size &lt;injected-path-size&gt;]
+                           [--per-volume-gigabytes &lt;per-volume-gigabytes&gt;]
+                           [--gigabytes &lt;gigabytes&gt;]
+                           [--backup-gigabytes &lt;backup-gigabytes&gt;]
+                           [--snapshots &lt;snapshots&gt;] [--volumes &lt;volumes&gt;]
+                           [--backups &lt;backups&gt;] [--l7policies &lt;l7policies&gt;]
+                           [--subnetpools &lt;subnetpools&gt;] [--vips &lt;vips&gt;]
+                           [--ports &lt;ports&gt;] [--subnets &lt;subnets&gt;]
+                           [--networks &lt;networks&gt;]
+                           [--floating-ips &lt;floating-ips&gt;]
+                           [--secgroup-rules &lt;secgroup-rules&gt;]
+                           [--health-monitors &lt;health-monitors&gt;]
+                           [--secgroups &lt;secgroups&gt;] [--routers &lt;routers&gt;]
+                           [--rbac-policies &lt;rbac-policies&gt;]
+                           [--volume-type &lt;volume-type&gt;]
+                           &lt;project/class&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ejemplo: Asignar 100GB de RAM (102400 MB) y 40 cores al proyecto <code>stic</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack quota set \
+--ram 102400 \
+--cores 40 \
+stic</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truemostrar-la-cuota-de-un-proyecto"><a class="anchor" href="#truemostrar-la-cuota-de-un-proyecto"></a>4.4. Mostrar la cuota de un proyecto</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Menú <code>Identity | Projects</code></p>
+</li>
+<li>
+<p>En el desplegable de acciones sobre el proyecto seleccionar <code>Modify Quotas</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>CLI</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack quota show stic
++----------------------+----------------------------------+
+| Field                | Value                            |
++----------------------+----------------------------------+
+| backup-gigabytes     | 1000                             |
+| backups              | 10                               |
+| cores                | 40                               |
+| fixed-ips            | -1                               |
+| floating-ips         | 50                               |
+| gigabytes            | 1000                             |
+| gigabytes_NAS        | -1                               |
+| health_monitors      | -1                               |
+| injected-file-size   | 10240                            |
+| injected-files       | 5                                |
+| injected-path-size   | 255                              |
+| instances            | 10                               |
+| key-pairs            | 100                              |
+| l7_policies          | -1                               |
+| listeners            | -1                               |
+| load_balancers       | 10                               |
+| location             | None                             |
+| name                 | None                             |
+| networks             | 10                               |
+| per-volume-gigabytes | -1                               |
+| pools                | 10                               |
+| ports                | 50                               |
+| project              | 23d0050d8b7040c69e6a2d1d90c488ec |
+| project_id           | None                             |
+| properties           | 128                              |
+| ram                  | 102400                           |
+| rbac_policies        | 10                               |
+| routers              | 10                               |
+| secgroup-rules       | 100                              |
+| secgroups            | 10                               |
+| server-group-members | 10                               |
+| server-groups        | 10                               |
+| snapshots            | 10                               |
+| snapshots_NAS        | -1                               |
+| subnet_pools         | -1                               |
+| subnets              | 10                               |
+| volumes              | 10                               |
+| volumes_NAS          | -1                               |
++----------------------+----------------------------------+</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueeliminaci-n-de-proyectos"><a class="anchor" href="#trueeliminaci-n-de-proyectos"></a>4.5. Eliminación de proyectos</h3>
+<div class="paragraph">
+<p><strong>Horizon</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Menú <code>Identity | Projects</code></p>
+</li>
+<li>
+<p>En el desplegable de acciones sobre el proyecto seleccionar <code>Delete Project</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>CLI</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack project delete stic</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Para más información sobre la administración de proyectos y usuarios con Horizon consulta la <a href="https://docs.openstack.org/ocata/admin-guide/dashboard-manage-projects-and-users.html">Guía del administrador para gestión de proyectos y usuarios</a> y la <a href="https://docs.openstack.org/ocata/admin-guide/dashboard-set-quotas.html">Guía del administrador para la gestión de cuotas</a>.</p>
+</div>
+<div class="paragraph">
+<p>Para más información sobre la administración de proyectos OpenStack con CLI consulta la <a href="https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/project.html">página de comandos de administración de proyectos</a> y la <a href="https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/project-purge.html">página de comandos de eliminación de recursos asociados e un proyecto</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="exampleblock">
+<div class="title">Example 1. Creación de un proyecto</div>
+<div class="content">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Crear un proyecto OpenStack desde Horizon con tus datos. Usar el login de Campus Virtual para el nombre del proyecto. Usar como descripción <code>Proyecto de &lt;nombre&gt; &lt;apellidos&gt;</code>.</p>
+</li>
+<li>
+<p>Eliminar el proyecto desde Horizon.</p>
+</li>
+<li>
+<p>Volver a crear el proyecto desde CLI.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueadministraci-n-de-usuarios"><a class="anchor" href="#trueadministraci-n-de-usuarios"></a>5. Administración de usuarios</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="truelistado-de-usuarios"><a class="anchor" href="#truelistado-de-usuarios"></a>5.1. Listado de usuarios</h3>
+<div class="paragraph">
+<p><strong>Horizon</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Menú <code>Identity | Users</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>CLI</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack user list
++----------------------------------+-------------------+
+| ID                               | Name              |
++----------------------------------+-------------------+
+| 06f46cedb8874d69850aed936742f5f0 | heat              |
+| 306f370687584a1f851f0d626bf64ee4 | neutron           |
+| 3c89d8a109624c5493aea8665874cb24 | glance            |
+| 5bb4b818f13f44de94983d06ea22781c | stic              |
+| 61e2375a17c44938ad8ae3d5066da1eb | demo              |
+| 68e2b938334a4b48b5edd62520be4459 | cinder            |
+| 7a0df2b92fe540c881ad6ba0b1ac492e | barbican          |
+| 91c31349597b4442bf431d513dcc7a39 | mtorres           |
+| 947b6b6494e348e588084594114a79d0 | placement         |
+| a673c5c0e85d43cd91ad32d189501a78 | sahara            |
+| a6ecc1af07c645a2917014eadaae9914 | heat_domain_admin |
+| ad586deb2ff24520a9a7cc7bd1759c0e | swift             |
+| c7d808b8e7584e7a91aaf6f583132d95 | nova              |
+| e141c664d6b34acf99b2a87972c93bff | hpcjmart          |
+| f396528efb1d463888bad2c55169fc1b | manila            |
+| fd6181333c8c4c79a7da38f4f277c222 | admin             |
++----------------------------------+-------------------+</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truecreaci-n-de-usuarios"><a class="anchor" href="#truecreaci-n-de-usuarios"></a>5.2. Creación de usuarios</h3>
+<div class="paragraph">
+<p><strong>Horizon</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Menú <code>Identity | Users</code></p>
+</li>
+<li>
+<p>Pulsar <code>Create User</code>. Aparecerá el cuadro de diálogo siguiente. En él completaremos <code>User Name</code>, <code>Description</code>, <code>Email</code>, <code>Password</code>. Además, seleccionaremos un proyecto predeterminado para el usuario y un rol. Por último, el usuario queda activado (<em>enabled</em>) de forma predeterminada. Podemos desmarcar esta opción si queremos crearlo pero mantenerlo desactivado por ahora.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/CreateUser.png" alt="CreateUser.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Si decidimos crear el proyecto sobre la marcha, iremos al cuadro de diálogo de creación de proyecto. En él seguiremos los pasos descritos en el apartado <a href="#trueadministraci-n-de-proyectos">Administración de proyectos</a>. Una vez creado el proyecto, volveremos al asistente para la creación de usuarios.</p>
+</div>
+<div class="paragraph">
+<p>Los roles establecen los privilegios asignados a un usuario.</p>
+</div>
+<div class="paragraph">
+<p><strong>CLI</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack user create \
+--domain default \
+--project stic \
+--password xxx \
+--email invitado@gmail.com \
+--description "Usuario Invitado" --enable \
+invitado
++---------------------+----------------------------------+
+| Field               | Value                            |
++---------------------+----------------------------------+
+| default_project_id  | 6ef52b4acbb3423ab260dcd7788c9293 |
+| description         | Usuario Invitado                 |
+| domain_id           | default                          |
+| email               | invitado@gmail.com               |
+| enabled             | True                             |
+| id                  | 0379b25c6ccc49428c855a090005475d |
+| name                | invitado                         |
+| options             | {}                               |
+| password_expires_at | None                             |
++---------------------+----------------------------------+</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truemodificaci-n-de-contrase-a"><a class="anchor" href="#truemodificaci-n-de-contrase-a"></a>5.3. Modificación de contraseña</h3>
+<div class="paragraph">
+<p><strong>Horizon</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Menú <code>Identity | Users</code></p>
+</li>
+<li>
+<p>En el desplegable de acciones sobre el usuario seleccionar <code>Change Password</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>CLI</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack user set --password theNewPassword invitado</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueactivaci-n-desactivaci-n-de-usuarios"><a class="anchor" href="#trueactivaci-n-desactivaci-n-de-usuarios"></a>5.4. Activación/Desactivación de usuarios</h3>
+<div class="paragraph">
+<p><strong>Horizon</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Menú <code>Identity | Users</code></p>
+</li>
+<li>
+<p>En el desplegable de acciones sobre el usuario seleccionar <code>Enable|Disable User</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>CLI</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack user set stic --disable
+$ openstack user show stic
++---------------------+----------------------------------+
+| Field               | Value                            |
++---------------------+----------------------------------+
+| default_project_id  | 6ef52b4acbb3423ab260dcd7788c9293 |
+| domain_id           | default                          |
+| enabled             | False                            |
+| id                  | 5bb4b818f13f44de94983d06ea22781c |
+| name                | stic                             |
+| options             | {}                               |
+| password_expires_at | None                             |
++---------------------+----------------------------------+
+
+$ openstack user set stic --enable
+$ openstack user show stic
++---------------------+----------------------------------+
+| Field               | Value                            |
++---------------------+----------------------------------+
+| default_project_id  | 6ef52b4acbb3423ab260dcd7788c9293 |
+| domain_id           | default                          |
+| enabled             | True                             |
+| id                  | 5bb4b818f13f44de94983d06ea22781c |
+| name                | stic                             |
+| options             | {}                               |
+| password_expires_at | None                             |
++---------------------+----------------------------------+</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truemostrar-informaci-n-de-un-usuario"><a class="anchor" href="#truemostrar-informaci-n-de-un-usuario"></a>5.5. Mostrar información de un usuario</h3>
+<div class="paragraph">
+<p><strong>Horizon</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Menú <code>Identity | Users</code></p>
+</li>
+<li>
+<p>Seleccionar usuario</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>CLI</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack user show invitado
++---------------------+----------------------------------+
+| Field               | Value                            |
++---------------------+----------------------------------+
+| default_project_id  | 6ef52b4acbb3423ab260dcd7788c9293 |
+| description         | Usuario Invitado                 |
+| domain_id           | default                          |
+| email               | invitado@gmail.com               |
+| enabled             | True                             |
+| id                  | 0379b25c6ccc49428c855a090005475d |
+| name                | invitado                         |
+| options             | {}                               |
+| password_expires_at | None                             |
++---------------------+----------------------------------+</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truea-adir-un-usuario-a-un-proyecto"><a class="anchor" href="#truea-adir-un-usuario-a-un-proyecto"></a>5.6. Añadir un usuario a un proyecto</h3>
+<div class="paragraph">
+<p>Al añadir un usuario a un proyecto indicaremos el usuario, el proyecto y el rol del usuario en el proyecto.</p>
+</div>
+<div class="paragraph">
+<p><strong>Horizon</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Menú <code>Identity | Projects</code></p>
+</li>
+<li>
+<p>En el desplegable de acciones sobre el proyecto seleccionar <code>Manage Members</code>.</p>
+</li>
+<li>
+<p>Colocar en la sección <code>Project Members</code> los usuarios correspondientes seleccionando además el rol. De forma predeterminada dejaremos el rol <code>user</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>CLI</strong></p>
+</div>
+<div class="paragraph">
+<p>Sintaxis:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">openstack role add
+    --domain &lt;domain&gt; | --project &lt;project&gt; [--project-domain &lt;project-domain&gt;]
+    --user &lt;user&gt; [--user-domain &lt;user-domain&gt;] | --group &lt;group&gt; [--group-domain &lt;group-domain&gt;]
+    --role-domain &lt;role-domain&gt;
+    --inherited
+    &lt;role&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ejemplo: Añadir el usuario admin al proyecto stic con el rol user.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack role add \
+    --project stic \
+    --user mtorres \
+    user</code></pre>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Incorporación transitoria del usuario <code>admin</code> en otros proyectos</div>
+<div class="paragraph">
+<p>Existen operaciones que no pueden ser realizadas directamente por el usuario <code>admin</code>. Se trata fundamentalmente de operaciones en las que no se puede especificar el proyecto sobre el que realizar la operación. En este caso, sólo los miembros del proyecto pueden realizar estas operaciones.</p>
+</div>
+<div class="paragraph">
+<p>Dado que no tenemos, ni debemos tener, las credenciales de los usuarios que son miembros de los proyectos en los que hay que actuar, una solución puede ser la siguiente. En primier lugar, se añade al usuario <code>admin</code> como miembro del proyecto. A continuación, el usuario <code>admin</code> realiza las operaciones necesarias. Por último, se retira al usuario <code>admin</code> del proyecto.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack role add --project stic --user admin admin <i class="conum" data-value="1"></i><b>(1)</b>
+$ &lt;&lt; Realizar operaciones &gt;&gt;
+$ openstack role remove --project stic --user admin admin <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Incorporación como miembro para la realización de tareas</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Salida del proyecto tras realizar las operaciones</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truerol-de-un-usuario-en-un-proyecto"><a class="anchor" href="#truerol-de-un-usuario-en-un-proyecto"></a>5.7. Rol de un usuario en un proyecto</h3>
+<div class="paragraph">
+<p><strong>Horizon</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Menú <code>Identity | Projects</code></p>
+</li>
+<li>
+<p>En el desplegable de acciones sobre el proyecto seleccionar <code>Manage Members</code>.</p>
+</li>
+<li>
+<p>Consultar el rol en la pestaña <code>Project Members</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>CLI</strong>
+Sintaxis:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">openstack role list
+    --domain &lt;domain&gt; | --project &lt;project&gt; [--project-domain &lt;project-domain&gt;]
+    --user &lt;user&gt; [--user-domain &lt;user-domain&gt;] | --group &lt;group&gt; [--group-domain &lt;group-domain&gt;]
+    --inherited</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ejemplo: Obtener el rol de <code>mtorres</code> en el proyecto <code>stic</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack role list \
+    --project stic \
+    --user mtorres
+Listing assignments using role list is deprecated. Use role assignment list --user &lt;user-name&gt; --project &lt;project-name&gt; --names instead.
++----------------------------------+------+---------+---------+
+| ID                               | Name | Project | User    |
++----------------------------------+------+---------+---------+
+| 71f5e1dcaffe476db25f9b660a2963bb | user | stic    | mtorres |
++----------------------------------+------+---------+---------+</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>También podemos conocer la lista de todos los usuarios y sus roles en un proyecto. Para ello usaremos el comando <code>openstack role assignment list</code>.</p>
+</div>
+<div class="paragraph">
+<p>Sintaxis:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">openstack role assignment list
+    [--role &lt;role&gt;]
+    [--role-domain &lt;role-domain&gt;]
+    [--user &lt;user&gt;]
+    [--user-domain &lt;user-domain&gt;]
+    [--group &lt;group&gt;]
+    [--group-domain &lt;group-domain&gt;]
+    [--domain &lt;domain&gt;]
+    [--project &lt;project&gt;]
+    [--project-domain &lt;project-domain&gt;]
+    [--effective]
+    [--inherited]
+    [--names]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ejemplo: Obtener los usuarios y sus roles en el proyecto <code>stic</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack role assignment list \
+    --project stic \
+    --names <i class="conum" data-value="1"></i><b>(1)</b>
+
++------+-----------------+-------+--------------+--------+-----------+
+| Role | User            | Group | Project      | Domain | Inherited |
++------+-----------------+-------+--------------+--------+-----------+
+| user | stic@Default    |       | stic@Default |        | False     |
+| user | mtorres@Default |       | stic@Default |        | False     |
++------+-----------------+-------+--------------+--------+-----------+</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Si usamos el parámetro <code>--names</code> aparecerán los nombres de los roles, usuarios y proyectos en lugar de los identificadores.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueeliminaci-n-de-usuarios"><a class="anchor" href="#trueeliminaci-n-de-usuarios"></a>5.8. Eliminación de usuarios</h3>
+<div class="paragraph">
+<p><strong>Horizon</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Menú <code>Identity | Users</code></p>
+</li>
+<li>
+<p>En el desplegable de acciones sobre el usuario seleccionar <code>Delete User</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>CLI</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack user delete invitado</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Para más información sobre la administración de proyectos y usuarios con Horizon consulta la <a href="https://docs.openstack.org/ocata/admin-guide/dashboard-manage-projects-and-users.html">Guía del administrador para gestión de proyectos y usuarios</a>.</p>
+</div>
+<div class="paragraph">
+<p>Para más información sobre la administración de usuarios OpenStack con CLI consulta la <a href="https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/user.html">página de comandos de administración de usuarios</a> y la <a href="https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/user-role.html">página de roles de usuario</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="exampleblock">
+<div class="title">Example 2. Creación de un usuario</div>
+<div class="content">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Crear un usuario OpenStack desde Horizon con tus datos y añadirlo con el rol <code>user</code> a tu proyecto.</p>
+</li>
+<li>
+<p>Eliminar el usuario desde Horizon.</p>
+</li>
+<li>
+<p>Volver a crear el usuario desde CLI.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueautomatizar-la-creaci-n-de-proyectos"><a class="anchor" href="#trueautomatizar-la-creaci-n-de-proyectos"></a>6. Automatizar la creación de proyectos</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>La gran ventaja de disponer de un CLI es que podemos automatizar tareas repetitivas, aumentando la productividad y reduciendo la introducción de errores.</p>
+</div>
+<div class="paragraph">
+<p>Supongamos que contamos con un archivo CSV de usuarios en el que cada línea contiene un nombre de usuario y su email. Además, usaremos el punto y coma (;) como separador como ejemplo para poder resolver el uso de diferentes separadores en el futuro.</p>
+</div>
+<div class="listingblock">
+<div class="title">Archivo <code>usuarios.csv</code> con la lista de usuarios</div>
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">usuario1;usuario1@gmail.com
+usuario2;usuario2@gmail.com</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A continuación preparemos un script que itere sobre las líneas del archivo anterior y cree para cada una (cada usuario) un proyecto con el nombre del usuario, un usuario y añada el usuario al proyecto con el rol <code>user</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Script <code>crearProyectos.sh</code> para la automatización de la creación de proyectos y usuarios a partir del archivo <code>usuarios.csv</code></div>
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">while IFS=';' read -r usuario email <i class="conum" data-value="1"></i><b>(1)</b>
+do
+  openstack project create --domain default --description "Proyecto $usuario" --enable $usuario <i class="conum" data-value="2"></i><b>(2)</b>
+  openstack user create --domain default --project $usuario --password $usuario --email $email --description "Usuario $usuario" --enable  $usuario <i class="conum" data-value="3"></i><b>(3)</b>
+  openstack role add --project $usuario --user $usuario user <i class="conum" data-value="4"></i><b>(4)</b>
+done &lt; usuarios.csv <i class="conum" data-value="5"></i><b>(5)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Usar punto y coma (;) como separador y asignar variables a los datos leídos (<code>usuario</code> y <code>email</code>).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Crear proyecto en el dominio <code>default</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Crear usuario en el proyecto <code>default</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Añadir el rol <code>user</code> al usaurio dentro del proyecto.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Archivo sobre el que se itera.</td>
+</tr>
+</table>
+</div>
+<div class="exampleblock">
+<div class="title">Example 3. Creación de un script para creación de proyetos y usuarios</div>
+<div class="content">
+<div class="paragraph">
+<p>Crear un archivo denominado <code>usuariosFicticios.csv</code> con usuarios ficticios que incluya nombre, apellidos, login, email.</p>
+</div>
+<div class="paragraph">
+<p>Usar el archivo anterior para crear un script que cree un proyecto a cada usuario. El nombre de proyecto será el login de usuario y la descripción será <code>Proyecto de &lt;nombre&gt; &lt;apellidos&gt;</code>. Crear también el usuario y añadir el usuario al proyecto con el rol <code>admin</code>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueadministraci-n-de-redes"><a class="anchor" href="#trueadministraci-n-de-redes"></a>7. Administración de redes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>La plataforma OpenStack que estamos usando cuenta con un rango de direcciones IP facilitadas por el STIC. Durante la instalación de OpenStack se define una <em>red externa</em> a la que asignaremos dicho rango o una parte de él (si es que necesitamos las otras direcciones para otras cuestiones).</p>
+</div>
+<div class="paragraph">
+<p>Después, cada usuario creará las redes necesarias en sus proyectos con la limitación de los recursos que le imponga su cuota.</p>
+</div>
+<div class="paragraph">
+<p>En esta sección veremos cómo crear redes y routers virtuales.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="truecreaci-n-de-una-red"><a class="anchor" href="#truecreaci-n-de-una-red"></a>8. Creación de una red</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Horizon</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Menú <code>Project | Network | Networks</code></p>
+</li>
+<li>
+<p>Pulsar el botón <code>Create Network</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Aparece un cuadro de diálogo con tres pestañas en las que se indican el nombre de la red a crear, las características de la subred (p.e. CIDR) y detalles de la subred (si usa DHCP, servidores DNS, &#8230;&#8203;)</p>
+</div>
+<div class="paragraph">
+<p>Como ejemplo crearemos una red en el proyecto <code>stic</code> con los datos siguientes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Nombre de la red: <code>stic-net</code></p>
+</li>
+<li>
+<p>Nombre de la subred: <code>stic-subnet</code></p>
+</li>
+<li>
+<p>Direcciones de red: <code>10.0.0.0/24</code></p>
+</li>
+<li>
+<p>DNS: <code>150.214.156.2</code></p>
+</li>
+<li>
+<p>El resto de parámetros queda con los valores predeterminados</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ openstack network create \
+    --project stic \
+    --enable \
+    --description "Red stic" \
+    stic-net
++---------------------------+--------------------------------------+
+| Field                     | Value                                |
++---------------------------+--------------------------------------+
+| admin_state_up            | UP                                   |
+| availability_zone_hints   |                                      |
+| availability_zones        |                                      |
+| created_at                | 2019-01-09T15:26:19Z                 |
+| description               | Red stic                             |
+| dns_domain                | None                                 |
+| id                        | 814d4714-ad38-4d02-91f8-bec84e5d8f41 |
+| ipv4_address_scope        | None                                 |
+| ipv6_address_scope        | None                                 |
+| is_default                | None                                 |
+| mtu                       | 1450                                 |
+| name                      | stic-net                             |
+| port_security_enabled     | True                                 |
+| project_id                | 23d0050d8b7040c69e6a2d1d90c488ec     |
+| provider:network_type     | vxlan                                |
+| provider:physical_network | None                                 |
+| provider:segmentation_id  | 15                                   |
+| qos_policy_id             | None                                 |
+| revision_number           | 3                                    |
+| router:external           | Internal                             |
+| segments                  | None                                 |
+| shared                    | False                                |
+| status                    | ACTIVE                               |
+| subnets                   |                                      |
+| updated_at                | 2019-01-09T15:26:19Z                 |
++---------------------------+--------------------------------------+</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ openstack subnet create \
+    --project stic \
+    --network stic-net \
+    --subnet-range 10.0.0.0/24 \
+    --dns-nameserver 150.214.156.2 \
+    stic-subnet
++-------------------+--------------------------------------+
+| Field             | Value                                |
++-------------------+--------------------------------------+
+| allocation_pools  | 10.0.0.2-10.0.0.254                  |
+| cidr              | 10.0.0.0/24                          |
+| created_at        | 2019-01-09T15:30:24Z                 |
+| description       |                                      |
+| dns_nameservers   | 150.214.156.2                        |
+| enable_dhcp       | True                                 |
+| gateway_ip        | 10.0.0.1                             |
+| host_routes       |                                      |
+| id                | e9f8b69f-8885-482d-b868-768f0b5222b6 |
+| ip_version        | 4                                    |
+| ipv6_address_mode | None                                 |
+| ipv6_ra_mode      | None                                 |
+| name              | stic-subnet                          |
+| network_id        | 814d4714-ad38-4d02-91f8-bec84e5d8f41 |
+| project_id        | 23d0050d8b7040c69e6a2d1d90c488ec     |
+| revision_number   | 2                                    |
+| segment_id        | None                                 |
+| service_types     |                                      |
+| subnetpool_id     | None                                 |
+| updated_at        | 2019-01-09T15:30:24Z                 |
++-------------------+--------------------------------------+</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack router create \
+    --project stic \
+    stic-router
++-------------------------+--------------------------------------+
+| Field                   | Value                                |
++-------------------------+--------------------------------------+
+| admin_state_up          | UP                                   |
+| availability_zone_hints |                                      |
+| availability_zones      |                                      |
+| created_at              | 2019-01-09T16:44:16Z                 |
+| description             |                                      |
+| distributed             | False                                |
+| external_gateway_info   | None                                 |
+| flavor_id               | None                                 |
+| ha                      | False                                |
+| id                      | 213736df-a21e-4256-89ef-a7a833667079 |
+| name                    | stic-router                          |
+| project_id              | 23d0050d8b7040c69e6a2d1d90c488ec     |
+| revision_number         | None                                 |
+| routes                  |                                      |
+| status                  | ACTIVE                               |
+| updated_at              | 2019-01-09T16:44:16Z                 |
++-------------------------+--------------------------------------+</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Conexión del router a una subred</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack router add subnet \
+    stic-router \
+    stic-subnet</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Conexión del router a la red externa</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack router set \
+    --external-gateway lowcost-net \
+    stic-router</code></pre>
+</div>
+</div>
+<div class="exampleblock">
+<div class="title">Example 4. Configuración de red de proyecto</div>
+<div class="content">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Crear desde Horizon una red en tu proyecto con el nombre <code>&lt;usuario&gt;-net</code>. Añadirle una subred con el nombre <code>&lt;usuario&gt;-subnet</code> con CIDR <code>10.0.1.0/24</code> y DNS <code>150.214.156.2</code>.</p>
+</li>
+<li>
+<p>Crear un router conectado a la red externa y añadirle una interfaz de red conectada a la subred creada en el paso anterior.</p>
+</li>
+<li>
+<p>Eliminar el router y la red desde Horizon.</p>
+</li>
+<li>
+<p>Volver a crear la red, subred y router desde CLI.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueconexi-n-a-varias-redes"><a class="anchor" href="#trueconexi-n-a-varias-redes"></a>8.1. Conexión a varias redes</h3>
+<div class="paragraph">
+<p>Una situación común y útil es contar con una serie de máquinas virtuales accesibles desde el exterior y otro conjunto de máquinas aisladas en una segunda red, la cual incluye máquinas virtuales no accesibles desde el exterior.</p>
+</div>
+<div class="paragraph">
+<p>Esta situación se resuelve creando una segunda red con rango de direcciones diferentes y no conectado a la red externa mediante un router.</p>
+</div>
+<div class="paragraph">
+<p>El ejemplo siguiente muestra la creación de una segunda red con las características siguientes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Nombre del proyecto: <code>stic</code></p>
+</li>
+<li>
+<p>Nombre de la red: <code>stic-servers-net</code></p>
+</li>
+<li>
+<p>Descripción: <code>Red servidores stic</code></p>
+</li>
+<li>
+<p>Nombre de la subred: <code>stic-servers-subnet</code></p>
+</li>
+<li>
+<p>Direcciones de red: <code>20.0.0.0/24</code></p>
+</li>
+<li>
+<p>DNS: <code>150.214.156.2</code></p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack network create \
+    --project stic \
+    --enable \
+    --description "Red servidores stic" \
+    stic-servers-net
+$ openstack subnet create \
+    --project stic \
+    --network stic-servers-net \
+    --subnet-range 20.0.0.0/24 \
+    --dns-nameserver 150.214.156.2 \
+    stic-servers-subnet</code></pre>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Clientes específicos</div>
+<div class="paragraph">
+<p>El CLI <code>openstack</code> es una interfaz uniforme que proporciona un punto de acceso único a las distintas APIs de los distintos componentes OpenStack.</p>
+</div>
+<div class="paragraph">
+<p>Anteriomente, cada componente tenía su propio cliente, lo que además de dificutar la interacción mediante comandos, a veces existía falta de coherencia en el uso y orden de parámetros. Actualmente están disponibles la gran mayoría de comandos en el CLI <code>openstack</code>. Sin embargo, en versiones anteriores como Ocata, aún podemos encontrar comandos que no encuentran su homólogo en el CLI <code>openstack</code> o bien ha sido transformado y cambia su uso notablemente.</p>
+</div>
+<div class="paragraph">
+<p>La documentación oficial mantiene la list de <a href="https://docs.openstack.org/ocata/cli-reference/">Clientes específicos para OpenStack Ocata</a></p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>La operación de conexión de una instancia a otras redes mediante la conexión de otras interfaces de red no tiene en OpenStack Ocata un comando similar al <code>interface-attach</code> que proporciona el cliente <code>nova</code>, que es uno de los clientes del componente del servicio de cómputo de OpenStack.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ nova interface-attach  \
+    --net-id caf51c2c-e03c-413c-9dcf-3925f5be4a00 \ <i class="conum" data-value="1"></i><b>(1)</b>
+    my-cirros</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>El parámetro <code>net-id</code> sólo admite el ID de la red a la que se va a conectar la instancia. No admite el nombre de la red.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>El ID de la red lo obtenemos con</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack network list</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueconfiguracion-b-sica-de-un-proyecto-de-usuario-final"><a class="anchor" href="#trueconfiguracion-b-sica-de-un-proyecto-de-usuario-final"></a>9. Configuracion básica de un proyecto de usuario final</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>En la sección <a href="#trueautomatizar-la-creaci-n-de-proyectos">Automatizar la creación de proyectos</a> creamos un script para la creación de proyectos y usuarios. Podríamos extender el script anterior añadiendo la creación y configuración de la red inicial. De esta forma, cuando los usuarios creen sus máquinas virtuales, éstas ya quedarán conectadas de forma predeterminada a dicha red. Esto reduce la posibilidad de aparición de problemas y quejas debidos a fallos en la creación de la infraestrucutra de red de cada proyecto, sobre todo en usuarios poco experimentados.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">while IFS=';' read -r usuario email
+do
+  openstack project create --domain default --description "Proyecto $usuario" --enable $usuario
+  openstack user create --domain default --project $usuario --password $usuario --email $email --description "Usuario $usuario" --enable $usuario
+  openstack role add --project $usuario --user $usuario user
+  openstack network create --project $usuario --enable --description "Red $usuario" $usuario-net
+  openstack subnet create --project $usuario --network $usuario-net --subnet-range 10.0.0.0/24 --dns-nameserver 150.214.156.2 $usuario-subnet
+  openstack router create --project $usuario $usuario-router
+  openstack router add subnet $usuario-router $usuario-subnet
+  openstack router set --external-gateway lowcost-net $usuario-router
+done &lt; usuarios.csv</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueadministraci-n-de-im-genes"><a class="anchor" href="#trueadministraci-n-de-im-genes"></a>10. Administración de imágenes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Las imágenes nos permiten crear instancias. OpenStack mantiene una lista de imágenes preparadas para la ejecución en un cloud. La mayoría de las imágenes contienen el paquete <code>cloud-init</code> que soporta la inyección de pares de claves y de datos de usuario.</p>
+</div>
+<div class="paragraph">
+<p>En la página de <a href="https://docs.openstack.org/image-guide/obtain-images.html">imágenes disponibles preparadas para cloud</a> podemos encontrar imágenes CentOS, CirrOS, Debian, Fedora, Ubuntu, OpenSUSE, SUSE Enterprise Server, Red Hat Enterprise (se requiere una suscripción válida) y una versión de evalación de 6 meses de duración de Microsoft Windows Server 2012.</p>
+</div>
+<div class="sect2">
+<h3 id="truesubida-de-im-genes"><a class="anchor" href="#truesubida-de-im-genes"></a>10.1. Subida de imágenes</h3>
+<div class="paragraph">
+<p>Para poder crear instancias de una imagen, la imagen debe estar subida a OpenStack y accesible desde nuestro proyecto, bien porque sea pública o bien, porque pertenezca a nuestro proyecto.</p>
+</div>
+<div class="paragraph">
+<p>Los pasos son sencillos. Basta con descargar la imagen y subirla a OpenStack. Hagamos una prueba para subir CentOS 7.</p>
+</div>
+<div class="paragraph">
+<p>En el <a href="http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1809.qcow2">enlace de descarga de CentOS 7</a> seleccionaremos la versión más reciente de las <em>Generic cloud</em> y que estén en formato <a href="https://en.wikipedia.org/wiki/Qcow"><code>qcow2</code></a>, un formato de imágenes utilizado por <a href="https://en.wikipedia.org/wiki/QEMU">QEMU</a>, un emulador libre y de código abierto para virtualización de hardware. En el momento de la realización de este tutorial la última revisión disponible es la 1809. Descargaremos este archivo en nuestro equipo.</p>
+</div>
+<div class="paragraph">
+<p><strong>Horizon</strong></p>
+</div>
+<div class="paragraph">
+<p>Como administradores seleccionar <code>Admin | System | Images | Create Image</code> y aparecerá el cuadro de diálogo de la figura siguiente:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/UploadImage.png" alt="UploadImage.png">
+</div>
+</div>
+<div class="paragraph">
+<p>Completaremos el cuadro de diálogo con estos datos:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Image Name: CentOS7</code></p>
+</li>
+<li>
+<p><code>File</code>: Ruta en la que hayamos descargado la imagen de CentOS 7.</p>
+</li>
+<li>
+<p><code>Format: QCOW2</code></p>
+</li>
+<li>
+<p><code>Visibility: Public</code></p>
+</li>
+<li>
+<p><code>Protected: Yes</code> (No permite que la imagen sea borrada por otros usuarios`</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Podemos configurar los valores de <code>Minimum Disk (GB)</code> y <code>Minimum RAM (MB)</code> con los valores mínimos de disco y de RAM que tiene que tener el sabor que usemos para crear la instancia. De esta forma sólo será posible crear instancias de esta imagen creadas con sabores que cumplan dichos mínimos.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Trascurridos unos instantes, la imagen será subida a OpenStack y estará disponible para ser instanciada desde otros proyectos, ya que es pública. El usuario de conexión es <code>centos</code></p>
+</div>
+<div class="paragraph">
+<p><strong>CLI</strong></p>
+</div>
+<div class="paragraph">
+<p>Sintaxis:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">openstack image create
+    [--id &lt;id&gt;]
+    [--store &lt;store&gt;]
+    [--container-format &lt;container-format&gt;]
+    [--disk-format &lt;disk-format&gt;]
+    [--size &lt;size&gt;]
+    [--min-disk &lt;disk-gb&gt;]
+    [--min-ram &lt;ram-mb&gt;]
+    [--location &lt;image-url&gt;]
+    [--copy-from &lt;image-url&gt;]
+    [--file &lt;file&gt; | --volume &lt;volume&gt;]
+    [--force]
+    [--checksum &lt;checksum&gt;]
+    [--protected | --unprotected]
+    [--public | --private | --community | --shared]
+    [--property &lt;key=value&gt; [...] ]
+    [--tag &lt;tag&gt; [...] ]
+    [--project &lt;project&gt; [--project-domain &lt;project-domain&gt;]]
+    &lt;image-name&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ejemplo: Subida de una imagen de Fedora 29</p>
+</div>
+<div class="paragraph">
+<p>Desde la <a href="https://docs.openstack.org/image-guide/obtain-images.html">página de OpenStack de imágenes cloud</a> accedemos a la <a href="https://alt.fedoraproject.org/cloud/">página de imágenes de Fedora</a>. Allí encontramos la <a href="https://download.fedoraproject.org/pub/fedora/linux/releases/29/Cloud/x86_64/images/Fedora-Cloud-Base-29-1.2.x86_64.qcow2">imagen para OpenStack de Fedora 29</a> (formato qcow2).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ cd /tmp
+$ wget https://download.fedoraproject.org/pub/fedora/linux/releases/29/Cloud/x86_64/images/Fedora-Cloud-Base-29-1.2.x86_64.qcow2
+$ openstack image create \
+    --container-format bare \
+    --disk-format qcow2 \
+    --file /tmp/Fedora-Cloud-Base-29-1.2.x86_64.qcow2 \
+    --public \
+    "Fedora 29"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Trascurridos unos instantes, la imagen será subida a OpenStack y estará disponible para ser instanciada desde otros proyectos, ya que es pública. El usuario de conexión es <code>fedora</code></p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 5. Subir una imagen de Debian</div>
+<div class="content">
+<div class="paragraph">
+<p>Descargar  una imagen de Debian desde la página de descargas de imágenes y subirla al proyecto personal.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truemodificaci-n-de-im-genes"><a class="anchor" href="#truemodificaci-n-de-im-genes"></a>10.2. Modificación de imágenes</h3>
+<div class="paragraph">
+<p>De forma predeterminada, los <em>snapshots</em> creados por los usuarios son privados. Por tanto, otros usuarios no podrán tener acceso a dichas imágenes. Sólo el administrador puede hacer público un snapshot. Esta operación se realiza modificando una imagen.</p>
+</div>
+<div class="paragraph">
+<p>Ejemplo: Convertir a público el snapshot  <code>my-cirros-snapshot</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack image set --public my-cirros-snapshot</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truecreaci-n-de-im-genes-propias"><a class="anchor" href="#truecreaci-n-de-im-genes-propias"></a>10.3. Creación de imágenes propias</h3>
+<div class="paragraph">
+<p>Pese a que OpenStack mantiene una <a href="https://docs.openstack.org/image-guide/obtain-images.html">página de imágenes cloud</a>, puede que la imagen que necesitemos no esté disponible en ese catálogo. En tal caso debemos crear una imagen propia habilitada para ejecutarse en cloud. Esta situación es particularmente habitual en imágenes de Microsoft Windows.</p>
+</div>
+<div class="paragraph">
+<p>Consulta esta página sobre la <a href="http://ualmtorres.github.io/howtos/Windows7OpenStack/">creación de una imagen Windows 7 para OpenStack</a>. El tutorial indica cómo eliminar el número de serie utilizado para la creación de la imagen de forma que no se replique cada vez que se instancie esa imagen. Al dejar la instalación sin número de serie, se pedirá al inicio de cada sesión un número de serie válido y será responsabilidad de cada usuario su uso correcto.</p>
+</div>
+<div class="paragraph">
+<p>Una vez creada la imagen se seguirán los pasos descritos en la sección <a href="#truesubida-de-im-genes">Subida de imágenes</a> para subir la imagen a OpenStack.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truebajada-de-im-genes"><a class="anchor" href="#truebajada-de-im-genes"></a>10.4. Bajada de imágenes</h3>
+<div class="paragraph">
+<p>Podemos descargar las imágenes a nuestro sistema de archivos. Esto es especialmente útil en el caso de los <em>snapshots</em>, copias hechas a partir de una instancia que posteriormente pueden volver a ser instanciadas.</p>
+</div>
+<div class="paragraph">
+<p>Actualmente esta operación sólo está disponible a través de la línea de comandos.</p>
+</div>
+<div class="paragraph">
+<p>Sintaxis:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bare" data-lang="bare">openstack image save
+    --file &lt;filename&gt;
+    &lt;image&gt; <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>La imagen también puede ser un <em>snapshot</em></td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Para más información sobre la administración de imágenes con Horizon consulta la <a href="https://docs.openstack.org/ocata/admin-guide/dashboard-manage-images.html">Guía del administrador para gestión de imágenes</a>.</p>
+</div>
+<div class="paragraph">
+<p>Para más información sobre la administración de imágenes OpenStack con CLI consulta la <a href="https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/image.html">página de comandos de administración de imágenes</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueadministraci-n-de-snapshots"><a class="anchor" href="#trueadministraci-n-de-snapshots"></a>11. Administración de snapshots</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Un snapshot es una imagen creada a partir de una instancia. Una vez creado el snapshot, éste puede ser usado como base (imagen) para la creación de nuevas instancias. Esto es especialmente útil para distribuir imágenes con una configuración específica.</p>
+</div>
+<div class="paragraph">
+<p>Los snapshots creados están disponibles para ser instanciados en:</p>
+</div>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p>La lista de imágenes del proyecto (menú <code>Project | Compute | Images</code></p>
+</li>
+<li>
+<p>Al crear una instancia hay que seleccionar <code>Image Snapshot</code> en el desplegable <code>Select Boot Source</code> del asistente para lanzar imágenes</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/CrearInstanciaDesdeSnapshot.png" alt="CrearInstanciaDesdeSnapshot.png">
+</div>
+</div>
+<div class="sect2">
+<h3 id="truecreaci-n-de-snapshots"><a class="anchor" href="#truecreaci-n-de-snapshots"></a>11.1. Creación de snapshots</h3>
+<div class="paragraph">
+<p><strong>Horizon</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Menú <code>Project | Compute | Instances</code></p>
+</li>
+<li>
+<p>En el desplegable de acciones sobre la instancia seleccionar <code>Create Snapshot</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>CLI</strong></p>
+</div>
+<div class="paragraph">
+<p>Sintaxis:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">openstack server image create
+    [--name &lt;image-name&gt;]
+    [--wait]
+    &lt;server&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ejemplo: Crear una imagen denominada <code>my-cirros-snapshot</code> a partir de la instancia <code>cirros</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack server image create \
+    --name my-cirros-snapshot \
+    my-cirros</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueetiquetar-un-snapshot-como-imagen"><a class="anchor" href="#trueetiquetar-un-snapshot-como-imagen"></a>11.2. Etiquetar un snapshot como imagen</h3>
+<div class="paragraph">
+<p>Al crear un snapshot a partir de una imagen son etiquetados como snapshots. Esto se debe a que al crear un snapshot se almacenan una serie de propiedades. Dos de ellas (<code>image_location</code> y <code>image_type</code>) indican que se trata de un snapshot. Podemos comprobarlo si mostramos los datos del snapshot.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">openstack image show my-cirros-snapshot
++------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| Field            | Value                                                                                                                          |
++------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| checksum         | 4f9876e438806c7e5c116d060dde20c1                                                                                               |
+| container_format | bare                                                                                                                           |
+| created_at       | 2019-01-10T12:23:23Z                                                                                                           |
+| disk_format      | qcow2                                                                                                                          |
+| file             | /v2/images/d23e9baf-527b-42b0-be0a-d3894ca4314f/file                                                                           |
+| id               | d23e9baf-527b-42b0-be0a-d3894ca4314f                                                                                           |
+| min_disk         | 1                                                                                                                              |
+| min_ram          | 0                                                                                                                              |
+| name             | my-cirros-snapshot                                                                                                             |
+| owner            | 85667a0f9b4e4484bb050658d08bbd12                                                                                               |
+| properties       | base_image_ref='25fa8219-559c-4b85-8847-c431b13f8ad5', boot_roles='user', image_location='snapshot', image_state='available',  |
+|                  | image_type='snapshot', instance_uuid='c827a43c-c3f3-49d5-8d70-f22286e75fd5', owner_id='23d0050d8b7040c69e6a2d1d90c488ec',      |
+|                  | owner_project_name='stic', owner_user_name='stic', user_id='fd6181333c8c4c79a7da38f4f277c222'                                  |
+| protected        | False                                                                                                                          |
+| schema           | /v2/schemas/image                                                                                                              |
+| size             | 21889024                                                                                                                       |
+| status           | active                                                                                                                         |
+| tags             |                                                                                                                                |
+| updated_at       | 2019-01-10T12:23:35Z                                                                                                           |
+| virtual_size     | None                                                                                                                           |
+| visibility       | private                                                                                                                        |
++------------------+--------------------------------------------------------------------------------------------------------------------------------+</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>En algunas ocasiones esto puede resultar un inconveniente (p.e. preparamos una distribución de Windows Server 2012 con software para prácticas y queremos que sea considerada una imagen <em>nativa</em> para localizarla más fácilmente). Para solucionar este inconveniente basta con modificar las dos propiedades <code>image_location</code> e <code>image_type</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Horizon</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Menú <code>Project | Compute | Images</code></p>
+</li>
+<li>
+<p>En el desplegable de acciones sobre la imagen seleccionar <code>Update Medadata</code>.</p>
+</li>
+<li>
+<p>Cambiar los valores de las propiedades <code>image_location</code> e <code>image_type</code> de <code>snapshot</code> por <code>image</code></p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/UpdateMetadata.png" alt="UpdateMetadata.png">
+</div>
+</div>
+<div class="paragraph">
+<p><strong>CLI</strong></p>
+</div>
+<div class="paragraph">
+<p>Ejemplo: Convertir en imagen el snapshot <code>my-cirros-snapshot</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">openstack image set \
+    --property image_location=image \
+    --property image_type=image \
+    my-cirros-snapshot</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Para más información sobre la administración de imágenes OpenStack con CLI consulta la <a href="https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/server-image.html">página de comandos de creación de snapshots</a> y la <a href="https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/image.html">página de comandos de administración de imágenes</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="truedescarga-de-credenciales"><a class="anchor" href="#truedescarga-de-credenciales"></a>12. Descarga de credenciales</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Hasta ahora hemos estado usando las credenciales de <code>admin</code> disponibles en el archivo <code>openrc-admin</code>. Sin embargo, hay ocasiones en que tendremos que realizar operaciones con nuestras propias credenciales. Esto es especialmente aplicable a aquellos usuarios que no sean administradores. Para ello, tendremos que descargar nuestro archivo credenciales disponible en Horizon. La descarga de credenciales la encontramos en el menú <code>Project | Compute | API Access</code>. Después, pulsar el botón <code>Download OpenStack RC File v3</code>. Colocaremos ese archivo de credenciales en nuestro <code>home</code> de forma que podamos usarlo fácilmente. Lo cargaremos con</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ source &lt;archivoCredenciales&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="truecreaci-n-de-instancias"><a class="anchor" href="#truecreaci-n-de-instancias"></a>13. Creación de instancias</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>La creación de instancias la realizará un miembro del proyecto al que pertenecerán las instancias creadas. Necesitaremos entonces usar las credenciales de usuario tal y como se ha descrito en <a href="#truedescarga-de-credenciales">Descarga de credenciales</a></p>
+</div>
+<div class="sect2">
+<h3 id="truecreaci-n-b-sica-de-una-instancia"><a class="anchor" href="#truecreaci-n-b-sica-de-una-instancia"></a>13.1. Creación básica de una instancia</h3>
+<div class="paragraph">
+<p>Sintaxis:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>openstack server create
+    (--image &lt;image&gt; | --volume &lt;volume&gt;)
+    --flavor &lt;flavor&gt;
+    [--security-group &lt;security-group&gt;]
+    [--key-name &lt;key-name&gt;]
+    [--property &lt;key=value&gt;]
+    [--file &lt;dest-filename=source-filename&gt;]
+    [--user-data &lt;user-data&gt;]
+    [--availability-zone &lt;zone-name&gt;]
+    [--block-device-mapping &lt;dev-name=mapping&gt;]
+    [--nic &lt;net-id=net-uuid,v4-fixed-ip=ip-addr,v6-fixed-ip=ip-addr,port-id=port-uuid,auto,none&gt;]
+    [--network &lt;network&gt;]
+    [--port &lt;port&gt;]
+    [--hint &lt;key=value&gt;]
+    [--config-drive &lt;config-drive-volume&gt;|True]
+    [--min &lt;count&gt;]
+    [--max &lt;count&gt;]
+    [--wait]
+    &lt;server-name&gt;</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ openstack server create \
+    --image cirros \
+    --flavor tiny \
+    --security-group default \
+    --key-name mtorres_ual \
+    --nic net-id=stic-net \
+    cirrosis</pre>
+</div>
+</div>
+<div class="exampleblock">
+<div class="title">Example 6. Creación y descarga de un snapshot</div>
+<div class="content">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Crear una instancia a partir de una de las imágenes disponibles</p>
+</li>
+<li>
+<p>Asignarle una IP flotante</p>
+</li>
+<li>
+<p>Añadir en el <code>home</code> un archivo de texto denominado <code>prueba.txt</code> con el contenido <code>Texto de prueba</code>.</p>
+</li>
+<li>
+<p>Crear un snapshot</p>
+</li>
+<li>
+<p>Etiquetar el snapshot como imagen</p>
+</li>
+<li>
+<p>Instanciar el snapshot</p>
+</li>
+<li>
+<p>Asignarle una IP flotante, conectarnos a la nueva instancia y comprobar que está disponible el archivo de texto creado.</p>
+</li>
+<li>
+<p>Descargar el snapshot creado al sistema de archivos local</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truecreaci-n-de-una-instancia-auto-aprovisionada"><a class="anchor" href="#truecreaci-n-de-una-instancia-auto-aprovisionada"></a>13.2. Creación de una instancia auto aprovisionada</h3>
+<div class="paragraph">
+<p>A la hora de crear una instancia es posible pasarle un script que realice una tarea de inicialización de la instancia. Para ello hay que pasar un script al parámetro <code>user-data</code>.</p>
+</div>
+<div class="paragraph">
+<p>Como ejemplo, crearemos una instancia a partir de una imagen Ubuntu que quedará aprovisionada con Docker y Docker Compose durante su creación. Para ello, crearemos un script denominado <code>dockerInstall.sh</code> que contiene los comandos para instalar Docker y Docker-Compose en Ubuntu.</p>
+</div>
+<div class="listingblock">
+<div class="title">Archivo <code>dockerInstall.sh</code></div>
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">#!/bin/bash
+
+echo "Instalando Docker"
+
+apt-get update
+apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+apt-key fingerprint 0EBFCD88
+add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+apt-get update
+apt-get install -y docker-ce
+groupadd docker
+usermod -aG docker ubuntu
+systemctl enable docker
+
+echo "Instalando Docker Compose"
+curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+
+exit 0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A continuación crearemos la instancia pasándole el archivo <code>dockerInstall.sh</code> al parámetro <code>user-data</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ openstack server create \
+  --image "Ubuntu 16.04 LTS" \
+  --flavor medium \
+  --security-group default \
+  --key-name mtorres_ual \
+  --nic net-id=stic-net \
+  --user-data dockerInstall.sh \ <i class="conum" data-value="1"></i><b>(1)</b>
+  ubuntu-docker</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Archivo de inicialización de la instancia.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Para más información sobre la administración de instancias con Horizon consulta la <a href="https://docs.openstack.org/ocata/admin-guide/dashboard-manage-instances.html">Guía del administrador para gestión de instancias</a>.</p>
+</div>
+<div class="paragraph">
+<p>Para más información sobre la administración de imágenes OpenStack con CLI consulta la <a href="https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/server.html">página de comandos de administración de instancias</a> y la <a href="https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/server-image.html">guía para la creación de imágenes</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueadministraci-n-de-sabores"><a class="anchor" href="#trueadministraci-n-de-sabores"></a>14. Administración de sabores</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To Do</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Para más información sobre la administración de sabores con Horizon consulta la <a href="https://docs.openstack.org/ocata/admin-guide/dashboard-manage-flavors.html">Guía del administrador para gestión de sabores</a>.</p>
+</div>
+<div class="paragraph">
+<p>Para más información sobre la administración de sabores OpenStack con CLI consulta la <a href="https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/flavor.html">página de comandos de administración de sabores</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>__</p>
+</div>
+<div class="paragraph">
+<p>Cloud-DI Team, 2019</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-04-01 17:35:52 CEST
+</div>
+</div>
+</body>
+</html>
