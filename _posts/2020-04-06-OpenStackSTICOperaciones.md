@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Operacione en OpenStack-STIC
+title: Operaciones en OpenStack-STIC
 category: posts
 ---
 
