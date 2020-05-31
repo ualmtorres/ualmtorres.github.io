@@ -266,13 +266,24 @@ Su instalación es muy sencilla. Simplemente, tenemos que descargarla. No obstan
 * Crear un *list file* para MongoDB
 
 ```
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
+wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -
 
-echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/4.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list
 
 sudo apt-get update
 sudo apt-get install -y mongodb-org
 ```
+
+Para Ubuntu 18.04 ejecuta estos comandos en lugar de los anteriores:
+```
+wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -
+
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list
+
+sudo apt-get update
+sudo apt-get install -y mongodb-org
+```
+
 
 Ya tenemos instalado MongoDB. Para iniciar el servidor
 
@@ -283,7 +294,7 @@ sudo service mongod start
 Para comprobar el *log* y ver si el proceso `mongod` está ejecutándose
 
 ```
-cat /var/log/mongodb/mongod.log
+sudo cat /var/log/mongodb/mongod.log
 ```
 
 Inciamos la shell de MongoDB con
@@ -372,24 +383,33 @@ sudo chown -R clouduser /var/www/
 
 Para algún proyecto PHP puede que necesites [Composer](https://getcomposer.org/), un gestor de dependencias para PHP.
 
-Antes de comenzar con la instalación de _Composer_ deber saber que el proceso de instalación utiliza la signatura SHA-384 del instalador, **la cual varía de una version a otra**. La signatura SHA-384 para la versión de Composer instalada en el momento de la creación de este tutorial (_Composer 1.4.1_) era la siguiente.
+Antes de comenzar con la instalación de _Composer_ deber saber que el proceso de instalación utiliza la signatura SHA-384 del instalador, **la cual varía de una version a otra**. La signatura SHA-384 para la versión de Composer instalada en el momento de la creación de este tutorial (_Composer 1.10.6_) era la siguiente.
 
-**Signatura SHA-384 de _Composer 1.4.1_** 
+**Signatura SHA-384 de _Composer 1.10.6_** 
 
 ```
-669656bab3166a7aff8a7506b8cb2d1c292f042046c5a994c43155c0be6190fa0355160742ab2e1c88d40d5be660b410
+e0012edf3e80b6978849f5eff0d4b4e4c79ff1609dd1e613307e16318854d24ae64f26d17af3ef0bf7cfb710ca74755a
 ```
 
 Para instalar _Composer_, simplemente escribe estos comandos cambiando la signatura SHA-384 por la signatura correspondiente. 
 
 ```
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-php -r "if (hash_file('SHA384', 'composer-setup.php') === '669656bab3166a7aff8a7506b8cb2d1c292f042046c5a994c43155c0be6190fa0355160742ab2e1c88d40d5be660b410') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+php -r "if (hash_file('sha384', 'composer-setup.php') === 'e0012edf3e80b6978849f5eff0d4b4e4c79ff1609dd1e613307e16318854d24ae64f26d17af3ef0bf7cfb710ca74755a') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
 php composer-setup.php
 php -r "unlink('composer-setup.php');"
+sudo mv composer.phar /usr/local/bin/composer
 ```
 
 > **Información**
 > 
 > * [Signatura SHA-864](https://composer.github.io/pubkeys.html) para la versión actual de _Composer_.
 > * [Pasos de instalación](https://getcomposer.org/download/) para la versión actual de _Composer_    
+
+### PECL
+
+Para usar el driver de MongoDB es necesario tener instalado `PECL`, un repositorio para extensiones PHP. Se instala con el comando siguiente:
+
+```
+sudo apt install php-pear -y
+```

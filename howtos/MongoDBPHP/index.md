@@ -18,6 +18,13 @@ Siguiendo la [Información de instalación de la Librería PHP para MongoDB](htt
 
 Aquí mostraremos los pasos de instalación en un Ubuntu Linux que ya tiene instalado previamente MongoDB y un entorno LAMP ([Tutorial sobre configuración de un entorno LAMP+NoSQL](http://ualmtorres.github.io/howtos/ConfiguracionEntornoGGVD/)). Básicamente se trata de descargar e instalar el driver, añadir la extensión al `php.ini`, y reiniciar el servidor Apache.   
 
+Si no tienes instalado `PEAR` y el paquete `php-dev` deberás instalarlos con
+
+```
+sudo apt-get install -y php-pear
+sudo apt-get install -y php-dev
+```
+
 Para descargar e instalar el driver lo haremos con 
 
 ```
@@ -30,13 +37,6 @@ Si estuviésemos utilizando XAMPP, tendríamos que utilzar el `pecl` de XAMPP. P
 
 ```
 sudo /Applications/XAMPP/xamppfiles/bin/pecl install mongodb
-```
-
-Si no tienes instalado `PEAR` y el paquete `php-dev` deberás instalarlos con
-
-```
-sudo apt-get install -y php-pear
-sudo apt-get install -y php-dev
 ```
 
 A continuación hay que modificar el archivo `php.ini` para indicar que cargue la extensión de MongoDB (`mongodb.so`). `php.ini` se encuentra en `/etc/php/7.0/apache2/php.ini`. Tendrás que añadir lo siguiente en la zona de extensiones.
@@ -52,7 +52,7 @@ sudo service apache2 restart
 ```
 
 
-## Manos a la obra
+##  Manos a la obra
 
 En este [Tutorial sencillo de PHP con MongoDB](https://docs.mongodb.com/php-library/master/tutorial/) puedes encontrar un ejemplo guiado de cómo comenzar con los aspectos básicos del scripting PHP con MongoDB. Además, es muy conveniente tener a mano esta [Referencia] (https://docs.mongodb.com/php-library/master/reference/) en la que podrás encontrar casi todo lo que necesitas para tu aplicación PHP con MongoDB.
 
@@ -67,6 +67,27 @@ composer require mongodb/mongodb
 ```
 
 Esto instalará la librería en nuestro proyecto y generará los archivos de `autoload`.
+
+
+Si se produce un error de este tipo
+
+```
+Your requirements could not be resolved to an installable set of packages.
+
+  Problem 1
+    - Installation request for mongodb/mongodb ^1.6 -> satisfiable by mongodb/mongodb[1.6.0].
+    - mongodb/mongodb 1.6.0 requires ext-mongodb ^1.7 -> the requested PHP extension mongodb is missing from your system.
+
+  To enable extensions, verify that they are enabled in your .ini files:
+    - /etc/php/7.0/cli/php.ini
+...
+```
+nos está informando que no puede encontrar la extensión de MongoDB para PHP. Esto se debe a que Composer no está usando el mismo archivo `php.ini` que hemos configurado anteiormente. Una opción es añadir al archivo `/etc/php/7.0/cli/php.ini` la extensión de MongoDB para PHP:
+
+```
+extension=mongodb.so
+```
+
 
 Para usar la librería en el proyecto comenzaremos con el script siguiente
 
