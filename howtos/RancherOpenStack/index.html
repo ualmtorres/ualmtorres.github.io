@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.5.dev">
-<meta name="author" content="Cloud-DI">
+<meta name="author" content="Cloud-STIC">
 <title>Uso de OpenStack como proveedor de infraestructura en Rancher</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -423,8 +423,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>Uso de OpenStack como proveedor de infraestructura en Rancher</h1>
 <div class="details">
-<span id="author" class="author">Cloud-DI</span><br>
-<span id="revdate">Cloud-DI Team &lt;clouddi@ual.es&gt;</span>
+<span id="author" class="author">Cloud-STIC</span><br>
+<span id="revdate">Servicio de las Tecnologías de la Información y las Comunicaciones - Universidad de Almería</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Tabla de contenidos</div>
@@ -433,7 +433,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#trueinstalaci-n-y-configuraci-n-inicial-de-rancher">1. Instalación y configuración inicial de Rancher</a>
 <ul class="sectlevel2">
 <li><a href="#trueinstalaci-n-de-rancher">1.1. Instalación de Rancher</a></li>
-<li><a href="#truepreparaci-n-de-claves-ssh-en-rancher">1.2. Preparación de claves SSH en Rancher</a></li>
 </ul>
 </li>
 <li><a href="#trueactivaci-n-de-openstack-como-proveedor-de-infraestructura-de-c-mputo-para-rancher">2. Activación de OpenStack como proveedor de infraestructura de cómputo para Rancher</a>
@@ -445,10 +444,23 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#trueconfiguraci-n-de-openstack-como-proveedor-de-vol-menes">3. Configuración de OpenStack como proveedor de volúmenes</a>
 <ul class="sectlevel2">
 <li><a href="#truevalores-de-configuraci-n-del-archivo-yaml">3.1. Valores de configuración del archivo YAML</a></li>
-<li><a href="#truecreaci-n-de-vol-menes-cinder-en-clusters-kubernetes">3.2. Creación de volúmenes Cinder en clusters Kubernetes</a></li>
 </ul>
 </li>
-<li><a href="#trueconclusiones">4. Conclusiones</a></li>
+<li><a href="#truecreaci-n-de-vol-menes-cinder-en-clusters-kubernetes">4. Creación de volúmenes Cinder en clusters Kubernetes</a>
+<ul class="sectlevel3">
+<li><a href="#truecreaci-n-de-una-clase-de-almacenamiento-para-cinder">4.1. Creación de una clase de almacenamiento para Cinder</a></li>
+<li><a href="#truecreaci-n-de-un-volumen-persistente">4.2. Creación de un volumen persistente</a></li>
+<li><a href="#truecreaci-n-de-una-petici-n-de-volumen-persistente">4.3. Creación de una petición de volumen persistente</a></li>
+<li><a href="#truecreaci-n-de-una-petici-n-de-volumen-mediante-manifiesto-yaml">4.4. Creación de una petición de volumen mediante manifiesto YAML</a></li>
+</ul>
+</li>
+<li><a href="#truecreaci-n-de-vol-menes-nfs-con-openstack-manila-en-clusters-kubernetes">5. Creación de volúmenes NFS con Openstack Manila en clusters Kubernetes</a>
+<ul class="sectlevel2">
+<li><a href="#truecreaci-n-de-un-volumen-persistente-2">5.1. Creación de un volumen persistente</a></li>
+<li><a href="#truecreaci-n-de-una-petici-n-de-volumen-mediante-manifiesto-yaml-2">5.2. Creación de una petición de volumen mediante manifiesto YAML</a></li>
+</ul>
+</li>
+<li><a href="#trueconclusiones">6. Conclusiones</a></li>
 </ul>
 </div>
 </div>
@@ -457,7 +469,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sectionbody">
 <div class="imageblock">
 <div class="content">
-<img src="./images/di.png" alt="di.png">
+<img src="./images/logocloudstic.png" alt="logocloudstic.png">
 </div>
 </div>
 </div>
@@ -466,10 +478,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="trueresumen"><a class="anchor" href="#trueresumen"></a>Resumen</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><a href="https://rancher.com/">Rancher</a> es un proyecto open-source que nos permite ofrecer <a href="https://kubernetes.io/">Kubernetes</a> como servicio. Su gran ventaja es que permite gestionar desde un único lugar clusters Kubernetes alojados bien en alguno de los proveedores de Kubernetes más populares, como Google Container Engine, Amazon EKS o Azure Kubernetes Service, o bien, en proveedores de infraestructura, como Amazon EC2, Microsoft Azure, Digital Ocean, RackSpace, OpenStack, SoftLayer, entre otros.</p>
+<p><a href="https://rancher.com/">Rancher</a> es un proyecto open-source que nos permite administrar clusters de <a href="https://kubernetes.io/">Kubernetes</a>. Su gran ventaja es que permite gestionar desde un único lugar clusters Kubernetes alojados bien en alguno de los proveedores de Kubernetes más populares, como Google Container Engine, Amazon EKS o Azure Kubernetes Service, o bien, en proveedores de infraestructura, como Amazon EC2, Microsoft Azure, Digital Ocean, RackSpace, OpenStack, SoftLayer, vSphere, entre otros.</p>
 </div>
 <div class="paragraph">
-<p>En este tutorial veremos por un lado, cómo crear un cluster Kubernetes usando OpenStack como proveedor de infaestructura para el máster y los nodos worker. Por otro lado, veremos cómo usar Cinder para propocionar almacenamiento persistente a clusters Kubernetes creados sobre OpenStack.</p>
+<p>En este tutorial veremos por un lado, cómo crear un cluster Kubernetes usando OpenStack como proveedor de infaestructura para el máster y los nodos worker. Por otro lado, veremos cómo usar OpenStack Cinder para propocionar almacenamiento persistente a clusters Kubernetes creados sobre OpenStack.</p>
 </div>
 </div>
 </div>
@@ -477,10 +489,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="trueinstalaci-n-y-configuraci-n-inicial-de-rancher"><a class="anchor" href="#trueinstalaci-n-y-configuraci-n-inicial-de-rancher"></a>1. Instalación y configuración inicial de Rancher</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Rancher es una plataforma de gestión de distribuciones de Kubernetes en proveedores diferentes (Google, Amazon, Microsoft, RackSpace, OpenStack, &#8230;&#8203;). Rancher permite la creación y administración centralizada de clusters de Kubernetes independientemente del proveedor elegido. Además, incorpora un catálogo de aplicaciones que permite desplegarlas de forma sencilla.</p>
+<p>Rancher es una plataforma de gestión de distribuciones de Kubernetes en proveedores diferentes (Google, Amazon, Microsoft, RackSpace, OpenStack, vSphere, &#8230;&#8203;). Rancher permite la creación y administración centralizada de clusters de Kubernetes independientemente del proveedor elegido. Además, permite usar catálogos de aplicaciones a partir de repositorios de <a href="https://github.com/bitnami/charts">charts Helm</a> para desplegarlas de forma sencilla.</p>
 </div>
 <div class="paragraph">
-<p>A continuación veremos cómo realizar una instalación básica de Rancher y cómo configurar la clave SSH necesaria para que Rancher pueda aprovisionar instancias en OpenStack. Los usuarios de Rancher-DI pueden saltar este apartado e ir directamente al apatado siguiente <a href="#Activación de OpenStack como proveedor de infraestructura para Rancher">[Activación de OpenStack como proveedor de infraestructura para Rancher]</a></p>
+<p>A continuación veremos cómo realizar una instalación básica de Rancher y cómo configurarlo para que Rancher pueda crear clusters de Kubernetes usando OpenStack como IaaS.</p>
 </div>
 <div class="sect2">
 <h3 id="trueinstalaci-n-de-rancher"><a class="anchor" href="#trueinstalaci-n-de-rancher"></a>1.1. Instalación de Rancher</h3>
@@ -508,7 +520,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <div class="title">Instalación de Rancher usando certificados SSL</div>
 <div class="paragraph">
-<p>Si disponemos de certificados SSL podemos iniciar Rancher indicándole que use los certificados. En el caso de Rancher-DI, hemos colocado los certificados en un directorio que pasamos como volumen a Rancher.</p>
+<p>Si disponemos de certificados SSL podemos iniciar Rancher indicándole que use los certificados. En el caso de Rancher-STIC, hemos colocado los certificados en un directorio que pasamos como volumen a Rancher.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -516,8 +528,43 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
     --restart=unless-stopped \
     -p 80:80 -p 443:443 \
     -v /home/ubuntu/rancherdata:/var/lib/rancher \ <i class="conum" data-value="1"></i><b>(1)</b>
-    -v /home/ubuntu/certificados/star_di_ual_es.crt:/etc/rancher/ssl/cert.pem \ <i class="conum" data-value="2"></i><b>(2)</b>
-    -v /home/ubuntu/certificados/star_di_ual_es.key:/etc/rancher/ssl/key.pem \ <i class="conum" data-value="3"></i><b>(3)</b>
+    -v /home/ubuntu/certificados/star_stic_ual_es.crt:/etc/rancher/ssl/cert.pem \ <i class="conum" data-value="2"></i><b>(2)</b>
+    -v /home/ubuntu/certificados/star_stic_ual_es.key:/etc/rancher/ssl/key.pem \ <i class="conum" data-value="3"></i><b>(3)</b>
+    -v /home/ubuntu/certificados/DigiCertCA.crt:/etc/rancher/ssl/cacerts.pem \ <i class="conum" data-value="4"></i><b>(4)</b>
+    rancher/rancher:latest</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Volumen para almacenamiento de datos</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Concatenación del certificado de Rancher con el de la entidad certificadora (Rancher usa <a href="https://knowledge.digicert.com/solution/SO16297.html">cadenas de certificados</a>)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Clave privada</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Entiidad certificadora</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Si no se va a usar la entidad certificadora, usar este script</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">docker run -d \
+    --restart=unless-stopped \
+    -p 80:80 -p 443:443 \
+    -v /home/ubuntu/rancherdata:/var/lib/rancher \ <i class="conum" data-value="1"></i><b>(1)</b>
+    -v /home/ubuntu/certificados/star_stic_ual_es.crt:/etc/rancher/ssl/cert.pem \ <i class="conum" data-value="2"></i><b>(2)</b>
+    -v /home/ubuntu/certificados/star_stic_ual_es.key:/etc/rancher/ssl/key.pem \ <i class="conum" data-value="3"></i><b>(3)</b>
     rancher/rancher:latest \
     --no-cacerts <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
 </div>
@@ -543,46 +590,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </table>
 </div>
 </div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="truepreparaci-n-de-claves-ssh-en-rancher"><a class="anchor" href="#truepreparaci-n-de-claves-ssh-en-rancher"></a>1.2. Preparación de claves SSH en Rancher</h3>
-<div class="paragraph">
-<p>Al usar OpenStack como proveedor de infraestructura en Rancher estamos delegando en Rancher la creación de las instancias OpenStack para los nodos del clúster de Kubernetes así como su aprovisionamiento (instalación de la imagen, Docker, configuración de Kubernetes, y demás). Por tanto, necesitaremos un par de claves SSH que genereraremos para este fin. La clave privada se la daremos a Rancher y la clave pública tendrá que estar en cada proyecto OpenStack en el que se quiera desplegar un cluster Kubernetes con Rancher. Las instancias creadas incorporarán la clave pública que se emparejará con la clave privada que usa Rancher.</p>
-</div>
-<div class="paragraph">
-<p>En proveedores públicos como Google Cloud Platform o Azure esta cuestión está resuelta con <em>Cloud Shell</em>, que se encarga tanto de generar el par de claves que usa para la creación y aprovisionamiento de las instancias, como de copiarlas a nuestro proyecto. En OpenStack, este proceso es manual.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Si vamos a ofrecer Rancher a un grupo de usuarios, los cuales desplegarán sus clusters Kubernetes en proyectos OpenStack diferentes, deberemos facilitarles la clave SSH pública de creación de instancias de Rancher para que la importen a sus proyectos OpenStack.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Usaremos un par de claves SSH específicas para este propósito en la máquina en la que se está ejecutando Rancher (p.e. <code>ssh-keygen -f rancher-key</code> dejando todos los parámetros por defecto. Eso genererá los archivos <code>rancher-key</code> y <code>rancher-key.pub</code>)</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>En el caso de Rancher-DI, tenemos instalado Rancher como un contenedor en una instancia Ubuntu en OpenStack. Hemos creado el par de claves en la instancia OpenStack (<code>ssh-keygen -f rancher_di</code>) y después hemos copiado la clave privada (<code>rancher_di</code>) al contenedor de Rancher (<code>docker cp rancher_di &lt;contenedor-rancher&gt;:/root</code>). Finalmente, la clave privada se encuentra en <code>/root/rancher_di</code>. <strong>Es muy importante que anotememos esta ruta, ya que luego habrá que usarla al crear la plantilla OpenStack para la creación de los nodos del cluster de Kubernetes</strong>.</p>
-</div>
-</td>
-</tr>
-</table>
 </div>
 </div>
 </div>
@@ -661,7 +668,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p><code>activeTimeout</code>: Dejar el valor predeterminado de <code>200</code>, que será el timeout que permitimos a OpenStack para la creación de nodos.</p>
 </li>
 <li>
-<p><code>authURL</code>: Endpoint público de Keystone que proporciona la auntenticación. En nuestro caso <a href="http://openstack.di.ual.es:5000/v3" class="bare">http://openstack.di.ual.es:5000/v3</a> (sólo accesible desde la VPN de la UAL). Esta información la puede encontrar el administrador de OpenStack abriendo la consola de Horizon y consultando los servicios en el menu <code>Admin | System Information</code>. También se puede obtener la URL mediante el CLI de OpenStack con:</p>
+<p><code>authURL</code>: Endpoint público de Keystone que proporciona la auntenticación. En nuestro caso <a href="http://openstack.stic.ual.es:5000/v3" class="bare">http://openstack.stic.ual.es:5000/v3</a> (sólo accesible desde la VPN de la UAL). Esta información la puede encontrar el administrador de OpenStack abriendo la consola de Horizon y consultando los servicios en el menu <code>Admin | System Information</code>. También se puede obtener la URL mediante el CLI de OpenStack con:</p>
 </li>
 </ul>
 </div>
@@ -673,7 +680,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p><code>availabilityZone</code>: Zona de disponibilidad donde se crearán las instancias para los nodos Kubernetes que se creen con esta plantilla. En nuestro caso introduciremos la única zona de disponibilidad que tenemos, denominada <code>nova</code>.</p>
+<p><code>availabilityZone</code>: Zona de disponibilidad donde se crearán las instancias para los nodos Kubernetes que se creen con esta plantilla. En nuestro caso introduciremos <code>nova</code>.</p>
 </li>
 <li>
 <p><code>domainName</code>: Nombre del dominio al que pertenece el usuario que proporciona los recursos OpenStack a esta plantilla. En nuestro caso introduciremos <code>default</code>. En lugar de configurar el parámetro <code>domainId</code>, se podría configurar el parámetro <code>domainId</code>, pero esto es un valor más difícil de obtener.</p>
@@ -682,69 +689,28 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p><code>endPointType</code>: Tipo de endpoint que usaremos para interactuar con el componente <strong>Keystone</strong> de OpenStack para la autenticación. Nosotros dejaremos <code>publicURL</code>, ya que Rancher no tiene acceso a la red de túnel ni a la de mantenimiento de OpenStack.</p>
 </li>
 <li>
-<p><code>flavorName</code>: Nombre completo del sabor con el que se crearán los nodos que se creen con esta plantilla. En este ejemplo usaremos <code>medium</code>, aunque podemos elegir cualquier otro entre los disponibles en el OpenStack al que estemos accediendo (p.e. <code>tiny, small, large, xlarge</code>, y demás).</p>
+<p><code>flavorName</code>: Nombre completo del sabor con el que se crearán los nodos que se creen con esta plantilla. En este ejemplo usaremos <code>large</code>, aunque podemos elegir cualquier otro entre los disponibles en el OpenStack al que estemos accediendo (p.e. <code>tiny, small, large, xlarge</code>, y demás).</p>
 </li>
 <li>
-<p><code>floatingipPool</code>: Nombre de la red externa que proporciona las IP flotantes a las instancias creadas. En nuestro caso introduciremos <code>ext-net</code>.</p>
+<p><code>floatingipPool</code>: Nombre de la red externa que proporciona las IP flotantes a las instancias creadas. En nuestro caso introduciremos <code>ual-net</code>.</p>
 </li>
 <li>
-<p><code>imageName</code>: Nombre completo de la imagen a usar para crear las instancias. En nuestro caso usaremos <code>Ubuntu 16.04 LTS</code>, aunque podríamos haber usado cualquiera de las disponibles en OpenStack-DI (<code>CentOS 7</code>, <code>Fedora 27</code>, <code>Rancher OS</code>, &#8230;&#8203;)</p>
+<p><code>imageName</code>: Nombre completo de la imagen a usar para crear las instancias. En nuestro caso usaremos <code>Ubuntu 18.04 LTS</code>, aunque podríamos haber usado cualquiera de las disponibles en OpenStack-STIC (<code>CentOS 7</code>, <code>Debian10</code>, <code>openSUSE Leap 15.1</code>, &#8230;&#8203;).</p>
 </li>
-</ul>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p><a href="https://rancher.com/rancher-os/">Rancher OS</a> es una distribución reducida de Linux que contiene lo mínimo para ejecutar Docker.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="ulist">
-<ul>
 <li>
 <p><code>ipVersion</code>: Dejamos <code>4</code>, ya que las direcciones que usamos son IPv4.</p>
 </li>
 <li>
-<p><code>keypairName</code>: Nombre del archivo de clave pública que se inyectará a la instancia en la creación, y que por tanto, <strong>deberá estar disponible con ese nombre en el proyecto OpenStack en el que se van a crear las instancias que se creen usando esta plantilla</strong>.</p>
+<p><code>keypairName</code>: Nombre del archivo de clave pública que se inyectará a la instancia en la creación, y que por tanto, <strong>deberá estar disponible con ese nombre en el proyecto OpenStack en el que se van a crear las instancias que se creen usando esta plantilla</strong>. (p.e. <code>os-sistemas</code>)</p>
 </li>
-</ul>
-</div>
-<div class="sidebarblock">
-<div class="content">
-<div class="title">Creación de un par de claves para los instancias OpenStack</div>
-<div class="paragraph">
-<p>Dado que estamos delegando a Rancher la creación de las instancias OpenStack para los nodos del clúster de Kubernetes, Rancher se encargará de crear y aprovisionar las instancias con todo lo necesario (instalación de la imagen, Docker, configuración de Kubernetes, y demás).</p>
-</div>
-<div class="paragraph">
-<p>Por tanto, deberemos importar a cada proyecto OpenStack en el que se vaya a crear un cluster Kubernetes la clave pública correspondiente a la clave privada que usar Rancher para la creación de instancias.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6TiN7lieyNtdnF3a85Yx2GlRlAzJ8nMPPnpz7ra/DexNu1Q7zTUIntqtSrsL34bbw0u0ua1DSJXxbMHnAx6s2/zqqeKyVvLxXtkB0cCYMJTHkpn8vv3ATeLiRAZwu5M/LgArx10oqB5b82eKvxoT6MF0vR310zZPsHEI/ZlnUssajf/h1Rc/Pn6FRWYtu/ALMlYuTJHLnrBvXZ1qFxo1yf2p2uAEgKqT9uj+z3od7Kud0fU2sY/qv0ppV/hEh/rTMEw6mdicx/xqNzWronUD641sT6ZNHB3YlJpNMhSECdoDX24bP7jPH1M6Z9XMK4gRE0u9n9ujufz+nj3rYBI9R ubuntu@rancher20</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><strong>Importa esta clave pública al proyecto OpenStack, asígnale un nombre y usa dicho nombre para el parámetro <code>keypairName</code> de la plantilla.</strong></p>
-</div>
-</div>
-</div>
-<div class="ulist">
-<ul>
 <li>
-<p><code>netName</code>: Nombre de la red a la que se conectarán las instancias que se creen de acuerdo con esta plantilla. Revisa las redes de tu proyecto OpenStack e identifica el nombre de la red donde se sitúarán las instancias a crear.</p>
+<p><code>netName</code>: Nombre de la red a la que se conectarán las instancias que se creen de acuerdo con esta plantilla. Revisa las redes de tu proyecto OpenStack e identifica el nombre de la red donde se sitúarán las instancias a crear (p.e. <code>k8s-net</code>).</p>
 </li>
 <li>
 <p><code>password</code>: Contraseña del usuario en OpenStack para poder dar acceso a Rancher para que cree las instancias.</p>
 </li>
 <li>
-<p><code>privateKeyFile</code>: Nombre completo incluyendo la ruta del archivo de clave privada que usará Rancher para aprovisionar las instancias <strong>y que será la pareja de la clave pública que está en el proyecto en el que se crearán las instancias</strong>. En el caso de Rancher-DI, el valor a introducir es <code>/root/rancher_di</code>.</p>
+<p><code>privateKeyFile</code>: Contenido de la clave privada que usará Rancher para aprovisionar las instancias <strong>y que será la pareja de la clave pública que se ha introducido en <code>keypairName</code></strong>.</p>
 </li>
 <li>
 <p><code>region</code>: Nombre de la región. En nuestro caso es <code>RegionOne</code></p>
@@ -756,18 +722,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p><code>sshPort</code>: Puerto de acceso a las instancias. Dejamos el valor <code>22</code>.</p>
 </li>
 <li>
-<p><code>sshUser</code>: Nombre de usuario de la instancia que se va a crear, y que dependerá del tipo e imagen usada para crear la instancia. Por ejemplo, para las imágenes Ubuntu el usuario es <code>ubuntu</code>, para las Rancher OS es <code>rancher</code>, para las Fedora es <code>fedora</code>.</p>
+<p><code>sshUser</code>: Nombre de usuario de la instancia que se va a crear, y que dependerá del tipo e imagen usada para crear la instancia. Por ejemplo, para las imágenes Ubuntu el usuario es <code>ubuntu</code>, para las Debian es <code>debian</code>, para las Fedora es <code>fedora</code>.</p>
 </li>
 <li>
-<p><code>tenantName</code>: Nombre del proyecto OpenStack en el que se creen estas instancias. Revisa el nombre del proyecto.</p>
+<p><code>tenantName</code>: Nombre del proyecto OpenStack en el que se crearán las instancias que usen esta plantilla. Revisa el nombre del proyecto en Horizon para obtener este valor.</p>
 </li>
 <li>
-<p><code>userName</code>: Nombre de usuario OpenStack.</p>
+<p><code>userName</code>: Nombre de usuario OpenStack que usará esta plantilla.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Finalmente, asignamos un nombre a esta plantilla (p.e. <code>produccion-ubuntu14-medium</code>)</p>
+<p>Finalmente, asignamos un nombre a esta plantilla (p.e. `	Ubuntu 18.04 LTS large`)</p>
 </div>
 <div class="paragraph">
 <p>A partir de este momento ya tenemos una plantilla con la que podremos crear los nodos de nuestro cluster Kubernetes. Todos los nodos que se creen usando esta plantilla tendrán las características definidas en la plantilla (imagen, sabor, red, grupos de seguridad, y demás).</p>
@@ -852,17 +818,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </table>
 </div>
 <div class="paragraph">
-<p>A la hora de crear el cluster, una vez definida la configuración de los nodos Master y Worker del cluster Kubernetes, configuraremos la parte relacionada con el almacenamiento en volúmenes con Cinder. Para realizar esta configuración seguiremos estos dos pasos tal y como se ilustra en la figura:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Seleccionar el botón de opción <code>Custom</code> de <code>Cloud Provider</code> en la sección <code>Cluster Options</code></p>
-</li>
-<li>
-<p>Después, seleccionar el enlace <code>Edit as YAML</code>. Esto abrirá un cuadro donde configuraremos las opciones de OpenStack y de Cinder para que se puedan proporcionar volúmenes Cinder a este cluster.</p>
-</li>
-</ol>
+<p>A la hora de crear el cluster, una vez definida la configuración de los nodos Master y Worker del cluster Kubernetes, configuraremos la parte relacionada con el almacenamiento en volúmenes con Cinder. Para realizar esta configuración seleccionaremos el enlace <code>Edit as YAML</code>. Esto abrirá un cuadro donde configuraremos las opciones de OpenStack y de Cinder para que se puedan proporcionar volúmenes Cinder a este cluster.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -893,20 +849,28 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml" data-lang="yaml">cloud_provider:
-  name: "openstack"
-  openstackCloudProvider:
-    block_storage: <i class="conum" data-value="1"></i><b>(1)</b>
-      ignore-volume-az: true
-      trust-device-path: false
-    global:
-      auth-url: "http://192.168.64.12:5000/v3/" <i class="conum" data-value="2"></i><b>(2)</b>
-      domain-name: "default" <i class="conum" data-value="3"></i><b>(3)</b>
-      tenant-id: "your-tenant-id-here" <i class="conum" data-value="4"></i><b>(4)</b>
-      username: "your-username-here" <i class="conum" data-value="5"></i><b>(5)</b>
-      password: "your-password-here" <i class="conum" data-value="6"></i><b>(6)</b>
-    metadata:
-      request-timeout: 0</code></pre>
+<pre class="highlightjs highlight"><code class="language-yaml" data-lang="yaml">  cloud_provider:
+    name: openstack
+    openstackCloudProvider:
+      block_storage: <i class="conum" data-value="1"></i><b>(1)</b>
+        ignore-volume-az: true
+        trust-device-path: false
+      global:
+        auth-url: 'http://openstack.stic.ual.es:5000/v3/' <i class="conum" data-value="2"></i><b>(2)</b>
+        domain-name: default <i class="conum" data-value="3"></i><b>(3)</b>
+        tenant-id: "your-tenant-id-here" <i class="conum" data-value="4"></i><b>(4)</b>
+        username: "your-username-here" <i class="conum" data-value="5"></i><b>(5)</b>
+        password: "your-password-here" <i class="conum" data-value="6"></i><b>(6)</b>
+      load_balancer:
+        create-monitor: false
+        floating-network-id: "your-external-net-id-here" <i class="conum" data-value="7"></i><b>(7)</b>
+        manage-security-groups: false
+        monitor-max-retries: 0
+        subnet-id: "your-subnet-id-here" <i class="conum" data-value="8"></i><b>(8)</b>
+        use-octavia: false
+      metadata:
+        request-timeout: 0
+      route: {}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -917,11 +881,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Endpoint de autenticación de OpenStack-DI</td>
+<td>Endpoint de autenticación de OpenStack-STIC</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Nombre de dominio usado en OpenStack-DI</td>
+<td>Nombre de dominio usado en OpenStack-STIC</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
@@ -935,14 +899,23 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td><i class="conum" data-value="6"></i><b>6</b></td>
 <td>Contraseña</td>
 </tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>ID de la red externa que proporciona las IPs flotantes</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>ID de la subred del proyecto</td>
+</tr>
 </table>
 </div>
 <div class="sidebarblock">
 <div class="content">
-<div class="title">Obtención del ID del proyecto</div>
-<div class="paragraph">
+<div class="title">Obtención del datos de configuración</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
 <p>El ID del proyecto lo obtenemos mediante la opción de <strong>Ver credenciales</strong> que está disponible en el menú de OpenStack <code>Project | Compute | API Access</code>. A continuación pulsar el botón <code>View credentials</code></p>
-</div>
 <div class="imageblock">
 <div class="content">
 <img src="./images/API-access.png" alt="API access.png">
@@ -956,11 +929,33 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <img src="./images/user-credentials-details.png" alt="user credentials details.png">
 </div>
 </div>
+</li>
+<li>
+<p><code>floating-network-id</code> lo obtendremos en el menú <code>Network | Networks</code>, seleccionando la red externa (<code>ual-net</code>). En la pestaña <code>Overview</code> aparecerán los datos necesarios en <code>ID</code>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="./images/floating-ip-id.png" alt="floating ip id.png">
+</div>
+</div>
+</li>
+<li>
+<p>El identificador de la subred lo obtendremos en el menú <code>Network | Networks</code>, seleccionando la red del proyecto, después su subred y los datos necesarios están en <code>ID</code>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="./images/subnet-id.png" alt="subnet id.png">
+</div>
+</div>
+</li>
+</ol>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="truecreaci-n-de-vol-menes-cinder-en-clusters-kubernetes"><a class="anchor" href="#truecreaci-n-de-vol-menes-cinder-en-clusters-kubernetes"></a>3.2. Creación de volúmenes Cinder en clusters Kubernetes</h3>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="truecreaci-n-de-vol-menes-cinder-en-clusters-kubernetes"><a class="anchor" href="#truecreaci-n-de-vol-menes-cinder-en-clusters-kubernetes"></a>4. Creación de volúmenes Cinder en clusters Kubernetes</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Los contenedores pueden almacenar datos, pero los datos se pierden al eliminar los contenedores. Kubernetes ofrece volúmenes persistentes, que es almacenamiento externo al pod, ya sea en el host, en un cluster de almacenamiento o almacenamiento cloud. Si un contenedor falla, el contenedor que lo reemplace puede volver a acceder a los datos sin que se produzca pérdida de datos.</p>
 </div>
@@ -990,7 +985,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p>Representan algo así como drivers de almacenamiento (podríamos tener clases para Cinder, iSCSI, glusterfs, nfs, &#8230;&#8203;). Más <a href="https://kubernetes.io/docs/concepts/storage/volumes/#types-of-volumes">información sobre tipos de volúmenes en Kubernetes</a>.</p>
+<p>Representan algo así como drivers de almacenamiento (podríamos tener clases para Cinder, iSCSI, GlusterFS, NFS, &#8230;&#8203;). Más <a href="https://kubernetes.io/docs/concepts/storage/volumes/#types-of-volumes">información sobre tipos de volúmenes en Kubernetes</a>.</p>
 </li>
 <li>
 <p>Provisionan volúmenes persistentes bajo demanda.</p>
@@ -1007,7 +1002,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </div>
 <div class="sect3">
-<h4 id="truecreaci-n-de-una-clase-de-almacenamiento-para-cinder"><a class="anchor" href="#truecreaci-n-de-una-clase-de-almacenamiento-para-cinder"></a>3.2.1. Creación de una clase de almacenamiento para Cinder</h4>
+<h4 id="truecreaci-n-de-una-clase-de-almacenamiento-para-cinder"><a class="anchor" href="#truecreaci-n-de-una-clase-de-almacenamiento-para-cinder"></a>4.1. Creación de una clase de almacenamiento para Cinder</h4>
 <div class="paragraph">
 <p>Si queremos crear volúmenes Cinder, una vez configurado el cluster para usar Cinder como proveedor de almacenamiento, tenemos que crear una clase de almacenamiento.</p>
 </div>
@@ -1061,7 +1056,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect3">
-<h4 id="truecreaci-n-de-un-volumen-persistente"><a class="anchor" href="#truecreaci-n-de-un-volumen-persistente"></a>3.2.2. Creación de un volumen persistente</h4>
+<h4 id="truecreaci-n-de-un-volumen-persistente"><a class="anchor" href="#truecreaci-n-de-un-volumen-persistente"></a>4.2. Creación de un volumen persistente</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -1093,7 +1088,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect3">
-<h4 id="truecreaci-n-de-una-petici-n-de-volumen-persistente"><a class="anchor" href="#truecreaci-n-de-una-petici-n-de-volumen-persistente"></a>3.2.3. Creación de una petición de volumen persistente</h4>
+<h4 id="truecreaci-n-de-una-petici-n-de-volumen-persistente"><a class="anchor" href="#truecreaci-n-de-una-petici-n-de-volumen-persistente"></a>4.3. Creación de una petición de volumen persistente</h4>
 <div class="paragraph">
 <p>En Kubernetes se puede crear una petición de volumen persistente (<em>Persistent Volume Claim, PVC</em>) bien a partir de un volumen persitente o a partir de una clase de almacenamiento. Una PVC sí proporciona almacenamiento real para nuestro cluster y si usamos Cinder, veremos los volúmenes creados en OpenStack.</p>
 </div>
@@ -1159,36 +1154,180 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="paragraph">
-<p>De forma predeterminada tendremos un MySQL corriendo en un único pod. Una vez creado, si iniciamos sesión en MySQL, creamos una base de datos de ejemplo y eliminamos el pod, los datos no se perderán. Los datos están almacenados en una PVC que está almacenada en un volumen Cinder en OpenStack. Si se vuelve a crear un pod que reemplace al pod eliminado, tras iniciar sesión en el nuevo pod se podrá comprobar que se tiene acceso a los mismos datos que tenía el pod eliminado.</p>
+<p>Así, de forma predeterminada tendremos un MySQL corriendo en un único pod. Una vez creado, si iniciamos sesión en MySQL, creamos una base de datos de ejemplo y eliminamos el pod, los datos no se perderán. Los datos están almacenados en una PVC, que está almacenada en un volumen Cinder en OpenStack. Si se vuelve a crear un pod que reemplace al pod eliminado, tras iniciar sesión en el nuevo pod se podrá comprobar que se tiene acceso a los mismos datos que tenía el pod eliminado.</p>
 </div>
 </div>
 </div>
+</div>
+<div class="sect2">
+<h3 id="truecreaci-n-de-una-petici-n-de-volumen-mediante-manifiesto-yaml"><a class="anchor" href="#truecreaci-n-de-una-petici-n-de-volumen-mediante-manifiesto-yaml"></a>4.4. Creación de una petición de volumen mediante manifiesto YAML</h3>
+<div class="paragraph">
+<p>Tanto la clase de almacenamiento, como las peticiones de volumen se pueden hacer desde la consola de Rancher o desplegando directamente manifiestos YAML.</p>
+</div>
+<div class="paragraph">
+<p>A continuación se muestra el manifiesto YAML para la creación de una clase de almacenamiento denominada <code>cinder</code> para OpenStack Cinder</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml" data-lang="yaml">apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: cinder
+provisioner: kubernetes.io/cinder
+parameters:
+  availability: nova</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>La crearemos con <code>kubectl apply -f <a href="https://gist.githubusercontent.com/ualmtorres/c4a179accb12cf04a6af5fdc8f438f11/raw/bc274085607900f5335df8d5a2b5915e85b128f5/cinder-sc.yaml" class="bare">https://gist.githubusercontent.com/ualmtorres/c4a179accb12cf04a6af5fdc8f438f11/raw/bc274085607900f5335df8d5a2b5915e85b128f5/cinder-sc.yaml</a></code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Consulta los proveedores de almacenamiento de Kubernetes en la <a href="https://kubernetes.io/docs/concepts/storage/storage-classes">documentación oficial</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Una vez creada la clase de almacenamiento, podremos crear peticiones de volumen sobre ella. A continuación se muestra un manifiesto YAML para la creación de una PVC de 9GB sobre la clase de almacenamiento <code>cinder</code> definida anteriormente.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml" data-lang="yaml">kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: cinder-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 9Gi # pass here the size of the volume
+  storageClassName: cinder</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>La crearemos con <code>kubectl apply -f <a href="https://gist.githubusercontent.com/ualmtorres/788d6d7803cb32834c4afb96eeef6e5d/raw/dcf488634eac1bdbf0d4933e3eb2def55c8d8925/cinder-pvc.yaml" class="bare">https://gist.githubusercontent.com/ualmtorres/788d6d7803cb32834c4afb96eeef6e5d/raw/dcf488634eac1bdbf0d4933e3eb2def55c8d8925/cinder-pvc.yaml</a></code>.</p>
+</div>
+<div class="paragraph">
+<p>Tras crearla, el volumen aparecerá en el menú <code>Storage | Persisten Volumes</code> de Rancher y en la zona de volúmenes de OpenStack (<code>Volumes | Volumes</code>).</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="trueconclusiones"><a class="anchor" href="#trueconclusiones"></a>4. Conclusiones</h2>
+<h2 id="truecreaci-n-de-vol-menes-nfs-con-openstack-manila-en-clusters-kubernetes"><a class="anchor" href="#truecreaci-n-de-vol-menes-nfs-con-openstack-manila-en-clusters-kubernetes"></a>5. Creación de volúmenes NFS con Openstack Manila en clusters Kubernetes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Kubernetes permite montar shares NFS existentes. Los volúmenes NFS son volúmenes externos al cluster Kubernetes y son persistentes, de forma que su contenido se mantiene después de la eliminación de los pods que lo tengan montado.</p>
+</div>
+<div class="paragraph">
+<p>Para este ejemplo usaremos Openstack Manila como servidor NFS. Para los ejemplos ya tenemos creado un <em>share</em>, disponible en en la ruta /var/lib/manila/mnt/share-c3e6b450-9e7b-4144-a113-84cbcd50ddd6 del servidor 192.168.128.17. Dicho <em>share</em> ya tiene configuradas las reglas de acceso de forma que pueda ser montado.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/share.png" alt="share.png">
+</div>
+</div>
+<div class="sect2">
+<h3 id="truecreaci-n-de-un-volumen-persistente-2"><a class="anchor" href="#truecreaci-n-de-un-volumen-persistente-2"></a>5.1. Creación de un volumen persistente</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Seleccionar el cluster a nivel global, no a nivel de proyecto (<code>Default</code>, <code>System</code>, &#8230;&#8203;).</p>
+</li>
+<li>
+<p>En el menú <code>Storage</code> seleccionar <code>Persistent Volumes</code> y pulsar el botón <code>Add Volume</code>.</p>
+</li>
+<li>
+<p>Introducir los valores un nombre (p.e. <code>my-share-pv</code>), elegir <code>NFS Share</code> en <code>Volume Plugin</code>, una capacidad (p.e. <code>10 GB</code>). En la sección <code>Plugin Configuration</code> introducir los valores del <code>path</code> y del <code>server</code> que ha proporcionado OpenStack Manila para el <em>share</em> creado.</p>
+<div class="imageblock">
+<div class="content">
+<img src="./images/share-rancher.png" alt="share rancher.png">
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A partir desde volumen persistente, podríamos crear <em>volume claims</em> sobre él desde la opción <code>Default</code> del cluster en <code>Resources | Volumes | Add Volume</code> y seleccionando <code>Use an existing persistent volume</code> en <code>Source</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truecreaci-n-de-una-petici-n-de-volumen-mediante-manifiesto-yaml-2"><a class="anchor" href="#truecreaci-n-de-una-petici-n-de-volumen-mediante-manifiesto-yaml-2"></a>5.2. Creación de una petición de volumen mediante manifiesto YAML</h3>
+<div class="paragraph">
+<p>Tanto los volúmnes persistentes como las peticiones de volumen se pueden hacer desde la consola de Rancher o desplegando directamente manifiestos YAML.</p>
+</div>
+<div class="paragraph">
+<p>A continuación se muestra el manifiesto YAML para la creación de un volumen persistente NFS para un <em>share</em> de OpenStack Manila</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml" data-lang="yaml">apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Recycle
+  nfs:
+    path: /var/lib/manila/mnt/share-c3e6b450-9e7b-4144-a113-84cbcd50ddd6
+    server: 192.168.128.17</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Lo crearemos con <code>kubectl apply -f <a href="https://gist.githubusercontent.com/ualmtorres/3fe119adcacf269442da0d0db9adcc3d/raw/1e54dd73a00bd55f70dd229fab1123c2a5d89787/nfs-pv.yaml" class="bare">https://gist.githubusercontent.com/ualmtorres/3fe119adcacf269442da0d0db9adcc3d/raw/1e54dd73a00bd55f70dd229fab1123c2a5d89787/nfs-pv.yaml</a></code></p>
+</div>
+<div class="paragraph">
+<p>Una vez creado el volumen persistente, podremos crear peticiones de volumen sobre él. A continuación se muestra un manifiesto YAML para la creación de una PVC de 10GB sobre el volumen <code>nfs-pv</code> definido anteriormente.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml" data-lang="yaml">apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: ""
+  volumeName: nfs-pv</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>La crearemos con <code>kubectl apply -f <a href="https://gist.githubusercontent.com/ualmtorres/4adbc23ae9237197be32d622bad8876c/raw/3403e9da298c971d739575e0aab8f221e99158e3/nfs-pvc.yaml" class="bare">https://gist.githubusercontent.com/ualmtorres/4adbc23ae9237197be32d622bad8876c/raw/3403e9da298c971d739575e0aab8f221e99158e3/nfs-pvc.yaml</a></code></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trueconclusiones"><a class="anchor" href="#trueconclusiones"></a>6. Conclusiones</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Rancher ofrece una plataforma integrada para creación y mantenimiento de clusters Kubernetes. En el caso de que usemos proveedores públicos (Google, Azure, Amazon, &#8230;&#8203;) para el despliegue de la infraestructura, basta con completar los parámetros que proporcione el proveedor. Sin embargo, dado que cada cloud OpenStack al que tengamos acceso puede tener parámetros de configuración diferentes (p.e. nombre de las imágenes, sabores, red externa, y demás), debemos configurar nuestras propias plantillas de acuerdo con la instalación de OpenStack a la que tengamos acceso.</p>
 </div>
 <div class="paragraph">
-<p>En este tutorial hemos visto cómo crear estas plantillas y cómo crear las claves SSH que serán usadas por Rancher para la creación y aprovisionamiento de las instancias del cluster Kubernetes.</p>
-</div>
-<div class="paragraph">
-<p>También hemos visto cómo crear almacenamiento persistente para clusters Kubernetes usando Cinder como proveedor de almacenamiento</p>
-</div>
-<hr>
-<div class="paragraph">
-<p>Cloud-DI Team, 2018. Actualizado 2019</p>
+<p>En este tutorial hemos visto cómo crear estas plantillas y cómo personalizar la configuración mediante YAML para almacenamiento y balanceadores de carga OpenStack. También hemos visto cómo crear almacenamiento persistente para clusters Kubernetes usando OpenStack Cinder y OpenStack Manila como proveedores de almacenamiento.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-07-19 23:12:08 CEST
+Last updated 2021-04-11 17:34:43 CEST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
