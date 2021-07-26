@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Seminario Pulumi
+title: Infraestructura cómo código con Pulumi
 category: posts
 ---
 
