@@ -4,7 +4,7 @@ title: Conversaciones con ChatGPT - Bases de datos
 category: posts
 ---
 
-Disponible las [Conversaciones con ChatGPT - Bases de datos](git remote add origin https://github.com/ualmtorres/ConversacionesConChatGPTBD.git). En estas conversaciones se muestra:
+Disponible las [Conversaciones con ChatGPT - Bases de datos](https://ualmtorres.github.io/ConversacionesConChatGPTBD/). En estas conversaciones se muestra:
 
 * El uso de ChatGPT como recurso complementario en la docencia y su apoyo al aprendizaje autónomo.
 * El uso de ChatGPT como recurso educativo para facilitar la comprensión de contenidos de la asignatura de Bases de datos en una experiencia educativa innovadora
