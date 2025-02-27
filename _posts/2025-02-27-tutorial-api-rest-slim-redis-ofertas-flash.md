@@ -4,7 +4,7 @@ title: Desarrollo de una API REST para gestión de ofertas flash con Slim Framew
 category: posts
 ---
 
-Disponible el [Tutorial Desarrollo de una API REST para gestión de ofertas flash con Slim Framework y Redis](https://ualmtorres.github.io/TutorialSlimRedisAPIOfertasFlash/). En este tutorial se nos muestra:
+Disponible el [Tutorial Desarrollo de una API REST para gestión de ofertas flash con Slim Framework y Redis](https://ualmtorres.github.io/TutorialSlimRedisAPIOfertasFlash/). En este tutorial se nos muestra cómo:
 
 * Desarrollar una API REST utilizando Slim Framework y Redis para gestionar ofertas flash.
 * Implementar operaciones CRUD (Crear, Obtener, Reservar, Eliminar) para las ofertas flash.
