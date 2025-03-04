@@ -4,7 +4,7 @@ title: Desarrollo de una API REST para gestión historial de pedidos y seguimien
 category: posts
 ---
 
-Disponible el [Tutorial Desarrollo de una API REST para gestión historial de pedidos y seguimiento en tiempo real con Express y Cassandra](https://ualmtorres.github.io/TutorialExpressCassandraPedidos//). En este tutorial se nos muestra cómo:
+Disponible el [Tutorial Desarrollo de una API REST para gestión historial de pedidos y seguimiento en tiempo real con Express y Cassandra](https://ualmtorres.github.io/TutorialExpressCassandraPedidos/). En este tutorial se nos muestra cómo:
 
 * Diseñar una API REST eficiente para la gestión de pedidos utilizando Express y Cassandra.
 * Implementar un esquema de base de datos en Cassandra optimizado para consultas rápidas y escalables.

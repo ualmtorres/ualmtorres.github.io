@@ -4,7 +4,7 @@ title: Bases de datos clave-valor
 category: posts
 ---
 
-Disponible el [Tutorial Bases de datos clave-valor](https://ualmtorres.github.io/TutorialExpressCassandraPedidos//). En este tutorial se nos muestra:
+Disponible el [Tutorial Bases de datos clave-valor](https://ualmtorres.github.io/SeminarioRedis/). En este tutorial se nos muestra:
 
 * Conocer los fundamentos de las bases de datos clave-valor y su aplicación en sistemas distribuidos.
 * Aprender a utilizar Redis como base de datos clave-valor en aplicaciones web y móviles.

@@ -4,7 +4,7 @@ title: Desarrollo de una API REST para gestión de recomendaciones con Slim Fram
 category: posts
 ---
 
-Disponible el [Tutorial esarrollo de una API REST para gestión de recomendaciones con Slim Framework y Neo4j](https://ualmtorres.github.io/TutorialSlimNeo4jRecomendaciones/). En este tutorial se nos muestra cómo:
+Disponible el [Tutorial Desarrollo de una API REST para gestión de recomendaciones con Slim Framework y Neo4j](https://ualmtorres.github.io/TutorialSlimNeo4jRecomendaciones/). En este tutorial se nos muestra cómo:
 
 * Desarrollar una API REST utilizando Slim Framework y Neo4j para gestionar recomendaciones de productos.
 * Configurar el entorno de desarrollo utilizando Docker y Docker Compose.
